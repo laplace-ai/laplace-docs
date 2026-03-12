@@ -1,0 +1,76 @@
+---
+title: "Platform Overview"
+description: "A comprehensive overview of the Laplace Platform modules — Digital Twin, Digital Model, Loss Prediction, Collector, and Database Browser."
+---
+
+# Platform Overview
+
+The Laplace Platform is organized into **modules** — each one serving a distinct operational purpose. Together, they form a complete digital twin of your logistics network.
+
+This section covers every module in detail: what it does, how to use it, and what data it exposes.
+
+## Module architecture
+
+The platform sidebar reflects the module hierarchy:
+
+```
+Digital Twin          →  Interactive logistics network map
+Digital Model
+  └── Units           →  Facility management and detail views
+Services
+  └── Loss Prediction
+        ├── Table View    →  Risk-scored CTRC table with filters
+        ├── Device View   →  Mobile cargo verification (Collector)
+        ├── Dashboard     →  Analytics and model performance (coming soon)
+        └── Models        →  ML model management (coming soon)
+  └── Control Tower   →  Operations monitoring (coming soon)
+  └── Load Consolidation  →  Shipment optimization (coming soon)
+Database              →  Raw data browser
+```
+
+<Callout type="info">
+Module visibility is controlled by your tenant's subscription and your user type. You will only see modules that your organization has access to and that your administrator has assigned to your user type.
+</Callout>
+
+## Available modules
+
+<Card title="Digital Twin" href="/v1/platform/digital-twin">
+The interactive Mapbox GL map that visualizes your entire logistics network — facilities, routes, and connections. The default landing page.
+</Card>
+
+<Card title="Digital Twin — Units" href="/v1/platform/digital-twin/units">
+Browse, search, and inspect individual units (facilities) in your logistics network. View unit details, operational data, and linked shipments.
+</Card>
+
+<Card title="Loss Prediction" href="/v1/platform/loss-prediction">
+ML-powered cargo loss risk scoring. Browse predictions in a sortable table, filter by risk level and unit, and export data for offline analysis.
+</Card>
+
+<Card title="Collector" href="/v1/platform/collector">
+A mobile-optimized verification interface for field operators. Review high-risk cargo cards and verify shipments with camera evidence.
+</Card>
+
+<Card title="Database Browser" href="/v1/platform/database-browser">
+Browse raw data tables directly — CTRCs, loss predictions, units, and network links. Useful for data validation and ad-hoc investigation.
+</Card>
+
+## Module access control
+
+The Laplace Platform uses a **module-based access control system**. This means:
+
+1. **Tenant-level**: Each tenant (organization) subscribes to specific modules. Only subscribed modules appear in the sidebar.
+2. **User type-level**: Within a tenant, administrators create **user types** (e.g., "Analyst", "Collector", "Manager") that define which modules a group of users can access.
+3. **User-level**: Each user is assigned a user type, which determines their sidebar navigation.
+
+This layered system ensures that users only see what is relevant to their role. A field operator might see only the Collector, while an operations manager sees the Digital Twin, Loss Prediction table, and Database Browser.
+
+For more on how access control works, see [Authentication](/v1/authentication) and [Roles](/v1/authentication/roles).
+
+## Status bar
+
+At the top of every page, a thin status bar shows:
+
+- A **breadcrumb** indicating your current location (e.g., "Services > Loss Prediction > Table View")
+- A **connection indicator** showing "Connected to Laplace Engine" with the last sync timestamp
+
+The status bar helps you stay oriented as you navigate between modules, especially when deep in nested views.

@@ -1,0 +1,144 @@
+---
+title: "Interactive Map"
+description: "Detailed guide to the Mapbox GL interactive map — controls, layers, markers, route visualization, and theme-aware rendering."
+---
+
+# Interactive Map
+
+The interactive map is the primary visualization component of the Digital Twin module. Built with **Mapbox GL** and **react-map-gl**, it renders your logistics network as a geographic visualization with unit markers, route connections, and interactive overlays.
+
+{/* TODO: Add annotated screenshot of map with markers, routes, and detail panel */}
+
+## Map controls
+
+### Mouse and gesture controls
+
+| Action | How |
+|--------|-----|
+| **Zoom in** | Scroll wheel up, or pinch outward on trackpad |
+| **Zoom out** | Scroll wheel down, or pinch inward on trackpad |
+| **Pan** | Click and drag on the map |
+| **Rotate** | Right-click and drag |
+| **Reset rotation** | Double-click on the compass (if visible) |
+
+### Keyboard shortcuts
+
+| Key | Action |
+|-----|--------|
+| `+` / `=` | Zoom in |
+| `-` | Zoom out |
+| Arrow keys | Pan the map |
+
+## Map layers
+
+The map renders data in distinct layers, from bottom to top:
+
+### 1. Base map (Mapbox style)
+
+The base layer is a standard Mapbox style that provides geographic context — roads, cities, water bodies, and terrain. It automatically switches between light and dark variants based on your theme setting:
+
+- **Light mode**: `mapbox://styles/mapbox/light-v11` — a clean, minimal style with warm tones
+- **Dark mode**: `mapbox://styles/mapbox/dark-v11` — a subdued style with neutral grays
+
+### 2. Route lines (GeoJSON layer)
+
+Route connections between units are rendered as **LineString features** in a GeoJSON source layer. Each line connects two unit coordinates and represents a freight route in your network.
+
+Route lines have two visual states:
+
+- **Default**: Thin, semi-transparent lines showing the full network topology
+- **Highlighted**: When a unit is selected, routes connected to that unit become more prominent while others fade
+
+The route data is deduplicated — if the same pair of units has multiple links (e.g., different vehicle types), only one line is drawn between them to keep the map clean.
+
+### 3. Unit markers (React overlays)
+
+Unit markers are rendered as **React Marker components** positioned at each facility's latitude/longitude coordinates. They use the Laplace accent blue (`#3A8DFF`) as their fill color.
+
+Each marker responds to:
+
+- **Hover**: Shows the unit code as a tooltip
+- **Click**: Opens the unit detail panel and highlights connected routes
+
+## Unit detail panel
+
+When you click a unit marker, a **360px-wide panel** slides in from the right side of the map. The panel contains:
+
+### Header section
+
+- **Unit icon** with a blue Building2 icon
+- **Unit code** (e.g., "ATI SPA") displayed in monospace font with the accent blue color
+- **Active status** indicator — a green dot for active units, a gray dot for inactive ones
+- **Unit name** (e.g., "Filial Sao Paulo")
+- **Location** with a pin icon showing city and state
+- **Close button** (X) in the top-right corner
+
+### Overview section
+
+A 2-column grid displaying:
+
+- **Type**: The facility type (hub, branch, distribution center, etc.)
+- **Status**: Active or Inactive, using the localized label
+
+### Services section
+
+Currently displays a "Coming soon" placeholder. In future releases, this section will show:
+
+- Loss prediction summary for the unit
+- Risk distribution charts
+- Operational insights and alerts
+
+### Footer
+
+A full-width button labeled **"View Detailed Unit"** that navigates to `/digital-model/units/{code}` — the dedicated unit detail page with full operational data.
+
+{/* TODO: Add screenshot of detail panel with annotations */}
+
+## Immersive mode
+
+The Digital Twin map supports an **immersive mode** that maximizes the map viewport by hiding the chrome (top bar and status bar). When immersive mode is active:
+
+- The map extends to fill the full height between the sidebar and the right edge
+- The unit detail panel adjusts its top and bottom positioning accordingly
+- The sidebar remains visible for navigation
+
+Immersive mode is automatically exited when you navigate away from the Digital Twin page.
+
+## Responsive behavior
+
+The map is designed to be responsive to layout changes:
+
+- **Sidebar collapse/expand**: A `ResizeObserver` watches the map container and triggers `map.resize()` when the sidebar state changes, ensuring the map fills the available space without white gaps.
+- **Window resize**: Mapbox GL automatically handles window resize events.
+- **Panel open/close**: The unit detail panel overlays the map rather than resizing it, so map content shifts behind the panel.
+
+## Performance considerations
+
+The map implements several optimizations:
+
+| Technique | Purpose |
+|-----------|---------|
+| Dynamic import with `ssr: false` | Mapbox GL requires browser APIs unavailable in Node.js |
+| Single data fetch | Units and links are fetched once on mount, not on every interaction |
+| GeoJSON source layer | More efficient than individual line elements for hundreds of routes |
+| Route deduplication | Reduces rendering overhead by collapsing duplicate origin-destination pairs |
+| ResizeObserver | Efficiently handles container size changes without polling |
+
+<Callout type="warning">
+The map requires a valid Mapbox access token configured as `NEXT_PUBLIC_MAPBOX_TOKEN` in your environment variables. Without it, the map displays a fallback message. See [Installation](/v1/getting-started/installation) for setup instructions.
+</Callout>
+
+## Configuration
+
+The map's initial viewport is configured to show a broad view of Brazil:
+
+| Setting | Value |
+|---------|-------|
+| Initial center | Approximately the geographic center of Brazil |
+| Initial zoom | Enough to show the full national network |
+| Marker color | `#3A8DFF` (Laplace accent blue) |
+| Map projection | Mercator (default) |
+
+<Card title="Units" href="/v1/platform/digital-twin/units">
+Learn about the unit management views for a detailed look at individual facilities.
+</Card>

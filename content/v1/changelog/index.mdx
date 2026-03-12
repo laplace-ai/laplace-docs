@@ -1,0 +1,168 @@
+---
+title: "Changelog"
+description: "Version history for the Laplace Platform — all releases with highlights, new features, and improvements."
+---
+
+# Changelog
+
+This page tracks the version history of the Laplace Platform. The platform follows **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`.
+
+| Part | When it changes | Example |
+|------|----------------|---------|
+| **MAJOR** | Breaking changes, major redesigns | 0.x -> 1.0.0 |
+| **MINOR** | New features, new pages | 0.2.0 -> 0.3.0 |
+| **PATCH** | Bug fixes, small tweaks | 0.3.0 -> 0.3.1 |
+
+The platform is currently in the **0.x** series (pre-1.0), meaning it is in active development and the interface may evolve significantly between minor versions.
+
+---
+
+## v0.3.0
+
+**Released**: March 12, 2026
+
+This release brings a major sidebar redesign, full bilingual support, collector improvements, and performance optimizations.
+
+### Sidebar redesign
+
+- Completely redesigned sidebar with **collapsible navigation** and a clean module hierarchy
+- Sidebar now persists its collapsed/expanded state across sessions (saved in localStorage)
+- Added **tooltip hints** when the sidebar is collapsed, showing the label of each navigation item on hover
+- Introduced **tenant logo/icon** at the top of the sidebar — Laplace logo for internal tenant, colored initial circles for external tenants
+- Added **theme toggle** (sun/moon) and **settings link** in the sidebar's bottom section
+- User menu at the bottom with dropdown for settings and sign out
+- **Module-based filtering**: The sidebar dynamically shows only the modules the user has access to, based on their tenant subscription and user type
+
+### Bilingual internationalization
+
+- Full **PT-BR and EN-US** support across the entire platform using next-intl
+- Language toggle available on the login page, collector header, and settings
+- All UI labels, buttons, error messages, and status text translated
+- Translation files: `messages/pt-BR.json` and `messages/en-US.json`
+
+### Collector improvements
+
+- Fixed camera capture flow for mobile devices
+- Improved card layout with better information density
+- Added invoice number (NF) display on cargo cards
+- Volume count badge styling improvements
+
+### Search bar fix
+
+- Fixed search input behavior in the loss prediction table
+- Search now correctly filters by CTRC number
+
+### Performance improvements
+
+- Optimized API response times with partial indexes on the database
+- Reduced bundle size for faster page loads
+- Improved map resize behavior when sidebar collapses/expands
+
+### Dashboard plan
+
+- Added internal documentation for the Loss Prediction Dashboard implementation plan
+- Dashboard and Models views now show mockup data with a clear "MOCKUP" warning banner
+
+---
+
+## v0.2.0
+
+**Released**: March 8, 2026
+
+This release introduces the full authentication system, settings panel, design system, and module-based sidebar navigation.
+
+### Authentication system
+
+- **JWT-based authentication** with access tokens (cookie) and refresh tokens (localStorage)
+- **Login page** with email/password form and language toggle
+- **Invite system**: Admin-created invite links for secure user onboarding
+- **Token lifecycle management**: Automatic refresh, expiration detection with 30-second buffer
+- **Next.js middleware** for route protection (redirects to login if unauthenticated)
+
+### Role-based access control
+
+- Three-tier role hierarchy: **super_admin**, **admin**, **user**
+- **Super admin features**: Tenant switching, tenant selection page, cross-tenant visibility
+- **Admin features**: User management, user type management, invite sending
+- **Module-based sidebar filtering**: Users only see modules their tenant and user type permit
+
+### Settings page
+
+- **Users tab** (admin/super_admin): Manage users, send invites, edit roles, deactivate accounts
+- **User Types tab** (admin/super_admin): Create and manage user type templates with module access
+- **Tenants tab** (super_admin): Create and manage tenant organizations, configure module subscriptions
+- **My Account tab** (all users): View profile information, change password
+
+### Design system
+
+- Comprehensive **CSS variable design token system** for theming
+- Full **light mode and dark mode** support with mode consistency (everything switches together)
+- Light mode: warm neutrals (Notion-inspired)
+- Dark mode: neutral grays (zero blue tint)
+- Blue (`#3A8DFF`) used exclusively as accent color for interactive elements
+
+### Module-based navigation
+
+- Sidebar items filtered by tenant modules and user type permissions
+- "Coming soon" badges for unreleased modules (Control Tower, Load Consolidation)
+- Nested navigation with expandable sections (Services > Loss Prediction > sub-views)
+
+---
+
+## v0.1.0
+
+**Released**: March 1, 2026
+
+The initial release of the Laplace Platform with core features for logistics network visualization and cargo loss prediction.
+
+### Digital Twin map
+
+- **Interactive Mapbox GL map** showing logistics facilities as blue markers
+- **Route visualization** with GeoJSON line layers connecting units
+- **Unit detail panel** that slides in from the right when clicking a marker
+- Light/dark map styles matching the platform theme
+- Responsive to sidebar collapse/expand
+
+### Loss Prediction table
+
+- **Data table** with all ML-scored CTRCs
+- **Risk badges** (ALTO, MEDIO, BAIXO) with color coding
+- **Probability bars** with numeric percentage and visual fill
+- **Column sorting** (probability, weight, value, emission date, CTRC)
+- **Unit filter** dropdown
+- **Risk level filter** with presets (Alto + Medio, Alto only, etc.)
+- **Search** by CTRC number
+- **CSV export** for offline analysis
+- **BRL currency formatting** and locale-aware number display
+
+### Database browser
+
+- **Four-table browser**: CTRCs, Loss Predictions, Units, Network Links
+- Left sidebar with table list, right panel with data grid
+- **Client-side search** across all columns
+- Row count display (filtered/total)
+
+### Collector
+
+- **Mobile-optimized card interface** for cargo verification
+- Unit filter dropdown
+- **Camera integration** for photo verification
+- Optimistic UI updates on verification
+- Pagination for large result sets
+
+### Units
+
+- **Units list page** under Digital Model
+- **Unit detail page** with CTRCs, overview stats, and navigation from map
+
+<Callout type="info">
+The platform is under active development. New features and improvements are released regularly. Check back for updates as new modules and capabilities are added.
+</Callout>
+
+<Card title="Getting Started" href="/v1/getting-started">
+New to the platform? Start with the getting started guide.
+</Card>
+
+<Card title="Platform Overview" href="/v1/platform">
+Explore all available platform modules.
+</Card>

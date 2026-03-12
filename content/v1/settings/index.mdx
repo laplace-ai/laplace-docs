@@ -1,0 +1,231 @@
+---
+title: "Settings"
+description: "The Laplace Platform Settings page — user management, user types, tenant configuration, account settings, and password management."
+---
+
+# Settings
+
+The Settings page is the administrative hub of the Laplace Platform. It provides tabs for managing users, user types, tenants, and your own account. What you see depends on your role — regular users see only their account tab, while admins and super admins have access to management features.
+
+Navigate to **Settings** from the sidebar (gear icon at the bottom) or from the user dropdown menu.
+
+{/* TODO: Add screenshot of the Settings page with tabs */}
+
+## Tabs by role
+
+| Tab | Visible to | Purpose |
+|-----|-----------|---------|
+| **Users** | Admin, Super Admin | Manage users within the tenant |
+| **User Types** | Admin, Super Admin | Create and manage user type templates |
+| **Tenants** | Super Admin only | Manage tenant organizations |
+| **My Account** | All users | View profile and change password |
+
+Regular users land on the **My Account** tab by default. Admins and super admins land on the **Users** tab.
+
+## Users tab
+
+The Users tab lets admins manage all users in their tenant.
+
+{/* TODO: Add screenshot of the Users tab */}
+
+### User list
+
+The tab displays a table of all users with:
+
+- **Name**: The user's full name
+- **Email**: Their login email address
+- **Role**: Badge showing `admin` or `user`
+- **User Type**: The assigned user type (or "No user type" if unassigned)
+- **Status**: Active, Inactive, or Pending (awaiting invite acceptance)
+- **Actions**: A three-dot menu with context-specific actions
+
+A user count badge shows the total number of users (e.g., "4 users").
+
+### Inviting a new user
+
+<Steps>
+<Step title="Click Invite User">
+Click the **Invite User** button (with a + icon) at the top of the tab.
+</Step>
+<Step title="Fill out the form">
+A dialog appears with fields for:
+
+- **Name**: The new user's full name
+- **Email**: Their email address (must be unique)
+- **Role**: Select `admin` or `user` from the dropdown
+- **User Type**: Select a user type template that defines module access
+- **Facility Restrictions**: Optionally restrict the user to specific facilities (leave empty for all facilities)
+
+</Step>
+<Step title="Send the invite">
+Click **Send Invite**. The system creates the user account, generates an invite token, and sends an email with the activation link.
+</Step>
+</Steps>
+
+A toast notification confirms the invite was sent (e.g., "Invite sent to maria@company.com").
+
+### Editing a user
+
+Click the three-dot menu on a user's row and select the appropriate action:
+
+| Action | Description |
+|--------|-------------|
+| **Edit User** | Opens a dialog to change the user's name, role, or user type |
+| **Facility Access** | Opens a dialog to manage which facilities the user can access |
+| **Resend Invite** | Sends a new invite email (for users with `pending` status) |
+| **Deactivate** | Disables the user's account (they can no longer log in) |
+| **Activate** | Re-enables a previously deactivated user |
+
+### Facility access management
+
+The **Facility Access** dialog shows a checkbox list of all units in your network. You can:
+
+- **Select All**: Grant access to every facility
+- **Clear All**: Remove all facility restrictions (equivalent to full access)
+- **Individual selection**: Check specific facilities to restrict the user to only those locations
+
+When no facilities are selected, the user has access to all facilities (no restrictions). This is the default behavior.
+
+The dialog shows a summary: "All facilities (no restrictions)" or "X facility(ies) selected".
+
+<Callout type="info">
+Facility access restrictions affect what data the user sees in all modules — the map shows only their permitted units, the loss prediction table shows only CTRCs from their facilities, and so on.
+</Callout>
+
+## User Types tab
+
+User types are templates that define which platform modules a group of users can access. They provide a convenient way to manage access for different roles in your organization without configuring each user individually.
+
+{/* TODO: Add screenshot of the User Types tab */}
+
+### User type list
+
+The tab shows all user types with:
+
+- **Name**: The user type name (e.g., "Analyst", "Collector", "Manager")
+- **Description**: An optional description of the user type's purpose
+- **Modules**: Badges showing the assigned module keys
+
+A user type count badge shows the total (e.g., "3 user types").
+
+### Creating a user type
+
+<Steps>
+<Step title="Click Create User Type">
+Click the button at the top of the tab.
+</Step>
+<Step title="Fill out the form">
+A dialog appears with:
+
+- **Name**: A descriptive name (e.g., "Analyst", "Collector", "Manager")
+- **Description**: Optional explanation of the user type's purpose
+- **Module Access**: A checklist of all available modules. Select the modules this user type should have access to.
+
+</Step>
+<Step title="Save">
+Click **Create**. The user type is created and can now be assigned to users.
+</Step>
+</Steps>
+
+### Editing a user type
+
+Click on a user type in the list to open the edit dialog. You can change the name, description, and module selection. Changes apply immediately to all users assigned this user type.
+
+### Deleting a user type
+
+Click the delete option in the user type's context menu. A confirmation dialog asks "Are you sure you want to delete this user type?" before proceeding.
+
+<Callout type="warning">
+Deleting a user type affects all users currently assigned to it. Those users will lose their module assignments and may see a reduced sidebar until a new user type is assigned.
+</Callout>
+
+### Module keys
+
+The module access checklist includes all available modules in the platform:
+
+| Module Key | Description |
+|-----------|-------------|
+| `digital_twin` | Digital Twin (interactive map) |
+| `digital_model` | Digital Model (parent) |
+| `digital_model.units` | Units management |
+| `services` | Services (parent) |
+| `services.loss_prediction` | Loss Prediction (parent) |
+| `services.loss_prediction.table` | Loss Prediction Table View |
+| `services.loss_prediction.collector` | Loss Prediction Collector (Device View) |
+| `services.loss_prediction.dashboard` | Loss Prediction Dashboard |
+| `services.loss_prediction.models` | Loss Prediction Models |
+| `services.control_tower` | Control Tower (coming soon) |
+| `services.load_consolidation` | Load Consolidation (coming soon) |
+| `database` | Database Browser |
+
+The summary shows how many modules are selected (e.g., "5 module(s) selected").
+
+## Tenants tab
+
+The Tenants tab is visible only to super admins. It provides management of tenant organizations.
+
+See [Tenants](/v1/authentication/tenants) for detailed documentation on tenant management, module configuration, and tenant switching.
+
+### Quick actions
+
+From the Tenants tab, super admins can:
+
+- **Create Tenant**: Set up a new customer organization with a name and slug
+- **Edit Tenant**: Modify a tenant's name or slug
+- **Edit Modules**: Configure which platform modules a tenant has access to
+
+## My Account tab
+
+The My Account tab is available to all users. It shows your profile information and lets you change your password.
+
+### Account information
+
+A read-only section displays:
+
+| Field | Description |
+|-------|-------------|
+| **Name** | Your full name |
+| **Email** | Your login email address |
+| **Role** | Your role (Super Admin, Admin, or User) |
+| **Tenant** | The organization you belong to |
+
+### Change password
+
+Below the account information, a password change form lets you update your password:
+
+<Steps>
+<Step title="Enter current password">
+Type your current password to verify your identity.
+</Step>
+<Step title="Enter new password">
+Type your new password (minimum 8 characters).
+</Step>
+<Step title="Confirm new password">
+Re-type the new password for confirmation.
+</Step>
+<Step title="Submit">
+Click **Update Password**. A toast notification confirms the change.
+</Step>
+</Steps>
+
+**Validation rules:**
+
+- New password must be at least 8 characters
+- New password and confirmation must match
+- Current password must be correct
+
+<Callout type="tip">
+You can change your password at any time. If you forget your password, ask your admin to resend your invite link, which will let you set a new one.
+</Callout>
+
+## Bilingual support
+
+All Settings labels, buttons, and messages are fully translated in both English (EN-US) and Portuguese (PT-BR). The language used in Settings follows your global language preference, which you can change via the language toggle on the login page or in the platform header.
+
+<Card title="Roles" href="/v1/authentication/roles">
+Learn about the three-tier role hierarchy that determines Settings access.
+</Card>
+
+<Card title="Authentication" href="/v1/authentication">
+Overview of the authentication system.
+</Card>

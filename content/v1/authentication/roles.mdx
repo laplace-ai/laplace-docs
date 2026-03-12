@@ -1,0 +1,163 @@
+---
+title: "Roles"
+description: "The Laplace Platform role hierarchy — super_admin, admin, and user roles with their capabilities and access levels."
+---
+
+# Roles
+
+The Laplace Platform uses a **three-tier role hierarchy** to control access. Each user is assigned exactly one role, and each role inherits all capabilities of the roles below it.
+
+## Role hierarchy
+
+```
+super_admin
+    |
+    |  inherits all admin capabilities
+    |  + cross-tenant access
+    v
+  admin
+    |
+    |  inherits all user capabilities
+    |  + user management
+    v
+   user
+```
+
+## Role definitions
+
+### User
+
+The **user** role is the standard access level for most platform users — logistics operators, analysts, field workers, and other team members.
+
+**Capabilities:**
+
+- Access modules assigned to their user type (e.g., Digital Twin, Loss Prediction, Collector)
+- View data within their tenant's scope
+- Use all features of their permitted modules (view predictions, verify cargo, browse data)
+- Change their own password in Settings
+- View their account information
+
+**Limitations:**
+
+- Cannot see or access modules not assigned to their user type
+- Cannot manage other users
+- Cannot create or modify user types
+- Cannot access tenant-level settings
+
+### Admin
+
+The **admin** role is for tenant administrators — typically operations managers or team leads who need to manage their organization's users and access.
+
+**Capabilities (in addition to all user capabilities):**
+
+- View the **Users** tab in Settings — see all users in their tenant
+- **Invite new users** — create users by email, assign roles and user types
+- **Edit users** — change roles, user types, and active status
+- **Deactivate users** — disable accounts without deleting them
+- **Resend invites** — generate new invite links for users who have not set their password
+- **Manage user types** — create, edit, and delete user type templates that define module access
+- **Manage facility access** — restrict which units (facilities) individual users can see
+- Implicitly has access to all modules enabled for their tenant
+
+**Limitations:**
+
+- Cannot manage other tenants
+- Cannot switch between tenants
+- Cannot see data from other organizations
+- Cannot promote users to super_admin
+
+### Super Admin
+
+The **super_admin** role is reserved exclusively for the Laplace team (startup employees). It provides full cross-tenant visibility and management capabilities.
+
+**Capabilities (in addition to all admin capabilities):**
+
+- **Cross-tenant access**: View and manage data across all tenants
+- **Tenant switching**: Use the tenant switcher in the sidebar to switch between organizations
+- **Tenant selection page**: After login, choose which tenant to work with
+- **Tenant management**: Access the Tenants tab in Settings to create, edit, and manage tenant organizations
+- **Module management**: Configure which modules each tenant has access to (their subscription)
+- **Global user management**: Manage users across any tenant
+
+<Callout type="warning">
+The `super_admin` role cannot be assigned through the platform's admin UI. It must be set directly in the database. This is an intentional security constraint — only Laplace employees should have this role.
+</Callout>
+
+## Role comparison matrix
+
+| Capability | User | Admin | Super Admin |
+|-----------|------|-------|-------------|
+| Access permitted modules | Yes | Yes | Yes |
+| View tenant data | Yes | Yes | Yes (all tenants) |
+| Change own password | Yes | Yes | Yes |
+| View account info | Yes | Yes | Yes |
+| Invite users | - | Yes | Yes |
+| Edit users | - | Yes | Yes |
+| Deactivate users | - | Yes | Yes |
+| Resend invites | - | Yes | Yes |
+| Manage user types | - | Yes | Yes |
+| Manage facility access | - | Yes | Yes |
+| Switch tenants | - | - | Yes |
+| Manage tenants | - | - | Yes |
+| Configure tenant modules | - | - | Yes |
+
+## User types (module access)
+
+Within each role, **user types** provide a second layer of access control that determines which modules a user can see.
+
+A user type is a template with:
+
+- A **name** (e.g., "Analyst", "Collector", "Manager")
+- An optional **description**
+- A set of **module keys** (e.g., `digital_twin`, `services.loss_prediction.table`, `database`)
+
+When an admin creates or edits a user, they assign a user type. The modules defined in that user type determine which sidebar items the user sees.
+
+**Example user types:**
+
+| User Type | Modules | Use Case |
+|-----------|---------|----------|
+| Analyst | Digital Twin, Loss Prediction (Table), Database | Operations analyst who reviews predictions and raw data |
+| Collector | Loss Prediction (Collector/Device View) | Field operator who only needs the mobile verification interface |
+| Manager | Digital Twin, Digital Model, Loss Prediction (all views), Database | Operations manager with full visibility |
+
+<Callout type="info">
+Admins always have access to all modules enabled for their tenant, regardless of user type assignment. User types only restrict the `user` role.
+</Callout>
+
+## Facility access restrictions
+
+Beyond module access, admins can restrict which **facilities (units)** a user can see. This is configured per user in the Settings panel:
+
+- **No restrictions** (default): The user sees data from all facilities in the tenant's network
+- **Specific facilities**: The user only sees data from the selected facilities
+
+This is useful for large organizations where operators at specific locations should only see data relevant to their facility, not the entire network.
+
+## Determining access
+
+When a user loads the platform, access is determined by checking three layers:
+
+<Steps>
+<Step title="Is the user authenticated?">
+The middleware checks for a valid JWT cookie. If missing or expired, the user is redirected to the login page.
+</Step>
+<Step title="What modules does the tenant have?">
+The API returns the tenant's enabled module keys. Only these modules are available at the tenant level.
+</Step>
+<Step title="What modules does the user type allow?">
+The user's assigned user type further filters the module list. The sidebar only shows the intersection of tenant modules and user type modules.
+</Step>
+</Steps>
+
+<Card title="Invites" href="/v1/authentication/invites">
+Learn how new users are onboarded through the invite system.
+</Card>
+
+<Card title="Tenants" href="/v1/authentication/tenants">
+Understand the multi-tenant architecture and data isolation.
+</Card>
+
+<Card title="Settings" href="/v1/settings">
+See how admins manage users, user types, and tenant configuration.
+</Card>

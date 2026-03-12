@@ -1,0 +1,73 @@
+---
+title: "Getting Started"
+description: "An overview of the Laplace Platform and how to get up and running — whether you are an end user, administrator, or developer."
+---
+
+# Getting Started
+
+This section helps you get oriented with the Laplace Platform. Whether you are a logistics operator using the platform for the first time, an admin setting up your organization, or a developer running the project locally, you will find the right entry point here.
+
+## Choose your path
+
+<Card title="First Steps (End Users)" href="/v1/getting-started/first-steps">
+For logistics operators and managers: learn how to log in, navigate the platform, and use key features like the map and loss prediction table.
+</Card>
+
+<Card title="Installation (Developers)" href="/v1/getting-started/installation">
+For developers: clone the repository, install dependencies, configure environment variables, and run the platform locally.
+</Card>
+
+## Platform at a glance
+
+The Laplace Platform is a web application that runs in your browser. It consists of:
+
+- **A sidebar** for navigating between modules (Digital Twin, Loss Prediction, Collector, Database)
+- **A main content area** that displays the active module's interface
+- **A top bar** with breadcrumb navigation and a status indicator showing your connection to the Laplace Engine
+- **A bottom status bar** with sync timestamps
+
+The sidebar adapts to your permissions. You will only see the modules your organization has access to, and admin-only features like user management are hidden from regular users.
+
+<Callout type="info">
+The platform supports both light and dark themes. Toggle between them using the sun/moon icon in the sidebar's bottom section or on the settings page.
+</Callout>
+
+## Key concepts
+
+Before diving into specific features, it helps to understand these core concepts:
+
+### Tenants
+
+A **tenant** is an organization that uses the Laplace Platform. Each tenant has its own data, users, and module subscriptions. Data is fully isolated between tenants — one organization can never see another's shipments or predictions.
+
+### Units
+
+A **unit** is a logistics facility — a warehouse, distribution center, hub, terminal, or branch. Units are the nodes of your logistics network. They appear as markers on the Digital Twin map and are used to filter data across the platform.
+
+### CTRCs
+
+A **CTRC** (Conhecimento de Transporte Rodoviario de Cargas) is a Brazilian freight transport document that represents a single shipment. CTRCs are the fundamental data unit in the platform — they carry information about origin, destination, cargo value, weight, and more.
+
+### Risk levels
+
+The Loss Prediction model assigns each CTRC a **risk level** based on its predicted probability of cargo loss:
+
+| Risk Level | Portuguese | Probability Range | Color |
+|-----------|-----------|-------------------|-------|
+| **ALTO** (High) | Alto | Highest predicted risk | Red |
+| **MEDIO** (Medium) | Medio | Moderate predicted risk | Yellow/Amber |
+| **BAIXO** (Low) | Baixo | Lowest predicted risk | Green |
+
+### Roles
+
+The platform has three user roles, each with different levels of access:
+
+| Role | Description |
+|------|-------------|
+| **User** | Standard access to permitted modules. Can view data, use features, and change their own password. |
+| **Admin** | Everything a user can do, plus managing other users within their tenant (inviting, editing, deactivating). |
+| **Super Admin** | Laplace team only. Full cross-tenant access, tenant management, and system-wide visibility. |
+
+<Card title="Next: First Steps" href="/v1/getting-started/first-steps">
+Ready to start using the platform? Continue to the first steps guide.
+</Card>

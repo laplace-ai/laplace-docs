@@ -1,0 +1,164 @@
+---
+title: "Collector"
+description: "The Collector module — a mobile-optimized interface for field operators to verify high-risk cargo with photo evidence."
+---
+
+# Collector
+
+The Collector is a **mobile-first verification interface** designed for field operators who physically inspect and verify high-risk cargo. It displays loss predictions as cards, lets operators filter by facility, and enables photo-based verification using the device camera.
+
+{/* TODO: Add screenshot of the Collector on a mobile device */}
+
+## Accessing the Collector
+
+There are two ways to open the Collector:
+
+1. **From the sidebar**: Navigate to **Services > Loss Prediction > Device View**
+2. **Direct URL**: Open `/collector` in your mobile browser
+
+The Collector is listed as "Device View" in the sidebar because it is optimized for mobile devices and tablets. While it works on desktop, the card-based layout and camera integration are designed for handheld use.
+
+<Callout type="tip">
+Bookmark the `/collector` URL on your mobile device's home screen for quick access. The Collector has its own self-contained header with navigation, theme toggle, and language switcher — it does not require the platform sidebar.
+</Callout>
+
+## Interface layout
+
+The Collector has a streamlined mobile layout:
+
+### Header
+
+- **Back button**: Returns to the Digital Twin map
+- **Title**: "Collector" (or "Coletor" in Portuguese)
+- **Language toggle**: Switch between PT-BR and EN-US
+- **Theme toggle**: Switch between light and dark mode
+- **User avatar and name**: Shows the logged-in operator's identity
+
+### Unit filter
+
+A dropdown below the header lets you filter predictions by facility. Options include:
+
+- **All Units**: Show high-risk CTRCs across all facilities
+- **Individual units**: Select a specific facility code to see only cargo at that location
+
+<Callout type="info">
+When a field operator is stationed at a specific facility, selecting that unit in the filter narrows the list to only the cargo physically present at their location. This eliminates noise and lets them focus on verifiable shipments.
+</Callout>
+
+### Cargo cards
+
+Each prediction is displayed as a **card** with a colored left border indicating risk level:
+
+- **Red border**: ALTO (high) risk
+- **Yellow/amber border**: MEDIO (medium) risk
+
+Each card contains:
+
+| Element | Description |
+|---------|-------------|
+| **Risk badge** | Color-coded label (ALTO or MEDIO) |
+| **CTRC number** | The shipment document number in monospace font |
+| **Invoice number** | NF (Nota Fiscal) number when available |
+| **Sender** | Client name of the cargo sender, shown in a subtle background tag |
+| **Route** | Origin city to destination city and state (e.g., "Sao Paulo -> Curitiba, PR") |
+| **Volume count** | Number of cargo volumes (e.g., "3 vol") |
+| **Camera button** | Blue button with camera icon to start verification |
+
+### Pagination
+
+At the bottom of the screen, navigation controls let you page through results:
+
+- **Previous / Next buttons** with chevron icons
+- **Page indicator** showing current page and total (e.g., "1 / 5")
+
+The Collector displays **10 cards per page** and fetches batches of 100 predictions from the API, sorted by probability (highest first).
+
+## Verification workflow
+
+The Collector implements a complete verification loop:
+
+<Steps>
+<Step title="Select your unit">
+Choose your facility from the unit filter dropdown. This filters the card list to show only cargo at your location.
+</Step>
+<Step title="Identify a shipment to verify">
+Scroll through the cards. Each card shows risk level, CTRC number, sender, route, and volume count — enough information to locate the physical cargo.
+</Step>
+<Step title="Tap the camera button">
+Tap the blue camera button on the card you want to verify. This opens a **full-screen camera capture interface**.
+
+{/* TODO: Add screenshot of the camera capture screen */}
+
+</Step>
+<Step title="Take a photo">
+Point your device camera at the cargo and tap **Open Camera** to capture a photo. The camera uses your device's rear camera by default.
+</Step>
+<Step title="Review and confirm">
+After taking the photo, you see a preview with two options:
+
+- **Retake**: Discard the photo and try again
+- **Use Photo**: Submit the photo as verification evidence
+
+</Step>
+<Step title="Verification completes">
+Once you confirm, the verification is submitted to the API. The CTRC is **immediately removed** from your card list (optimistic update), and a toast notification confirms the verification.
+</Step>
+</Steps>
+
+## Automatic filtering
+
+The Collector applies several automatic filters to show only actionable predictions:
+
+| Filter | Value | Purpose |
+|--------|-------|---------|
+| Risk level | ALTO + MEDIO | Only shows shipments that need verification |
+| Verified | Excluded | Hides already-verified CTRCs |
+| Sort | Probability (descending) | Highest risk first |
+
+This means the Collector always shows the most urgent, unverified predictions. As you verify shipments, they disappear from the list, and the remaining cards represent your outstanding verification queue.
+
+<Callout type="warning">
+If the card list is empty, it means all high and medium-risk CTRCs at the selected unit have been verified (or there are no predictions for that unit). Switch to "All Units" to check if there are unverified predictions at other facilities.
+</Callout>
+
+## Toast notifications
+
+After a verification action, a brief toast notification appears at the bottom of the screen:
+
+- **Success**: "{CTRC number} verified" — the verification was submitted and recorded
+- **Error**: "Error verifying {CTRC number}" — the submission failed (network issue, server error)
+
+Toast notifications auto-dismiss after 3-4 seconds.
+
+## Offline considerations
+
+The Collector requires an active internet connection to:
+
+- Load predictions from the API
+- Submit verification photos to the server
+
+If you lose connectivity, the card list will remain visible (cached in component state), but you will not be able to submit new verifications until the connection is restored. There is currently no offline queue — if a submission fails, you will need to retake and resubmit the photo.
+
+## Technical notes
+
+The Collector page lives outside the main platform layout at `/collector`. It has its own:
+
+- Self-contained header (no sidebar dependency)
+- Camera capture component using the device's `getUserMedia` API
+- Dedicated loading states and error handling
+- Authentication integration (reads the JWT from the auth context)
+
+The camera capture component (`CameraCapture`) handles:
+
+- Requesting camera permissions from the browser
+- Displaying a live camera preview
+- Capturing a frame as a base64-encoded image
+- Providing retake/confirm controls
+
+<Card title="Loss Prediction Table" href="/v1/platform/loss-prediction/table">
+Review predictions in a full data table with advanced filtering and sorting.
+</Card>
+
+<Card title="Loss Prediction Overview" href="/v1/platform/loss-prediction">
+Return to the Loss Prediction module overview.
+</Card>

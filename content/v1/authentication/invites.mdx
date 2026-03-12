@@ -1,0 +1,151 @@
+---
+title: "Invites"
+description: "The Laplace Platform invite system — how administrators onboard new users with secure, token-based invite links."
+---
+
+# Invites
+
+The Laplace Platform uses an **invite-based registration system**. There is no self-registration — every new user must be invited by a tenant admin or super admin. This ensures that only authorized personnel have access to the platform and its data.
+
+## Why invite-only?
+
+The invite-based approach provides several benefits:
+
+- **Security**: No unauthorized users can create accounts
+- **Control**: Admins decide exactly who gets access and what they can see
+- **No shared passwords**: Users set their own passwords via a secure link; credentials are never shared over email or chat
+- **Audit trail**: Every user creation is traceable to the admin who invited them
+
+## The invite flow
+
+<Steps>
+<Step title="Admin creates the user">
+In the **Settings > Users** tab, the admin clicks **Invite User** and fills out:
+
+- **Name**: The user's full name
+- **Email**: The user's email address (must be unique across the platform)
+- **Role**: Either `admin` or `user`
+- **User Type**: A template that defines which modules the user can access
+
+The admin clicks **Send Invite** to create the user and trigger the invite.
+</Step>
+<Step title="System generates an invite token">
+The API creates a record in the `invite_tokens` table with:
+
+- A unique, cryptographically secure token
+- The associated user ID
+- An expiration timestamp
+- A status (initially `pending`)
+
+</Step>
+<Step title="Invite email is sent">
+An email is sent to the user's address containing a link in the format:
+
+```
+https://www.laplacelabs-digital-twin.xyz/invite?token=<unique-token>
+```
+
+This link takes the user to the password setup page.
+</Step>
+<Step title="User opens the invite link">
+The user clicks the link in their email. The platform:
+
+1. Extracts the token from the URL query parameter
+2. Calls `POST /v1/auth/validate-invite` to verify the token is valid and not expired
+3. If valid, displays the password setup form with the user's name and email
+4. If invalid or expired, shows an error with a link to the login page
+
+</Step>
+<Step title="User sets their password">
+The user enters a password (minimum 8 characters) and confirms it. The form validates:
+
+- Password meets the minimum length requirement
+- Password and confirmation match
+
+</Step>
+<Step title="Account is activated">
+On submission, the API:
+
+1. Hashes the password
+2. Activates the user account
+3. Marks the invite token as used
+4. Returns JWT tokens (access + refresh)
+
+The user is automatically logged in and redirected to the platform.
+</Step>
+</Steps>
+
+{/* TODO: Add screenshot of the invite/password setup page */}
+
+## Invite page UI
+
+The invite page (`/invite`) shows:
+
+- **Laplace logo** centered at the top
+- **"Set Your Password"** heading
+- **Welcome message** with the user's name (e.g., "Welcome, Maria")
+- **Email field** (read-only, pre-filled from the invite token)
+- **Password field** with "At least 8 characters" placeholder
+- **Confirm Password field**
+- **Activate Account** button with loading state
+
+A **language toggle** is also available so the user can switch to their preferred language before setting up their account.
+
+## Invite states
+
+An invite token can be in one of these states:
+
+| State | Description |
+|-------|-------------|
+| **Valid** | Token exists, is not expired, and has not been used. The password form is shown. |
+| **Expired** | Token has passed its expiration time. An error message is shown with a link to the login page. |
+| **Used** | Token has already been used to set a password. Shows as invalid. |
+| **Invalid** | Token does not exist in the database. An error message is shown. |
+| **Missing** | No token was provided in the URL. An error message is shown. |
+
+## Resending invites
+
+If a user does not receive their invite email, or if the invite token expires before they set their password, an admin can resend the invite:
+
+1. Navigate to **Settings > Users**
+2. Find the user in the list (they will have a `pending` status)
+3. Click the **three-dot menu** on the user's row
+4. Select **Resend Invite**
+
+This generates a new invite token and sends a fresh email. The old token is invalidated.
+
+<Callout type="tip">
+If a user has already activated their account but forgot their password, the admin can also resend an invite link. This gives the user a new opportunity to set their password, effectively acting as a password reset mechanism.
+</Callout>
+
+## Error handling
+
+The invite page handles several error scenarios gracefully:
+
+| Scenario | UI Behavior |
+|----------|-------------|
+| No token in URL | Shows "No invite token provided" error |
+| Invalid/expired token | Shows "This invite link is invalid or expired" error with a "Go to Login" link |
+| Password too short | Shows "Password must be at least 8 characters" inline error |
+| Passwords don't match | Shows "Passwords do not match" inline error |
+| API error on activation | Shows the error message from the API |
+
+## Security considerations
+
+- Invite tokens are **single-use** — once a password is set, the token cannot be reused
+- Tokens have an **expiration time** — if not used within the allowed window, they become invalid
+- The user's email is verified implicitly (they received the invite at that address)
+- Passwords are hashed before storage — the API never stores plaintext passwords
+- After activation, the user receives JWT tokens and is logged in immediately
+
+<Card title="Login" href="/v1/authentication/login">
+Learn about the login flow after account activation.
+</Card>
+
+<Card title="Roles" href="/v1/authentication/roles">
+Understand the role system that determines what invited users can access.
+</Card>
+
+<Card title="Settings" href="/v1/settings">
+See how admins manage users and send invites from the Settings panel.
+</Card>

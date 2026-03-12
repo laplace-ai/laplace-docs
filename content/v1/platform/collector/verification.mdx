@@ -1,0 +1,122 @@
+---
+title: "Cargo Verification"
+description: "The cargo verification workflow — how field operators use the Collector to photograph and verify high-risk shipments."
+---
+
+# Cargo Verification
+
+Cargo verification is the process of physically confirming the presence and condition of high-risk shipments. The Collector module provides a structured workflow that connects machine learning predictions with on-the-ground action.
+
+## Why verification matters
+
+The Loss Prediction model identifies CTRCs with a high probability of cargo loss. But a prediction alone does not prevent loss — it requires someone to act on it. Verification serves several purposes:
+
+- **Confirms cargo presence**: Verifies that the predicted-at-risk shipment physically exists at the expected facility
+- **Creates evidence**: The photo serves as documentation of the cargo's condition at the time of verification
+- **Closes the feedback loop**: Verified predictions help the operations team understand which high-risk shipments were addressed
+- **Improves operations**: Patterns in verified vs. unverified losses can inform process improvements
+
+## The verification flow
+
+<Steps>
+<Step title="Prediction is generated">
+The Loss Prediction service scores a new CTRC and assigns it an ALTO or MEDIO risk level. The prediction appears in both the Table View and the Collector.
+</Step>
+<Step title="Operator opens the Collector">
+A field operator at the relevant facility opens the Collector on their mobile device and selects their unit from the dropdown filter.
+</Step>
+<Step title="Operator locates the cargo">
+Using the information on the card — CTRC number, sender name, invoice number, volume count, and route — the operator locates the physical cargo in the facility.
+</Step>
+<Step title="Operator photographs the cargo">
+The operator taps the camera button on the card, takes a photo of the cargo, reviews it, and confirms with "Use Photo".
+</Step>
+<Step title="Verification is recorded">
+The system records the verification with:
+
+- The CTRC number
+- The base64-encoded photo
+- The operator's identity (from the auth context)
+- A timestamp
+
+</Step>
+<Step title="Card is removed">
+The verified CTRC is immediately removed from the Collector's card list (optimistic update). It also becomes excluded from future Collector queries (via the `exclude_verified` filter).
+</Step>
+</Steps>
+
+## Camera capture
+
+The camera capture component provides a full-screen interface for taking photos:
+
+{/* TODO: Add screenshot of the camera capture interface */}
+
+### Controls
+
+| Button | Action |
+|--------|--------|
+| **Open Camera** | Activates the device camera and shows a live preview |
+| **Cancel** | Closes the camera without taking a photo |
+| **Capture** (shutter) | Takes a photo from the live preview |
+| **Retake** | Discards the current photo and returns to the live preview |
+| **Use Photo** | Confirms the photo and submits the verification |
+
+### Camera behavior
+
+- The component requests access to the device's **rear (environment-facing) camera** by default, which is ideal for photographing cargo
+- If the rear camera is not available, it falls back to any available camera
+- The camera preview fills the screen to maximize visibility
+- Photos are captured as base64-encoded images and included in the API request
+
+<Callout type="info">
+Your browser will ask for camera permission the first time you use the Collector. Grant the permission to enable photo verification. If you deny it, you will not be able to take verification photos.
+</Callout>
+
+## Verification data
+
+Each verification submission sends the following data to the API:
+
+| Field | Description |
+|-------|-------------|
+| `ctrc` | The CTRC number being verified |
+| `photo` | Base64-encoded photo of the cargo |
+
+The API records the verification, associates it with the authenticated user, and marks the CTRC as verified in the database.
+
+## After verification
+
+Once a CTRC is verified:
+
+- It is removed from the Collector's card list
+- It remains visible in the Loss Prediction Table View (the table does not filter by verification status by default)
+- The verification record is stored for audit and analysis purposes
+- Future loads of the Collector will exclude already-verified CTRCs
+
+## Best practices for field operators
+
+<Callout type="tip">
+Follow these guidelines for effective cargo verification:
+</Callout>
+
+- **Verify at the start of your shift**: Open the Collector and work through the highest-risk cards first
+- **Take clear photos**: Ensure the cargo is clearly visible, well-lit, and identifiable in the photo
+- **Include identifying marks**: Capture labels, barcodes, or markings that link the physical cargo to the CTRC
+- **Work by unit**: Filter to your specific facility to avoid seeing cargo from other locations
+- **Check back periodically**: New predictions may arrive as the data warehouse processes fresh CTRC data throughout the day
+
+## Handling errors
+
+If a verification submission fails (network issue, server error), a toast notification will indicate the error. In this case:
+
+1. The card remains in the list (it is not removed on failure)
+2. Check your internet connection
+3. Try tapping the camera button again to re-photograph and re-submit
+4. If errors persist, contact your administrator
+
+<Card title="Collector Overview" href="/v1/platform/collector">
+Return to the Collector module overview.
+</Card>
+
+<Card title="Loss Prediction Table" href="/v1/platform/loss-prediction/table">
+Review predictions in the desktop table view.
+</Card>

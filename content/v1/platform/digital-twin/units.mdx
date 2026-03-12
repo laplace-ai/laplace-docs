@@ -1,0 +1,109 @@
+---
+title: "Units"
+description: "Unit management in the Laplace Platform — browsing, searching, and inspecting logistics facilities with detailed operational views."
+---
+
+# Units
+
+Units are the **nodes of your logistics network** — warehouses, distribution centers, hubs, terminals, and branches. The Units module under Digital Model provides a dedicated interface for browsing, searching, and inspecting individual facilities.
+
+## Units list
+
+Navigate to **Digital Model > Units** in the sidebar to access the units list page.
+
+{/* TODO: Add screenshot of the units list view */}
+
+The list page shows:
+
+- A **title** ("Units") with a count of total units in the network (e.g., "42 units in the network")
+- A **searchable, sortable table** of all units in your tenant's logistics network
+
+### Table columns
+
+| Column | Description |
+|--------|-------------|
+| **Code** | The unique facility code (e.g., "ATI SPA", "ATI CWB") |
+| **Name** | Human-readable facility name |
+| **Type** | Facility type (hub, branch, distribution center, terminal, etc.) |
+| **City** | City where the facility is located |
+| **State** | Brazilian state abbreviation (e.g., SP, PR, RJ) |
+| **Status** | Active (green indicator) or Inactive (gray indicator) |
+
+### Searching
+
+Use the search bar to filter units by any visible field. This is a client-side filter that searches across code, name, city, and state simultaneously. Useful when you know the facility code or want to find all units in a specific city.
+
+## Unit detail page
+
+Click on any unit in the list (or use the "View Detailed Unit" button from the map panel) to navigate to its detail page at `/digital-model/units/{code}`.
+
+{/* TODO: Add screenshot of the unit detail page */}
+
+The unit detail page provides a comprehensive view of a single facility, organized into sections:
+
+### Header
+
+Displays the unit code (in accent blue), unit name, active status, and location (city, state). This mirrors the information shown in the map's detail panel but with more space.
+
+### Overview
+
+Key metrics and metadata about the unit:
+
+- **Type**: The facility classification
+- **Status**: Active or inactive
+- **Geographic coordinates**: Latitude and longitude (useful for logistics planning)
+
+### CTRCs
+
+A table of CTRCs (shipments) associated with this unit. The table shows:
+
+| Column | Description |
+|--------|-------------|
+| **CTRC** | Shipment document number |
+| **Risk** | Risk badge (ALTO, MEDIO, BAIXO) if a loss prediction exists |
+| **Probability** | Numeric loss probability |
+| **Origin** | Origin unit code |
+| **Destination** | Destination unit code |
+| **Goods** | Type of merchandise being transported |
+| **Value** | Cargo value in BRL |
+| **Weight** | Cargo weight in kilograms |
+| **Emission** | Date the CTRC was issued |
+
+This table lets you inspect all cargo passing through or originating from a specific facility, with risk information inline.
+
+<Callout type="info">
+If no CTRCs are found for a unit, the table displays a "No CTRCs found for this unit" message. This may happen for newly added units or units that primarily serve as pass-through points.
+</Callout>
+
+### Vehicles
+
+Information about vehicles operating from this unit. This section will display fleet data as it becomes available.
+
+### Workers
+
+Workforce information associated with the unit. This section will display personnel data as it becomes available.
+
+<Callout type="tip">
+The unit detail page is the best place to get a complete picture of a single facility's operations. Use it when investigating a specific unit's risk profile, cargo volume, or operational status.
+</Callout>
+
+## Navigating from the map
+
+The Digital Twin map and the Units module are tightly integrated:
+
+1. Click a unit marker on the map to open the quick-view panel
+2. In the panel, click **"View Detailed Unit"** to navigate to the full detail page
+3. From the detail page, use the sidebar to return to the map or units list
+
+You can also navigate to a unit's loss predictions by clicking on a CTRC in the unit detail table, which will take you to the loss prediction table filtered by that unit.
+
+## Data sources
+
+| Data | Endpoint | Description |
+|------|----------|-------------|
+| Units list | `GET /v1/units` | All units with metadata, coordinates, and status |
+| Unit detail | `GET /v1/units/{code}` | Single unit data with associated CTRCs |
+
+<Card title="Loss Prediction" href="/v1/platform/loss-prediction">
+Learn how the loss prediction model scores shipments and how to act on high-risk cargo.
+</Card>

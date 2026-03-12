@@ -1,0 +1,158 @@
+---
+title: "First Steps"
+description: "A guided walkthrough for new users — logging in, navigating the platform, and using key features like the map, loss prediction table, and collector."
+---
+
+# First Steps
+
+Welcome to Laplace. This guide walks you through your first session on the platform — from logging in to exploring the key features you will use daily.
+
+<Callout type="info">
+Make sure you have received your invite email with a link to set your password. If you have not, ask your organization's administrator to send you an invitation.
+</Callout>
+
+## Logging in
+
+<Steps>
+<Step title="Open the platform">
+Navigate to your organization's Laplace URL in your browser. You will see the login screen with the Laplace logo and a language toggle in the top-right corner.
+
+{/* TODO: Add screenshot of login page */}
+
+</Step>
+<Step title="Enter your credentials">
+Type your email address and the password you set when you accepted your invite. Click **Sign In**.
+</Step>
+<Step title="Select a tenant (super admins only)">
+If you are a super admin, you will be prompted to select which tenant (organization) you want to work with. Regular users and admins skip this step and go directly to the map.
+</Step>
+</Steps>
+
+After signing in, you land on the **Digital Twin** — the interactive map of your logistics network.
+
+## Navigating the sidebar
+
+The sidebar on the left is your primary navigation. It organizes the platform into modules:
+
+{/* TODO: Add screenshot of sidebar expanded */}
+
+| Section | What it contains |
+|---------|-----------------|
+| **Digital Twin** | The interactive logistics network map |
+| **Digital Model** | Unit (facility) management — browse and inspect individual units |
+| **Services** | Data-driven services like Loss Prediction (table view, collector, dashboard, models) |
+| **Database** | Raw data browser for CTRCs, predictions, units, and network links |
+
+At the bottom of the sidebar you will find:
+
+- **Theme toggle** (sun/moon icon) to switch between light and dark mode
+- **Settings** link for account, user management, and tenant configuration
+- **User menu** with your name, email, and a sign out option
+
+<Callout type="tip">
+You can collapse the sidebar by clicking the panel icon at the top. This gives you more screen space for the map or data tables. The collapsed state is remembered across sessions.
+</Callout>
+
+## Exploring the Digital Twin map
+
+The Digital Twin is the landing page of the platform. It shows an interactive map of your entire logistics network.
+
+{/* TODO: Add screenshot of the network map with markers */}
+
+**What you can do on the map:**
+
+- **Zoom and pan** using your mouse wheel and drag gestures
+- **Click a unit marker** (blue dot) to open its detail panel on the right side
+- **See route connections** drawn as lines between facilities
+- **Toggle immersive mode** by hiding the top and bottom chrome for a full-screen map experience
+
+When you click on a unit marker, a detail panel slides in from the right showing:
+
+- The unit's code, name, type, and status
+- Location information (city, state)
+- A link to the full unit detail page
+
+## Reviewing loss predictions
+
+Navigate to **Services > Loss Prediction > Table View** in the sidebar. This is the core operational tool for monitoring cargo risk.
+
+{/* TODO: Add screenshot of loss prediction table */}
+
+The table displays CTRCs scored by the machine learning model, showing:
+
+| Column | Description |
+|--------|-------------|
+| **CTRC** | The shipment document number |
+| **Location** | Current location of the cargo |
+| **Origin** | Emission unit |
+| **Destination** | Delivery destination |
+| **Risk** | Color-coded badge: ALTO (red), MEDIO (yellow), BAIXO (green) |
+| **Probability** | Numeric probability with a visual bar |
+| **Weight** | Cargo weight in kilograms |
+| **Value** | Cargo value in BRL (Brazilian Reais) |
+| **Emission** | Date the CTRC was emitted |
+
+**Filtering and searching:**
+
+- Use the **search bar** at the top to find specific CTRCs by number
+- Filter by **unit** using the dropdown (shows all facilities in your network)
+- Filter by **risk level**: Alto + Medio (default), Alto only, Medio only, Baixo only, or All
+- Click column headers to **sort** by probability, weight, value, or emission date
+- **Export to CSV** using the download button for offline analysis
+
+<Callout type="info">
+By default, the table shows high and medium risk CTRCs sorted by probability (highest first). This helps you focus on the shipments that need the most attention.
+</Callout>
+
+## Using the Collector
+
+The **Collector** is a mobile-optimized interface designed for field operators who physically verify high-risk cargo.
+
+To access it, navigate to **Services > Loss Prediction > Device View** in the sidebar, or open `/collector` directly on a mobile device.
+
+{/* TODO: Add screenshot of collector on mobile */}
+
+<Steps>
+<Step title="Select a unit">
+Use the dropdown at the top to filter predictions by facility. This narrows the list to cargo currently at your location.
+</Step>
+<Step title="Review the cargo cards">
+Each card shows a high or medium-risk CTRC with its risk badge, document number, invoice number, sender, route (origin to destination), and volume count. A colored left border indicates the risk level.
+</Step>
+<Step title="Verify a shipment">
+Tap the blue camera button on any card. This opens your device's camera. Take a photo of the cargo for verification.
+</Step>
+<Step title="Confirm">
+After capturing the photo, tap **Use Photo** to submit the verification. The CTRC is removed from the list and marked as verified.
+</Step>
+</Steps>
+
+<Callout type="tip">
+The Collector automatically filters for ALTO and MEDIO risk CTRCs that have not been verified yet. Once you verify a shipment, it disappears from the list immediately.
+</Callout>
+
+## Browsing raw data
+
+The **Database** module lets you browse the raw data tables that power the platform. Navigate to **Database** in the sidebar.
+
+You can switch between four tables:
+
+- **CTRCs (base_455)** — all shipment records with origin, destination, value, weight, and more
+- **Loss Predictions** — model outputs including probability, risk level, confidence, and model version
+- **Units** — facility master data with codes, names, locations, and coordinates
+- **Network Links** — route connections between facilities with vehicle type and pricing
+
+Use the search bar to filter rows by any column value. The table shows up to 100 rows at a time with a count of filtered vs. total rows.
+
+## Adjusting settings
+
+Click **Settings** in the sidebar (or the gear icon at the bottom) to access your account settings.
+
+- **My Account** tab: view your profile information (name, email, role, tenant) and change your password
+- **Users** tab (admins only): manage users in your organization — invite new users, edit roles, deactivate accounts
+- **User Types** tab (admins only): create and manage user type templates that define module access
+- **Tenants** tab (super admins only): manage tenant organizations
+
+<Card title="Next: Platform Overview" href="/v1/platform">
+Explore all platform modules in detail.
+</Card>

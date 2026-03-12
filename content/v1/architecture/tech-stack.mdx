@@ -1,0 +1,200 @@
+---
+title: "Tech Stack"
+description: "Detailed breakdown of the Laplace Platform technology stack — frontend frameworks, backend services, databases, and infrastructure tools."
+---
+
+# Tech Stack
+
+The Laplace Platform is built with modern, production-grade technologies chosen for developer productivity, performance, and scalability. This page details every major technology in the stack.
+
+## Frontend
+
+The platform frontend is a single-page application built with Next.js and deployed on Vercel.
+
+### Core framework
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| **Next.js** | 16 | React framework with App Router, server components, file-based routing |
+| **React** | 19 | UI library with hooks, suspense, and concurrent features |
+| **TypeScript** | 5.7 | Type safety across the entire codebase |
+
+Next.js 16 with the App Router provides:
+
+- **File-based routing**: Routes map directly to the file system (`app/(platform)/page.tsx` = the root page)
+- **Route groups**: `(auth)` and `(platform)` groups separate public and authenticated routes without affecting URL structure
+- **Server components**: Used where possible for faster initial loads
+- **Client components**: Used for interactive features (maps, tables, forms)
+- **Middleware**: Checks authentication on every navigation
+
+### Styling
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| **Tailwind CSS** | 4 | Utility-first CSS framework |
+| **CSS variables** | - | Design tokens for theme switching (light/dark) |
+
+The design system uses CSS variables (design tokens) mapped to Tailwind utility classes. This enables full theme switching — when the theme changes, all variables update simultaneously across sidebar, content, and chrome.
+
+Key design principles:
+
+- **Blue is accent only** (`#3A8DFF`) — used for buttons, links, focus rings, never as backgrounds
+- **Light mode**: Warm neutrals inspired by Notion (soft off-whites, warm grays)
+- **Dark mode**: Neutral grays with zero blue tint (pure grays: `#191919`, `#202020`, `#2A2A2A`)
+
+### UI components
+
+| Technology | Purpose |
+|-----------|---------|
+| **Radix UI** | Accessible, unstyled UI primitives (dialogs, dropdowns, tabs, tooltips) |
+| **shadcn/ui** | Pre-built component patterns on top of Radix, customized to Laplace design |
+| **Lucide React** | Icon library (consistent, clean line icons) |
+
+Radix UI provides the interaction layer (keyboard navigation, ARIA attributes, focus management), while Tailwind and CSS variables handle the visual layer.
+
+### Maps
+
+| Technology | Purpose |
+|-----------|---------|
+| **Mapbox GL JS** | WebGL-based map rendering engine |
+| **react-map-gl** | React bindings for Mapbox GL |
+
+The Digital Twin map uses Mapbox GL for:
+
+- High-performance WebGL rendering of geographic data
+- Smooth zoom, pan, and rotation
+- Theme-aware map styles (light-v11 and dark-v11)
+- GeoJSON source layers for route visualization
+
+### Charts
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| **Recharts** | 2.15 | Chart library for the dashboard (coming soon) |
+
+Recharts is used for the Loss Prediction Dashboard mockup (risk distribution, predictions over time, model performance metrics).
+
+### Internationalization
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| **next-intl** | latest | i18n library for bilingual support (PT-BR + EN-US) |
+
+All user-facing text is stored in translation files (`messages/pt-BR.json`, `messages/en-US.json`) and rendered via the `useTranslations()` hook. This ensures the platform is fully bilingual with a single codebase.
+
+### Authentication (client-side)
+
+| Technology | Purpose |
+|-----------|---------|
+| **jose** | JWT decoding and validation (no server-side signing) |
+
+The `jose` library is used to decode JWT tokens on the client side — extracting user identity, role, tenant, and expiration without requiring a network call.
+
+### Theme
+
+| Technology | Purpose |
+|-----------|---------|
+| **next-themes** | Dark/light mode management with system preference detection |
+
+Theme preference is persisted in localStorage and applied via CSS class on the HTML element.
+
+## Backend API
+
+The platform API is a Flask application running on Google Cloud Run.
+
+| Technology | Purpose |
+|-----------|---------|
+| **Flask** | Python web framework for REST API |
+| **Gunicorn** | WSGI server for production deployment |
+| **psycopg2** | PostgreSQL adapter for Python |
+| **PyJWT** | JWT token generation and validation |
+| **Cloud Run** | Serverless container hosting |
+
+The API serves REST endpoints for:
+
+- Authentication (login, refresh, invite validation)
+- Data queries (CTRCs, predictions, units, network links)
+- Admin operations (user management, tenant management, user type management)
+
+## Data pipeline services
+
+### Data Lake
+
+| Technology | Purpose |
+|-----------|---------|
+| **Python** | Service implementation |
+| **Google Drive API** | Read CSV files from shared drives |
+| **Google Cloud Storage** | Store raw data files |
+| **Cloud Pub/Sub** | Publish data update events |
+| **Cloud Tasks** | Queue individual file upload jobs |
+| **Cloud Scheduler** | Trigger periodic sync (every 5 minutes) |
+| **Cloud Run** | Serverless hosting |
+
+### Data Warehouse
+
+| Technology | Purpose |
+|-----------|---------|
+| **Python** | Service implementation |
+| **pandas** | CSV parsing and data transformation |
+| **psycopg2** | PostgreSQL COPY for fast bulk loading |
+| **Cloud Pub/Sub** | Consume data lake events, publish warehouse events |
+| **Cloud Run** | Serverless hosting |
+
+### Loss Prediction
+
+| Technology | Purpose |
+|-----------|---------|
+| **Python** | Service implementation |
+| **LightGBM** | Gradient boosting classifier for loss prediction |
+| **scikit-learn** | 1.6.1 (pinned) — preprocessing and model evaluation |
+| **Cloud Pub/Sub** | Consume warehouse events |
+| **Cloud Run** | Serverless hosting |
+
+<Callout type="info">
+The scikit-learn version is pinned to 1.6.1 to ensure model compatibility. Trained models may not load correctly with different scikit-learn versions due to serialization changes.
+</Callout>
+
+## Database
+
+| Technology | Instance | Purpose |
+|-----------|----------|---------|
+| **Cloud SQL PostgreSQL** | `dw-instance` (db-g1-small) | Central relational database |
+
+The database hosts all structured data:
+
+- `base_455_cleaned` — cleaned CTRC shipment records
+- `ctrc_loss_predictions` — ML model outputs
+- `units` — facility master data
+- `network_links` — route connections
+- `users`, `invite_tokens` — authentication data
+- `tenant_services`, `user_types`, `user_type_modules` — access control
+
+## Infrastructure
+
+| Service | Purpose |
+|---------|---------|
+| **Google Cloud Run** | Serverless container hosting for all backend services |
+| **Google Cloud SQL** | Managed PostgreSQL database |
+| **Google Cloud Storage** | Object storage for raw files and ML models |
+| **Google Cloud Pub/Sub** | Event messaging between services |
+| **Google Cloud Scheduler** | Cron-like scheduling for periodic tasks |
+| **Google Cloud Tasks** | Distributed task queue for parallel file processing |
+| **Vercel** | Frontend hosting with edge distribution |
+
+## Hosting
+
+| Component | Platform | URL |
+|-----------|----------|-----|
+| Frontend (production) | Vercel | `www.laplacelabs-digital-twin.xyz` |
+| Frontend (preview) | Vercel | Auto-generated per branch |
+| Documentation | Vercel (planned) | `docs.laplacelabs-digital-twin.xyz` |
+| API | Cloud Run | Internal Cloud Run URL |
+| Data services | Cloud Run | Internal (Pub/Sub triggered) |
+
+<Card title="Infrastructure" href="/v1/architecture/infrastructure">
+Deep dive into the GCP infrastructure setup and configuration.
+</Card>
+
+<Card title="Platform Overview" href="/v1/platform">
+Return to the platform overview.
+</Card>

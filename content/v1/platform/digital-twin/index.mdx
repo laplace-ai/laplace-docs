@@ -1,0 +1,112 @@
+---
+title: "Digital Twin"
+description: "The Digital Twin module — an interactive Mapbox GL map that visualizes your logistics network with facilities, routes, and real-time data overlays."
+---
+
+# Digital Twin
+
+The Digital Twin is the heart of the Laplace Platform. It provides an interactive, map-based view of your entire logistics network — every facility, every route connection, all rendered on a real-time map powered by Mapbox GL.
+
+This is the default landing page when you log into the platform.
+
+{/* TODO: Add screenshot of the full Digital Twin map view */}
+
+## What you see on the map
+
+The Digital Twin map displays three layers of information:
+
+### Unit markers
+
+Every logistics facility (warehouse, distribution center, hub, terminal, branch) in your network appears as a **blue marker** on the map. The markers are positioned at the facility's geographic coordinates.
+
+Hovering over a marker shows the unit code. Clicking a marker opens the **unit detail panel** on the right side of the screen.
+
+{/* TODO: Add screenshot showing unit markers on the map */}
+
+### Route connections
+
+Lines connecting unit markers represent the **network links** between facilities — the routes along which cargo flows. These connections are drawn as subtle lines that help you visualize the shape and density of your logistics network.
+
+When you select a unit, the connections to and from that unit are highlighted, making it easy to see that facility's place in the network.
+
+### Map style
+
+The map automatically adapts to your theme:
+
+| Theme | Map Style |
+|-------|-----------|
+| Light mode | Mapbox Light (clean, minimal) |
+| Dark mode | Mapbox Dark (subdued, easy on the eyes) |
+
+## Interacting with the map
+
+### Navigation
+
+- **Zoom**: Scroll your mouse wheel to zoom in and out
+- **Pan**: Click and drag to move around the map
+- **Rotate**: Right-click and drag to rotate the map perspective
+
+The map is centered on Brazil by default, as Laplace currently focuses on Brazilian logistics networks.
+
+### Selecting a unit
+
+Click any unit marker to open the **unit detail panel**. This panel slides in from the right side and shows:
+
+- **Unit code** (e.g., "ATI SPA") with an active/inactive status indicator
+- **Unit name** (e.g., "Sao Paulo")
+- **Location** (city and state)
+- **Unit type** (e.g., hub, branch, distribution center)
+- **Status** (active or inactive)
+- **Services section** (coming soon — will show loss prediction and analytics for the unit)
+- A **"View Detailed Unit"** button that navigates to the full unit detail page
+
+{/* TODO: Add screenshot of the unit detail panel */}
+
+To close the panel, click the X button in the top-right corner of the panel, or click on the map background.
+
+### Immersive mode
+
+When the Digital Twin page is active, the map can enter **immersive mode** — hiding the top bar and bottom status bar to give you maximum screen space for the map. The sidebar remains visible for navigation.
+
+This is useful when you want to present the network view on a large screen or projector.
+
+## Route highlighting
+
+When you click on a unit, the route connections change:
+
+- **Connected routes** (routes to or from the selected unit) become more prominent
+- **Other routes** fade to a subtle opacity
+
+This visual highlighting helps you immediately understand which facilities are directly connected to the selected unit, revealing the unit's role in the logistics network.
+
+## Performance
+
+The Digital Twin map is optimized for performance:
+
+- Map component is **dynamically imported** with SSR disabled (maps require browser APIs)
+- Route lines use **GeoJSON sources** for efficient rendering of hundreds of connections
+- The map **resizes automatically** when the sidebar is collapsed or expanded
+- Unit and link data is fetched once on page load and cached in component state
+
+<Callout type="tip">
+Collapse the sidebar for a wider map view. The map automatically resizes to fill the available space, giving you a better overview of the entire network.
+</Callout>
+
+## Data sources
+
+The Digital Twin pulls data from two API endpoints:
+
+| Data | Endpoint | Description |
+|------|----------|-------------|
+| Units | `GET /v1/units` | All facilities with codes, names, coordinates, and metadata |
+| Network Links | `GET /v1/network-links` | Route connections between facilities with vehicle type and classification |
+
+This data is refreshed each time you navigate to the Digital Twin page.
+
+<Card title="Units" href="/v1/platform/digital-twin/units">
+Learn about the unit management views — listing, searching, and inspecting individual facilities.
+</Card>
+
+<Card title="Loss Prediction" href="/v1/platform/loss-prediction">
+See how the loss prediction service scores shipments and how to review them in the table view.
+</Card>
