@@ -40,11 +40,20 @@ This release brings a major sidebar redesign, full bilingual support, collector 
 - All UI labels, buttons, error messages, and status text translated
 - Translation files: `messages/pt-BR.json` and `messages/en-US.json`
 
+### Settings page redesign
+
+- Replaced horizontal tabs with a **sidebar navigation layout** (inspired by Claude.ai settings)
+- Three sections: **General** (theme + language), **My Account**, **User Management** (admin only)
+- General is now the default section for all users
+- User Management groups Users, User Types, and Tenants under a single section with internal tabs
+- Deep-linkable via URL query params (`/settings?tab=general`)
+
 ### Collector improvements
 
 - Fixed camera capture flow for mobile devices
-- Improved card layout with better information density
+- Improved card layout — fields stacked vertically: Priority → CTRC → NF count → Company → Route
 - Added invoice number (NF) display on cargo cards
+- Company tag now visible in dark mode (added border for contrast)
 - Volume count badge styling improvements
 
 ### Search bar fix
@@ -52,10 +61,16 @@ This release brings a major sidebar redesign, full bilingual support, collector 
 - Fixed search input behavior in the loss prediction table
 - Search now correctly filters by CTRC number
 
+### Bug fixes
+
+- Fixed missing `statusBar.breadcrumb.settings` translation key
+- Fixed all Portuguese translations to use proper special characters (ç, ã, õ, é, á, ú, í, ô)
+- Fixed footer overlap on the digital twin page
+
 ### Performance improvements
 
 - Optimized API response times with partial indexes on the database
-- Reduced bundle size for faster page loads
+- Reduced initial data load from 1000 to 100 rows
 - Improved map resize behavior when sidebar collapses/expands
 
 ### Dashboard plan
