@@ -87,6 +87,14 @@ export const navigation: NavSection[] = [
     ],
   },
   {
+    title: "API Reference",
+    icon: "Code",
+    items: [
+      { title: "Overview", href: "/docs/api" },
+      { title: "Endpoints", href: "/docs/api/endpoints" },
+    ],
+  },
+  {
     title: "Settings",
     icon: "Settings",
     requiredRole: "admin",

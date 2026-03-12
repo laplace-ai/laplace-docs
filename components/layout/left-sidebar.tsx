@@ -14,6 +14,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
 import {
   BookOpen,
+  Code,
   LayoutDashboard,
   Shield,
   Settings,
@@ -23,6 +24,7 @@ import {
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   BookOpen,
+  Code,
   LayoutDashboard,
   Shield,
   Settings,

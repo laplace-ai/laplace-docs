@@ -1,0 +1,375 @@
+---
+title: "Endpoints"
+description: "Complete reference for all Laplace Platform API endpoints."
+---
+
+# Endpoints
+
+All endpoints require authentication via `X-API-Key` or `Authorization: Bearer` header unless noted otherwise.
+
+---
+
+## CTRCs (Shipments)
+
+### GET /v1/ctrcs
+
+List shipments from your operational base. Supports dynamic field selection, filtering, and pagination.
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `ctrc` | string | — | Comma-separated CTRC IDs |
+| `fields` | string | core set | Comma-separated column names |
+| `periodo` | string | — | Filter by period (e.g., `2026-03`) |
+| `localizacao` | string | — | Filter by location prefix (LIKE match) |
+| `exclude_delivered` | string | `true` | Exclude delivered CTRCs |
+| `limit` | integer | 50 | Page size (max 500) |
+| `offset` | integer | 0 | Pagination offset |
+| `sort` | string | `day_created_at` | Column to sort by |
+| `order` | string | `desc` | `asc` or `desc` |
+
+**Example:**
+
+```bash
+curl -H "X-API-Key: sk-your-key" \
+  "https://laplace-platform-api-cbbnhnqg.uc.gateway.dev/v1/ctrcs?periodo=2026-03&localizacao=ATI%20SAO&limit=20"
+```
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "ctrc": "BAR342349-2",
+      "day_created_at": "2026-03-02",
+      "localizacao_atual": "ATI SAO - EM ENTREGA",
+      "unidade_emissora": "BAR",
+      "unidade_receptora": "SAO",
+      "cliente_remetente": "CLIENTE A",
+      "cliente_destinatario": "CLIENTE B",
+      "cidade_de_entrega": "LEME",
+      "uf_de_entrega": "SP",
+      "valor_do_frete": 250.50,
+      "valor_da_mercadoria": 5069.22,
+      "peso_real_em_kg": 50.0,
+      "quantidade_de_volumes": 10,
+      "mercadoria": "GERAL"
+    }
+  ],
+  "pagination": {
+    "offset": 0,
+    "limit": 20,
+    "total": 8406,
+    "has_more": true
+  }
+}
+```
+
+**Available fields:**
+
+`ctrc`, `day_created_at`, `hour_created_at`, `periodo`, `localizacao_atual`, `descricao_da_ultima_ocorrencia`, `codigo_da_ultima_ocorrencia`, `unidade_emissora`, `unidade_receptora`, `cliente_remetente`, `cliente_destinatario`, `cliente_recebedor`, `cnpj_remetente`, `cnpj_destinatario`, `cnpj_recebedor`, `cidade_de_entrega`, `uf_de_entrega`, `cidade_do_destinatario`, `uf_do_destinatario`, `valor_do_frete`, `valor_da_mercadoria`, `peso_real_em_kg`, `cubagem_em_m3`, `quantidade_de_volumes`, `mercadoria`, `numero_da_nota_fiscal`, `entrega_programada`, `previsao_de_entrega`, `quantidade_de_dias_de_atraso`, `distancia_em_km`, `praca_expedidora`, `praca_de_destino`, `cidade_origem_da_prestacao`, `uf_origem_da_prestacao`, `tipo_do_frete`, `ctrc_type`
+
+---
+
+### POST /v1/ctrcs/search
+
+Batch lookup up to 1000 CTRCs by identifier. Optimal for bulk queries.
+
+**Request Body:**
+
+```json
+{
+  "ctrcs": ["BAR342349-2", "BAR342350-6", "BHM073430-6"],
+  "fields": ["ctrc", "cidade_de_entrega", "valor_da_mercadoria"],
+  "exclude_delivered": true
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ctrcs` | array | yes | CTRC identifiers (max 1000) |
+| `fields` | array | no | Column names (default: core set) |
+| `exclude_delivered` | boolean | no | Default: `true` |
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "ctrc": "BAR342349-2",
+      "cidade_de_entrega": "LEME",
+      "valor_da_mercadoria": 5069.22
+    }
+  ],
+  "total": 3
+}
+```
+
+---
+
+## Loss Predictions
+
+### GET /v1/loss-predictions
+
+List CTRCs with ML-generated loss risk predictions. Uses a LEFT JOIN so CTRCs without predictions are still returned (prediction fields will be `null`).
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `fields` | string | core set | Comma-separated column names |
+| `periodo` | string | — | Filter by period |
+| `risk_level` | string | — | `BAIXO`, `MEDIO`, or `ALTO` (comma-separated for OR) |
+| `localizacao` | string | — | Filter by location prefix |
+| `exclude_delivered` | string | `true` | Exclude delivered CTRCs |
+| `exclude_verified` | string | `false` | Exclude field-verified CTRCs |
+| `limit` | integer | 50 | Page size (max 500) |
+| `offset` | integer | 0 | Pagination offset |
+| `sort` | string | `probability` | Column to sort by |
+| `order` | string | `desc` | `asc` or `desc` |
+
+**Example:**
+
+```bash
+curl -H "X-API-Key: sk-your-key" \
+  "https://laplace-platform-api-cbbnhnqg.uc.gateway.dev/v1/loss-predictions?risk_level=ALTO,MEDIO&limit=20"
+```
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "ctrc": "001-789012",
+      "day_created_at": "2026-03-01",
+      "localizacao_atual": "ATI SAO - NO ARMAZEM",
+      "cliente_remetente": "SHIPPER A",
+      "valor_da_mercadoria": 10000.00,
+      "peso_real_em_kg": 100.0,
+      "quantidade_de_volumes": 5,
+      "probability": 0.91,
+      "risk_level": "ALTO",
+      "confidence": 0.82,
+      "prediction": 1,
+      "model_version": "v1.0.0",
+      "predicted_at": "2026-03-05T10:30:00"
+    }
+  ],
+  "pagination": {
+    "offset": 0,
+    "limit": 20,
+    "total": 47,
+    "has_more": true
+  }
+}
+```
+
+**Prediction-specific fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `probability` | float | Loss probability (0.0 — 1.0) |
+| `prediction` | integer | Binary classification (0 or 1) |
+| `risk_level` | string | `BAIXO`, `MEDIO`, or `ALTO` |
+| `confidence` | float | Model confidence (0.0 — 1.0) |
+| `model_version` | string | Version identifier |
+| `model_name` | string | Model name |
+| `predicted_at` | datetime | When the prediction was generated |
+
+All CTRC fields from `/v1/ctrcs` are also available.
+
+---
+
+## Units (Network)
+
+### GET /v1/units
+
+List network units (warehouses, distribution centers) with geographic data.
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `fields` | string | core set | Comma-separated column names |
+| `code` | string | — | Filter by unit code (e.g., `BAR`) |
+| `state` | string | — | Filter by state/UF (e.g., `SP`) |
+| `active_only` | string | `false` | Return only active units |
+| `limit` | integer | 50 | Page size (max 500) |
+| `offset` | integer | 0 | Pagination offset |
+| `sort` | string | `code` | Column to sort by |
+| `order` | string | `asc` | `asc` or `desc` |
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "code": "BAR",
+      "type": "FILIAL",
+      "name": "FILIAL BARUERI",
+      "city": "BARUERI",
+      "state": "SP",
+      "active": true,
+      "latitude": -23.5057,
+      "longitude": -46.879
+    }
+  ],
+  "pagination": {
+    "offset": 0,
+    "limit": 50,
+    "total": 24,
+    "has_more": false
+  }
+}
+```
+
+**Available fields:** `code`, `type`, `name`, `city`, `state`, `active`, `latitude`, `longitude`, `empresa`, `codigo_ibge`, `ddd`, `timezone`
+
+---
+
+### GET /v1/network-links
+
+List routes between units with pricing by vehicle type.
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `fields` | string | core set | Comma-separated column names |
+| `origin` | string | — | Origin unit code (e.g., `BAR`) |
+| `destination` | string | — | Destination unit code (e.g., `SAO`) |
+| `vehicle_type` | string | — | `CAVALO` or `TRUCK` |
+| `classification` | string | — | `IDA` (outbound) or `VOLTA` (return) |
+| `limit` | integer | 50 | Page size (max 500) |
+| `offset` | integer | 0 | Pagination offset |
+| `sort` | string | `origin_code` | Column to sort by |
+| `order` | string | `asc` | `asc` or `desc` |
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "origin_code": "BAR",
+      "destination_code": "SAO",
+      "vehicle_type": "CAVALO",
+      "classification": "IDA",
+      "price_brl": 262.50,
+      "distance_km": 28.5
+    }
+  ],
+  "pagination": {
+    "offset": 0,
+    "limit": 50,
+    "total": 865,
+    "has_more": true
+  }
+}
+```
+
+**Available fields:** `origin_code`, `destination_code`, `vehicle_type`, `classification`, `price_brl`, `distance_km`
+
+---
+
+## Verifications
+
+### POST /v1/verifications
+
+Record a field verification for a CTRC with photographic evidence. Idempotent — resending the same CTRC returns 200 without duplicating.
+
+**Request Body:**
+
+```json
+{
+  "ctrc": "BAR342349-2",
+  "photo": "iVBORw0KGgoAAAA...",
+  "verified_by": "Joao Silva",
+  "notes": "Item found at warehouse 3, shelf 12A"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `ctrc` | string | yes | CTRC identifier |
+| `photo` | string | yes | Base64-encoded JPEG (max 4MB) |
+| `verified_by` | string | no | Name of verifier |
+| `notes` | string | no | Additional notes |
+
+**Response (201 Created):**
+
+```json
+{
+  "ctrc": "BAR342349-2",
+  "photo_gcs_path": "gs://bucket-laplace-verifications/tenants/1/photos/BAR342349-2_1678345200.jpg",
+  "inserted": true
+}
+```
+
+---
+
+### GET /v1/verifications
+
+List verifications for your tenant, ordered by most recent first.
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `limit` | integer | 50 | Page size (max 500) |
+| `offset` | integer | 0 | Pagination offset |
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "ctrc": "BAR342349-2",
+      "photo_gcs_path": "gs://...",
+      "verified_at": "2026-03-05T10:30:00",
+      "verified_by": "Joao Silva",
+      "notes": "Item found at warehouse 3"
+    }
+  ],
+  "pagination": {
+    "offset": 0,
+    "limit": 50,
+    "total": 42,
+    "has_more": false
+  }
+}
+```
+
+---
+
+## Health
+
+### GET /health
+
+Service availability check. **No authentication required.**
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "service": "platform-api"
+}
+```
+
+---
+
+## Error Codes
+
+| Status | Description |
+|--------|-------------|
+| 400 | Invalid request (bad parameters, missing required fields) |
+| 401 | Missing or invalid authentication |
+| 404 | Resource not found |
+| 500 | Internal server error |

@@ -1,0 +1,109 @@
+---
+title: "API Reference"
+description: "Access your logistics data programmatically using the Laplace Platform API."
+---
+
+# API Reference
+
+The Laplace Platform API gives you programmatic access to your logistics data — shipments, loss predictions, network units, and verifications. Use it to build custom dashboards, integrations, or automations on top of your digital twin.
+
+## Base URL
+
+```
+https://laplace-platform-api-cbbnhnqg.uc.gateway.dev
+```
+
+The API is served through Google API Gateway. All requests must use HTTPS.
+
+## Interactive Documentation (Swagger)
+
+The full interactive API documentation is available at:
+
+```
+https://laplace-platform-api-cbbnhnqg.uc.gateway.dev/apidocs
+```
+
+You can explore endpoints, see parameter descriptions, and test requests directly in the browser using the **Try it out** feature.
+
+## Authentication
+
+All endpoints (except `/health`) require authentication via one of two methods:
+
+### API Key (recommended for integrations)
+
+Pass your API key in the `X-API-Key` header:
+
+```bash
+curl -H "X-API-Key: sk-your-key" \
+  "https://laplace-platform-api-cbbnhnqg.uc.gateway.dev/v1/ctrcs"
+```
+
+API keys are scoped to a specific tenant. Contact your administrator to obtain one.
+
+### JWT Token (used by the web app)
+
+Pass your JWT access token in the `Authorization` header:
+
+```bash
+curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..." \
+  "https://laplace-platform-api-cbbnhnqg.uc.gateway.dev/v1/ctrcs"
+```
+
+JWT tokens are obtained through the login flow and expire after 15 minutes.
+
+## Response Format
+
+All list endpoints return paginated responses:
+
+```json
+{
+  "data": [],
+  "pagination": {
+    "offset": 0,
+    "limit": 50,
+    "total": 8406,
+    "has_more": true
+  }
+}
+```
+
+Error responses follow the format:
+
+```json
+{
+  "error": "Description of what went wrong"
+}
+```
+
+## Pagination
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `limit` | integer | 50 | Page size (max 500) |
+| `offset` | integer | 0 | Number of records to skip |
+
+Use `has_more` to determine if more pages are available. Increment `offset` by `limit` to paginate through results.
+
+## Sorting
+
+Most list endpoints support sorting:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `sort` | string | varies | Column to sort by |
+| `order` | string | `desc` | `asc` or `desc` |
+
+## Field Selection
+
+Use the `fields` query parameter to request only the columns you need. Pass a comma-separated list:
+
+```bash
+curl -H "X-API-Key: sk-your-key" \
+  "https://...gateway.dev/v1/ctrcs?fields=ctrc,cidade_de_entrega,valor_da_mercadoria"
+```
+
+If omitted, a sensible default set of fields is returned. See each endpoint's documentation for the full list of available fields.
+
+<Card title="Endpoints Reference" href="/v1/api/endpoints">
+  Complete documentation for all API endpoints with request/response examples.
+</Card>
