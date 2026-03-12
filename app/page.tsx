@@ -1,4 +1,10 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { useTheme } from "next-themes";
+import { useAuth } from "@/lib/auth-context";
 import {
   Globe,
   TrendingDown,
@@ -11,10 +17,20 @@ import {
   BookOpen,
   ArrowRight,
   Search,
+  LogOut,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
-const sections = [
+interface SectionCard {
+  title: string;
+  description: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  requiredModule?: string;
+  requiredRole?: "admin" | "super_admin";
+}
+
+const sections: SectionCard[] = [
   {
     title: "Getting Started",
     description:
@@ -28,6 +44,7 @@ const sections = [
       "Interactive logistics network map with unit markers and route visualization.",
     href: "/docs/platform/digital-twin",
     icon: Globe,
+    requiredModule: "digital_twin",
   },
   {
     title: "Loss Prediction",
@@ -35,6 +52,7 @@ const sections = [
       "ML-powered cargo loss risk scoring for every shipment at emission time.",
     href: "/docs/platform/loss-prediction",
     icon: TrendingDown,
+    requiredModule: "loss_prediction",
   },
   {
     title: "Collector",
@@ -42,6 +60,7 @@ const sections = [
       "Mobile-optimized field verification for high-risk cargo with photo evidence.",
     href: "/docs/platform/collector",
     icon: Smartphone,
+    requiredModule: "collector",
   },
   {
     title: "Database Browser",
@@ -49,6 +68,7 @@ const sections = [
       "Browse raw data tables — CTRCs, predictions, units, and links.",
     href: "/docs/platform/database-browser",
     icon: Database,
+    requiredModule: "database_browser",
   },
   {
     title: "Authentication",
@@ -63,6 +83,7 @@ const sections = [
       "Configure users, tenants, and platform preferences.",
     href: "/docs/settings",
     icon: Settings,
+    requiredRole: "admin",
   },
   {
     title: "Architecture",
@@ -70,6 +91,7 @@ const sections = [
       "Technical overview of the platform stack, infrastructure, and data pipeline.",
     href: "/docs/architecture",
     icon: Blocks,
+    requiredRole: "super_admin",
   },
   {
     title: "Changelog",
@@ -80,21 +102,58 @@ const sections = [
 ];
 
 export default function HomePage() {
+  const { user, modules, isLoading, logout } = useAuth();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  // Filter sections based on user access
+  const filteredSections = sections.filter((section) => {
+    if (!user) return true; // show all while loading (middleware will redirect if no auth)
+    if (section.requiredRole) {
+      if (section.requiredRole === "super_admin" && user.role !== "super_admin") return false;
+      if (section.requiredRole === "admin" && user.role !== "admin" && user.role !== "super_admin") return false;
+    }
+    if (section.requiredModule) {
+      if (user.role === "super_admin" || user.role === "admin") return true;
+      return modules.includes(section.requiredModule);
+    }
+    return true;
+  });
+
   return (
     <div className="min-h-screen bg-[var(--bg-base)]">
       {/* Header */}
       <header className="border-b border-[var(--content-border)] bg-[var(--bg-deep)]">
         <div className="mx-auto max-w-6xl flex items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--blue-primary)]">
-              <span className="text-sm font-bold text-white">L</span>
-            </div>
+            <Image
+              src={mounted && resolvedTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png"}
+              alt="Laplace Logistics"
+              width={32}
+              height={32}
+              className="rounded-lg"
+            />
             <span className="font-semibold text-lg text-[var(--content-text-primary)]">
               Laplace Docs
             </span>
           </Link>
           <div className="flex items-center gap-3">
+            {user && (
+              <span className="text-sm text-[var(--content-text-secondary)]">
+                {user.name}
+              </span>
+            )}
             <ThemeToggle />
+            {user && (
+              <button
+                onClick={logout}
+                className="rounded-md p-1.5 text-[var(--content-text-secondary)] hover:text-[var(--content-text-primary)] hover:bg-[var(--bg-surface)] transition-colors"
+                aria-label="Sign out"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -137,32 +196,51 @@ export default function HomePage() {
       {/* Section cards grid */}
       <section className="pb-24 px-6">
         <div className="mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {sections.map((section) => {
-              const Icon = section.icon;
-              return (
-                <Link
-                  key={section.href}
-                  href={section.href}
-                  className="group rounded-lg border border-[var(--content-border)] bg-[var(--content-bg-card)] p-6 transition-all duration-200 hover:border-[var(--blue-primary)] hover:shadow-md"
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div
+                  key={i}
+                  className="animate-pulse rounded-lg border border-[var(--content-border)] bg-[var(--content-bg-card)] p-6"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-surface)] group-hover:bg-[var(--blue-glow)] transition-colors">
-                      <Icon className="h-5 w-5 text-[var(--content-text-secondary)] group-hover:text-[var(--blue-primary)] transition-colors" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-[var(--content-text-primary)] group-hover:text-[var(--blue-primary)] transition-colors">
-                        {section.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-[var(--content-text-secondary)] line-clamp-2">
-                        {section.description}
-                      </p>
+                    <div className="h-10 w-10 rounded-lg bg-[var(--bg-surface)]" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-24 rounded bg-[var(--bg-surface)]" />
+                      <div className="h-3 w-full rounded bg-[var(--bg-surface)]" />
                     </div>
                   </div>
-                </Link>
-              );
-            })}
-          </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredSections.map((section) => {
+                const Icon = section.icon;
+                return (
+                  <Link
+                    key={section.href}
+                    href={section.href}
+                    className="group rounded-lg border border-[var(--content-border)] bg-[var(--content-bg-card)] p-6 transition-all duration-200 hover:border-[var(--blue-primary)] hover:shadow-md"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-surface)] group-hover:bg-[var(--blue-glow)] transition-colors">
+                        <Icon className="h-5 w-5 text-[var(--content-text-secondary)] group-hover:text-[var(--blue-primary)] transition-colors" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-[var(--content-text-primary)] group-hover:text-[var(--blue-primary)] transition-colors">
+                          {section.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-[var(--content-text-secondary)] line-clamp-2">
+                          {section.description}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 
@@ -170,10 +248,10 @@ export default function HomePage() {
       <footer className="border-t border-[var(--content-border)] bg-[var(--bg-deep)] py-8 px-6">
         <div className="mx-auto max-w-6xl flex items-center justify-between">
           <span className="text-sm text-[var(--content-text-secondary)]">
-            Powered by Laplace
+            Powered by Laplace Logistics
           </span>
           <span className="text-sm text-[var(--content-text-secondary)]">
-            v1
+            v0.3.0
           </span>
         </div>
       </footer>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
 const inter = Inter({
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
   },
   description:
     "Official documentation for the Laplace Digital Twin platform — a logistics network intelligence system for operators and carriers.",
+  icons: { icon: "/favicon.ico" },
 };
 
 export default function RootLayout({
@@ -42,7 +44,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

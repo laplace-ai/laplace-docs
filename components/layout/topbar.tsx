@@ -1,7 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
+import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 interface TopbarProps {
@@ -10,6 +13,10 @@ interface TopbarProps {
 }
 
 export function Topbar({ isMobileMenuOpen, onToggleMobileMenu }: TopbarProps) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <header
       className={cn(
@@ -31,16 +38,20 @@ export function Topbar({ isMobileMenuOpen, onToggleMobileMenu }: TopbarProps) {
       </button>
 
       <Link href="/" className="flex items-center gap-2">
-        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[var(--blue-primary)]">
-          <span className="text-xs font-bold text-white">L</span>
-        </div>
+        <Image
+          src={mounted && resolvedTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png"}
+          alt="Laplace Logistics"
+          width={24}
+          height={24}
+          className="rounded-md"
+        />
         <span className="font-semibold text-sm text-[var(--content-text-primary)]">
           Laplace Docs
         </span>
       </Link>
 
       <span className="ml-auto text-xs text-[var(--content-text-secondary)]">
-        v1
+        v0.3.0
       </span>
     </header>
   );
