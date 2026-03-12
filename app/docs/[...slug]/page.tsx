@@ -4,8 +4,10 @@ import { getBreadcrumbs, getPrevNextPages } from "@/lib/navigation";
 import { MDXRenderer } from "@/components/content/mdx-renderer";
 import { PageHeader } from "@/components/content/page-header";
 import { PageFooter } from "@/components/content/page-footer";
+import { CollapsibleSections } from "@/components/content/collapsible-sections";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { RightSidebar } from "@/components/layout/right-sidebar";
+import { AuthGate } from "@/components/auth/auth-gate";
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -42,19 +44,24 @@ export default async function DocPage({ params }: PageProps) {
   const breadcrumbs = getBreadcrumbs(currentPath);
   const { prev, next } = getPrevNextPages(currentPath);
   const headings = extractHeadings(doc.content);
+  const isChangelog = slug.join("/") === "changelog";
 
   return (
-    <div className="flex">
-      {/* Main content */}
-      <main className="flex-1 min-w-0 px-6 py-8 lg:px-12 lg:py-10 max-w-4xl mx-auto">
-        <Breadcrumbs items={breadcrumbs} />
-        <PageHeader frontmatter={doc.frontmatter} />
-        <MDXRenderer source={doc.content} />
-        <PageFooter prev={prev} next={next} />
-      </main>
+    <AuthGate slug={slug}>
+      <div className="flex">
+        {/* Main content */}
+        <main className="flex-1 min-w-0 px-6 py-8 lg:px-12 lg:py-10 max-w-4xl mx-auto">
+          <Breadcrumbs items={breadcrumbs} />
+          <PageHeader frontmatter={doc.frontmatter} />
+          <CollapsibleSections>
+            <MDXRenderer source={doc.content} />
+          </CollapsibleSections>
+          <PageFooter prev={prev} next={next} />
+        </main>
 
-      {/* Right sidebar (TOC) */}
-      <RightSidebar headings={headings} />
-    </div>
+        {/* Right sidebar (TOC) */}
+        <RightSidebar headings={headings} tocH2Only={isChangelog} />
+      </div>
+    </AuthGate>
   );
 }

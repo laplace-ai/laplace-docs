@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Bot, ThumbsUp, ThumbsDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLayoutContext } from "./docs-layout";
 
 interface TocItem {
   id: string;
@@ -13,18 +14,24 @@ interface TocItem {
 interface RightSidebarProps {
   headings: TocItem[];
   className?: string;
+  /** When true, only show H2 headings in the TOC (used for changelog) */
+  tocH2Only?: boolean;
 }
 
-export function RightSidebar({ headings, className }: RightSidebarProps) {
+export function RightSidebar({ headings, className, tocH2Only }: RightSidebarProps) {
   const [activeId, setActiveId] = useState<string>("");
   const [feedbackGiven, setFeedbackGiven] = useState(false);
+  const { rightSidebarOpen } = useLayoutContext();
+
+  const displayHeadings = tocH2Only
+    ? headings.filter((h) => h.level === 2)
+    : headings;
 
   useEffect(() => {
-    if (headings.length === 0) return;
+    if (displayHeadings.length === 0) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find the first heading that is intersecting
         for (const entry of entries) {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id);
@@ -38,16 +45,15 @@ export function RightSidebar({ headings, className }: RightSidebarProps) {
       }
     );
 
-    // Observe all headings
-    for (const heading of headings) {
+    for (const heading of displayHeadings) {
       const el = document.getElementById(heading.id);
       if (el) observer.observe(el);
     }
 
     return () => observer.disconnect();
-  }, [headings]);
+  }, [displayHeadings]);
 
-  if (headings.length === 0) return null;
+  if (displayHeadings.length === 0 || !rightSidebarOpen) return null;
 
   return (
     <aside
@@ -64,7 +70,7 @@ export function RightSidebar({ headings, className }: RightSidebarProps) {
           </h4>
           <nav aria-label="Table of contents">
             <ul className="space-y-1">
-              {headings.map((heading) => (
+              {displayHeadings.map((heading) => (
                 <li key={heading.id}>
                   <a
                     href={`#${heading.id}`}

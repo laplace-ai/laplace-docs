@@ -3,12 +3,14 @@ export interface NavItem {
   href: string;
   icon?: string;
   items?: NavItem[];
+  requiredModule?: string;
 }
 
 export interface NavSection {
   title: string;
   icon?: string;
   items: NavItem[];
+  requiredRole?: "admin" | "super_admin";
 }
 
 /**
@@ -16,6 +18,11 @@ export interface NavSection {
  * Matches the content/v1/ file system layout.
  */
 export const navigation: NavSection[] = [
+  {
+    title: "Changelog",
+    icon: "FileText",
+    items: [{ title: "Changelog", href: "/docs/changelog" }],
+  },
   {
     title: "Getting Started",
     icon: "BookOpen",
@@ -33,6 +40,7 @@ export const navigation: NavSection[] = [
       {
         title: "Digital Twin",
         href: "/docs/platform/digital-twin",
+        requiredModule: "digital_twin",
         items: [
           { title: "Overview", href: "/docs/platform/digital-twin" },
           { title: "Map", href: "/docs/platform/digital-twin/map" },
@@ -42,6 +50,7 @@ export const navigation: NavSection[] = [
       {
         title: "Loss Prediction",
         href: "/docs/platform/loss-prediction",
+        requiredModule: "loss_prediction",
         items: [
           { title: "Overview", href: "/docs/platform/loss-prediction" },
           { title: "Table", href: "/docs/platform/loss-prediction/table" },
@@ -50,6 +59,7 @@ export const navigation: NavSection[] = [
       {
         title: "Collector",
         href: "/docs/platform/collector",
+        requiredModule: "collector",
         items: [
           { title: "Overview", href: "/docs/platform/collector" },
           {
@@ -61,6 +71,7 @@ export const navigation: NavSection[] = [
       {
         title: "Database Browser",
         href: "/docs/platform/database-browser",
+        requiredModule: "database_browser",
       },
     ],
   },
@@ -78,21 +89,18 @@ export const navigation: NavSection[] = [
   {
     title: "Settings",
     icon: "Settings",
+    requiredRole: "admin",
     items: [{ title: "Overview", href: "/docs/settings" }],
   },
   {
     title: "Architecture",
     icon: "Blocks",
+    requiredRole: "super_admin",
     items: [
       { title: "Overview", href: "/docs/architecture" },
       { title: "Tech Stack", href: "/docs/architecture/tech-stack" },
       { title: "Infrastructure", href: "/docs/architecture/infrastructure" },
     ],
-  },
-  {
-    title: "Changelog",
-    icon: "FileText",
-    items: [{ title: "Changelog", href: "/docs/changelog" }],
   },
 ];
 
