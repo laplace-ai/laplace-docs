@@ -1,0 +1,109 @@
+---
+title: "Unidades"
+description: "Gerenciamento de unidades na Plataforma Laplace — navegando, buscando e inspecionando instalacoes logisticas com visualizacoes operacionais detalhadas."
+---
+
+# Unidades
+
+Unidades sao os **nos da sua rede logistica** — armazens, centros de distribuicao, hubs, terminais e filiais. O modulo de Unidades dentro do Digital Model fornece uma interface dedicada para navegar, buscar e inspecionar instalacoes individuais.
+
+## Lista de unidades
+
+Navegue ate **Digital Model > Units** na barra lateral para acessar a pagina de lista de unidades.
+
+{/* TODO: Add screenshot of the units list view */}
+
+A pagina de lista mostra:
+
+- Um **titulo** ("Unidades") com uma contagem do total de unidades na rede (ex.: "42 unidades na rede")
+- Uma **tabela pesquisavel e ordenavel** de todas as unidades na rede logistica do seu tenant
+
+### Colunas da tabela
+
+| Coluna | Descricao |
+|--------|-----------|
+| **Codigo** | O codigo unico da instalacao (ex.: "ATI SPA", "ATI CWB") |
+| **Nome** | Nome legivel da instalacao |
+| **Tipo** | Tipo de instalacao (hub, filial, centro de distribuicao, terminal, etc.) |
+| **Cidade** | Cidade onde a instalacao esta localizada |
+| **Estado** | Sigla do estado brasileiro (ex.: SP, PR, RJ) |
+| **Status** | Ativo (indicador verde) ou Inativo (indicador cinza) |
+
+### Busca
+
+Use a barra de busca para filtrar unidades por qualquer campo visivel. Este e um filtro do lado do cliente que busca simultaneamente por codigo, nome, cidade e estado. Util quando voce sabe o codigo da instalacao ou quer encontrar todas as unidades em uma cidade especifica.
+
+## Pagina de detalhes da unidade
+
+Clique em qualquer unidade na lista (ou use o botao "Ver Unidade Detalhada" no painel do mapa) para navegar ate sua pagina de detalhes em `/digital-model/units/{code}`.
+
+{/* TODO: Add screenshot of the unit detail page */}
+
+A pagina de detalhes da unidade fornece uma visao abrangente de uma instalacao individual, organizada em secoes:
+
+### Cabecalho
+
+Exibe o codigo da unidade (em azul destaque), nome da unidade, status ativo e localizacao (cidade, estado). Isso espelha as informacoes mostradas no painel de detalhes do mapa, mas com mais espaco.
+
+### Visao geral
+
+Metricas-chave e metadados sobre a unidade:
+
+- **Tipo**: A classificacao da instalacao
+- **Status**: Ativo ou inativo
+- **Coordenadas geograficas**: Latitude e longitude (util para planejamento logistico)
+
+### CTRCs
+
+Uma tabela de CTRCs (embarques) associados a esta unidade. A tabela mostra:
+
+| Coluna | Descricao |
+|--------|-----------|
+| **CTRC** | Numero do documento de embarque |
+| **Risco** | Badge de risco (ALTO, MEDIO, BAIXO) se uma predicao de perda existe |
+| **Probabilidade** | Probabilidade numerica de perda |
+| **Origem** | Codigo da unidade de origem |
+| **Destino** | Codigo da unidade de destino |
+| **Mercadoria** | Tipo de mercadoria sendo transportada |
+| **Valor** | Valor da carga em BRL |
+| **Peso** | Peso da carga em quilogramas |
+| **Emissao** | Data em que o CTRC foi emitido |
+
+Esta tabela permite inspecionar toda a carga passando ou originando de uma instalacao especifica, com informacoes de risco inline.
+
+<Callout type="info">
+Se nenhum CTRC for encontrado para uma unidade, a tabela exibe a mensagem "Nenhum CTRC encontrado para esta unidade". Isso pode acontecer para unidades recem-adicionadas ou unidades que servem principalmente como pontos de passagem.
+</Callout>
+
+### Veiculos
+
+Informacoes sobre veiculos operando a partir desta unidade. Esta secao exibira dados de frota conforme se tornem disponiveis.
+
+### Trabalhadores
+
+Informacoes de forca de trabalho associadas a unidade. Esta secao exibira dados de pessoal conforme se tornem disponiveis.
+
+<Callout type="tip">
+A pagina de detalhes da unidade e o melhor lugar para obter uma visao completa das operacoes de uma instalacao individual. Use-a ao investigar o perfil de risco, volume de carga ou status operacional de uma unidade especifica.
+</Callout>
+
+## Navegando a partir do mapa
+
+O mapa do Digital Twin e o modulo de Unidades sao integrados de forma estreita:
+
+1. Clique em um marcador de unidade no mapa para abrir o painel de visualizacao rapida
+2. No painel, clique em **"Ver Unidade Detalhada"** para navegar ate a pagina completa de detalhes
+3. Da pagina de detalhes, use a barra lateral para retornar ao mapa ou a lista de unidades
+
+Voce tambem pode navegar ate as predicoes de perda de uma unidade clicando em um CTRC na tabela de detalhes da unidade, que levara voce a tabela de loss prediction filtrada por aquela unidade.
+
+## Fontes de dados
+
+| Dados | Endpoint | Descricao |
+|-------|----------|-----------|
+| Lista de unidades | `GET /v1/units` | Todas as unidades com metadados, coordenadas e status |
+| Detalhes da unidade | `GET /v1/units/{code}` | Dados de uma unica unidade com CTRCs associados |
+
+<Card title="Loss Prediction" href="/v1/platform/loss-prediction">
+Saiba como o modelo de loss prediction pontua embarques e como agir em cargas de alto risco.
+</Card>

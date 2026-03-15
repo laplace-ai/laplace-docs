@@ -1,0 +1,80 @@
+---
+title: "Documentacao Laplace"
+description: "Documentacao oficial da plataforma Laplace Digital Twin — um sistema de inteligencia para redes logisticas voltado a operadores e transportadoras."
+---
+
+# Bem-vindo ao Laplace
+
+Laplace e uma **plataforma de digital twin para redes logisticas**. Ela oferece a operadores logisticos e transportadoras uma visao em tempo real e inteligente de toda a sua operacao — desde embarques individuais ate padroes em escala de rede.
+
+A plataforma combina ingestao de dados em tempo real, predicoes com machine learning e visualizacoes interativas para apoiar melhores decisoes em todos os niveis da operacao logistica.
+
+{/* TODO: Add hero screenshot of the platform map view */}
+
+## O que e um digital twin?
+
+Um digital twin e uma replica virtual de um sistema fisico. No contexto da logistica, o digital twin do Laplace espelha sua rede de transporte real — suas instalacoes, rotas, embarques e cargas — e a enriquece com predicoes, analises e ferramentas de otimizacao.
+
+Em vez de reagir a problemas depois que acontecem, um digital twin permite que voce **antecipe, simule e otimize** antes que as consequencias reais ocorram.
+
+## O que o Laplace faz hoje
+
+<Steps>
+<Step title="Ingere seus dados logisticos">
+O Laplace se conecta as suas fontes de dados operacionais (CTRCs, registros de embarque, informacoes de instalacoes) e sincroniza continuamente em um data warehouse unificado.
+</Step>
+<Step title="Visualiza sua rede">
+Um mapa interativo exibe sua rede logistica — cada instalacao, cada rota, cada conexao — atualizado em tempo quase real. Clique em qualquer unidade para ver seus detalhes, embarques e perfil de risco.
+</Step>
+<Step title="Prediz perda de carga">
+Um modelo de machine learning pontua cada embarque (CTRC) no momento da emissao com uma probabilidade de perda. Cargas de alto risco sao sinalizadas para que sua equipe possa agir antes que as perdas ocorram.
+</Step>
+<Step title="Possibilita verificacao em campo">
+O modulo Collector fornece uma interface otimizada para dispositivos moveis para operadores de campo verificarem cargas de alto risco com evidencia fotografica, fechando o ciclo entre predicao e acao.
+</Step>
+</Steps>
+
+## Modulos da plataforma
+
+A Plataforma Laplace e organizada em modulos. Cada tenant (organizacao cliente) tem acesso aos modulos especificos incluidos em sua assinatura.
+
+| Modulo | Descricao | Status |
+|--------|-----------|--------|
+| **Digital Twin** | Mapa interativo da rede logistica com marcadores de unidades e visualizacao de rotas | Disponivel |
+| **Digital Model** | Gerenciamento de unidades (instalacoes) com visualizacoes detalhadas e dados operacionais | Disponivel |
+| **Loss Prediction** | Pontuacao de risco de perda de carga com ML, com visualizacao em tabela, collector e dashboard | Disponivel |
+| **Database Browser** | Acesso direto para navegar em tabelas de dados brutos (CTRCs, predicoes, unidades, links) | Disponivel |
+| **Control Tower** | Monitoramento centralizado de operacoes e alertas | Em breve |
+| **Load Consolidation** | Otimizacao de consolidacao de embarques na rede | Em breve |
+
+## Para quem e esta documentacao?
+
+Esta documentacao atende a tres publicos:
+
+- **Operadores e gestores logisticos** que usam a plataforma diariamente para monitorar operacoes, revisar predicoes e tomar decisoes. Comece por [Primeiros Passos](/v1/getting-started/first-steps).
+
+- **Administradores de tenant** que gerenciam usuarios, papeis e acesso a modulos dentro de sua organizacao. Veja [Autenticacao](/v1/authentication) e [Configuracoes](/v1/settings).
+
+- **Desenvolvedores** que constroem ou estendem a plataforma. Confira [Arquitetura](/v1/architecture) e [Instalacao](/v1/getting-started/installation).
+
+## Links rapidos
+
+<Card title="Primeiros Passos" href="/v1/getting-started">
+Novo no Laplace? Comece aqui para uma introducao guiada a plataforma.
+</Card>
+
+<Card title="Digital Twin" href="/v1/platform/digital-twin">
+Aprenda a usar o mapa interativo da rede logistica.
+</Card>
+
+<Card title="Loss Prediction" href="/v1/platform/loss-prediction">
+Entenda como as predicoes de perda de carga funcionam e como agir com base nelas.
+</Card>
+
+<Card title="Arquitetura" href="/v1/architecture">
+Visao geral tecnica da stack da plataforma e do pipeline de dados.
+</Card>
+
+## Suporte a idiomas
+
+A Plataforma Laplace e totalmente bilingue, suportando tanto **Ingles (EN-US)** quanto **Portugues (PT-BR)**. Voce pode trocar o idioma a qualquer momento na pagina de login, no cabecalho do collector ou no painel de configuracoes. Esta documentacao esta disponivel em portugues e ingles.

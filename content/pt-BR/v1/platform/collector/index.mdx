@@ -1,0 +1,164 @@
+---
+title: "Coletor"
+description: "O módulo Coletor — uma interface otimizada para dispositivos móveis que permite a operadores de campo verificar cargas de alto risco com evidência fotográfica."
+---
+
+# Coletor
+
+O Coletor é uma **interface de verificação mobile-first** projetada para operadores de campo que inspecionam e verificam fisicamente cargas de alto risco. Ele exibe predições de perda como cards, permite que operadores filtrem por unidade e habilita a verificação com fotos usando a câmera do dispositivo.
+
+{/* TODO: Add screenshot of the Collector on a mobile device */}
+
+## Acessando o Coletor
+
+Existem duas formas de abrir o Coletor:
+
+1. **Pela barra lateral**: Navegue até **Serviços > Predição de Perda > Visão de Dispositivo**
+2. **URL direto**: Abra `/collector` no navegador do seu dispositivo móvel
+
+O Coletor é listado como "Visão de Dispositivo" na barra lateral porque é otimizado para dispositivos móveis e tablets. Embora funcione no desktop, o layout baseado em cards e a integração com câmera são projetados para uso em dispositivos portáteis.
+
+<Callout type="tip">
+Adicione o URL `/collector` como favorito na tela inicial do seu dispositivo móvel para acesso rápido. O Coletor possui seu próprio cabeçalho independente com navegação, alternância de tema e seletor de idioma — ele não depende da barra lateral da plataforma.
+</Callout>
+
+## Layout da interface
+
+O Coletor possui um layout móvel simplificado:
+
+### Cabeçalho
+
+- **Botão voltar**: Retorna ao mapa do Digital Twin
+- **Título**: "Coletor"
+- **Alternância de idioma**: Alterne entre PT-BR e EN-US
+- **Alternância de tema**: Alterne entre modo claro e escuro
+- **Avatar e nome do usuário**: Mostra a identidade do operador logado
+
+### Filtro de unidade
+
+Um dropdown abaixo do cabeçalho permite filtrar predições por unidade. As opções incluem:
+
+- **Todas as Unidades**: Mostra CTRCs de alto risco de todas as unidades
+- **Unidades individuais**: Selecione um código de unidade específico para ver apenas a carga naquela localização
+
+<Callout type="info">
+Quando um operador de campo está alocado em uma unidade específica, selecionar essa unidade no filtro restringe a lista apenas às cargas fisicamente presentes na sua localização. Isso elimina ruído e permite que ele se concentre nos embarques verificáveis.
+</Callout>
+
+### Cards de carga
+
+Cada predição é exibida como um **card** com uma borda lateral colorida indicando o nível de risco:
+
+- **Borda vermelha**: Risco ALTO
+- **Borda amarela/âmbar**: Risco MEDIO
+
+Cada card contém:
+
+| Elemento | Descrição |
+|---------|-------------|
+| **Badge de risco** | Rótulo com cor correspondente (ALTO ou MEDIO) |
+| **Número do CTRC** | O número do documento de embarque em fonte monospace |
+| **Número da nota fiscal** | Número da NF (Nota Fiscal) quando disponível |
+| **Remetente** | Nome do cliente remetente da carga, exibido em uma tag de fundo sutil |
+| **Rota** | Cidade de origem até cidade e estado de destino (ex.: "São Paulo -> Curitiba, PR") |
+| **Quantidade de volumes** | Número de volumes da carga (ex.: "3 vol") |
+| **Botão da câmera** | Botão azul com ícone de câmera para iniciar a verificação |
+
+### Paginação
+
+Na parte inferior da tela, controles de navegação permitem paginar os resultados:
+
+- **Botões Anterior / Próximo** com ícones de seta
+- **Indicador de página** mostrando página atual e total (ex.: "1 / 5")
+
+O Coletor exibe **10 cards por página** e busca lotes de 100 predições da API, ordenados por probabilidade (maior primeiro).
+
+## Fluxo de verificação
+
+O Coletor implementa um ciclo completo de verificação:
+
+<Steps>
+<Step title="Selecione sua unidade">
+Escolha sua unidade no dropdown de filtro. Isso filtra a lista de cards para mostrar apenas cargas na sua localização.
+</Step>
+<Step title="Identifique um embarque para verificar">
+Navegue pelos cards. Cada card mostra nível de risco, número do CTRC, remetente, rota e quantidade de volumes — informações suficientes para localizar a carga física.
+</Step>
+<Step title="Toque no botão da câmera">
+Toque no botão azul da câmera no card que deseja verificar. Isso abre uma **interface de captura de câmera em tela cheia**.
+
+{/* TODO: Add screenshot of the camera capture screen */}
+
+</Step>
+<Step title="Tire uma foto">
+Aponte a câmera do seu dispositivo para a carga e toque em **Abrir Câmera** para capturar uma foto. A câmera usa a câmera traseira do seu dispositivo por padrão.
+</Step>
+<Step title="Revise e confirme">
+Após tirar a foto, você vê uma prévia com duas opções:
+
+- **Refazer**: Descarta a foto e tenta novamente
+- **Usar Foto**: Envia a foto como evidência de verificação
+
+</Step>
+<Step title="Verificação concluída">
+Após a confirmação, a verificação é enviada à API. O CTRC é **imediatamente removido** da sua lista de cards (atualização otimista), e uma notificação toast confirma a verificação.
+</Step>
+</Steps>
+
+## Filtragem automática
+
+O Coletor aplica diversos filtros automáticos para mostrar apenas predições acionáveis:
+
+| Filtro | Valor | Propósito |
+|--------|-------|---------|
+| Nível de risco | ALTO + MEDIO | Mostra apenas embarques que precisam de verificação |
+| Verificados | Excluídos | Oculta CTRCs já verificados |
+| Ordenação | Probabilidade (decrescente) | Maior risco primeiro |
+
+Isso significa que o Coletor sempre mostra as predições mais urgentes e não verificadas. Conforme você verifica embarques, eles desaparecem da lista, e os cards restantes representam sua fila de verificação pendente.
+
+<Callout type="warning">
+Se a lista de cards estiver vazia, significa que todos os CTRCs de alto e médio risco na unidade selecionada foram verificados (ou não há predições para essa unidade). Mude para "Todas as Unidades" para verificar se existem predições não verificadas em outras unidades.
+</Callout>
+
+## Notificações toast
+
+Após uma ação de verificação, uma breve notificação toast aparece na parte inferior da tela:
+
+- **Sucesso**: "CTRC-12345 verificado" — a verificação foi enviada e registrada
+- **Erro**: "Erro ao verificar CTRC-12345" — o envio falhou (problema de rede, erro do servidor)
+
+As notificações toast desaparecem automaticamente após 3-4 segundos.
+
+## Considerações sobre conexão offline
+
+O Coletor requer uma conexão ativa com a internet para:
+
+- Carregar predições da API
+- Enviar fotos de verificação para o servidor
+
+Se você perder a conectividade, a lista de cards permanecerá visível (em cache no estado do componente), mas você não poderá enviar novas verificações até que a conexão seja restaurada. Atualmente não há fila offline — se um envio falhar, você precisará refazer e reenviar a foto.
+
+## Notas técnicas
+
+A página do Coletor existe fora do layout principal da plataforma em `/collector`. Ela possui:
+
+- Cabeçalho independente (sem dependência da barra lateral)
+- Componente de captura de câmera usando a API `getUserMedia` do dispositivo
+- Estados de carregamento e tratamento de erros dedicados
+- Integração com autenticação (lê o JWT do contexto de auth)
+
+O componente de captura de câmera (`CameraCapture`) gerencia:
+
+- Solicitação de permissões de câmera ao navegador
+- Exibição de prévia ao vivo da câmera
+- Captura de um frame como imagem codificada em base64
+- Controles de refazer/confirmar
+
+<Card title="Tabela de Predição de Perda" href="/v1/platform/loss-prediction/table">
+Revise predições em uma tabela de dados completa com filtragem e ordenação avançadas.
+</Card>
+
+<Card title="Visão Geral da Predição de Perda" href="/v1/platform/loss-prediction">
+Retorne à visão geral do módulo de Predição de Perda.
+</Card>

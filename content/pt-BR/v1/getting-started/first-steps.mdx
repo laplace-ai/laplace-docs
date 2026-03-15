@@ -1,0 +1,158 @@
+---
+title: "Primeiros Passos"
+description: "Um passo a passo guiado para novos usuarios — fazendo login, navegando pela plataforma e usando funcionalidades-chave como o mapa, tabela de loss prediction e collector."
+---
+
+# Primeiros Passos
+
+Bem-vindo ao Laplace. Este guia orienta voce na sua primeira sessao na plataforma — desde o login ate a exploracao das principais funcionalidades que voce usara diariamente.
+
+<Callout type="info">
+Certifique-se de ter recebido o e-mail de convite com um link para definir sua senha. Se nao recebeu, peca ao administrador da sua organizacao para enviar um convite.
+</Callout>
+
+## Fazendo login
+
+<Steps>
+<Step title="Abra a plataforma">
+Navegue ate a URL do Laplace da sua organizacao no navegador. Voce vera a tela de login com o logo do Laplace e um seletor de idioma no canto superior direito.
+
+{/* TODO: Add screenshot of login page */}
+
+</Step>
+<Step title="Insira suas credenciais">
+Digite seu endereco de e-mail e a senha que voce definiu ao aceitar o convite. Clique em **Entrar**.
+</Step>
+<Step title="Selecione um tenant (apenas super admins)">
+Se voce e um super admin, sera solicitado a selecionar com qual tenant (organizacao) deseja trabalhar. Usuarios regulares e admins pulam esta etapa e vao diretamente ao mapa.
+</Step>
+</Steps>
+
+Apos o login, voce chega ao **Digital Twin** — o mapa interativo da sua rede logistica.
+
+## Navegando pela barra lateral
+
+A barra lateral a esquerda e sua navegacao principal. Ela organiza a plataforma em modulos:
+
+{/* TODO: Add screenshot of sidebar expanded */}
+
+| Secao | O que contem |
+|-------|-------------|
+| **Digital Twin** | O mapa interativo da rede logistica |
+| **Digital Model** | Gerenciamento de unidades (instalacoes) — navegar e inspecionar unidades individuais |
+| **Services** | Servicos orientados a dados como Loss Prediction (visualizacao em tabela, collector, dashboard, modelos) |
+| **Database** | Navegador de dados brutos para CTRCs, predicoes, unidades e links da rede |
+
+Na parte inferior da barra lateral voce encontrara:
+
+- **Seletor de tema** (icone sol/lua) para alternar entre modo claro e escuro
+- **Link de Configuracoes** para conta, gerenciamento de usuarios e configuracao de tenant
+- **Menu do usuario** com seu nome, e-mail e opcao de sair
+
+<Callout type="tip">
+Voce pode recolher a barra lateral clicando no icone de painel no topo. Isso libera mais espaco na tela para o mapa ou tabelas de dados. O estado recolhido e lembrado entre sessoes.
+</Callout>
+
+## Explorando o mapa do Digital Twin
+
+O Digital Twin e a pagina inicial da plataforma. Ele mostra um mapa interativo de toda a sua rede logistica.
+
+{/* TODO: Add screenshot of the network map with markers */}
+
+**O que voce pode fazer no mapa:**
+
+- **Zoom e pan** usando a roda do mouse e gestos de arrastar
+- **Clicar em um marcador de unidade** (ponto azul) para abrir seu painel de detalhes no lado direito
+- **Ver conexoes de rotas** desenhadas como linhas entre instalacoes
+- **Alternar modo imersivo** escondendo as barras superior e inferior para uma experiencia de mapa em tela cheia
+
+Ao clicar em um marcador de unidade, um painel de detalhes desliza pela direita mostrando:
+
+- O codigo, nome, tipo e status da unidade
+- Informacoes de localizacao (cidade, estado)
+- Um link para a pagina de detalhes completa da unidade
+
+## Revisando predicoes de perda
+
+Navegue ate **Services > Loss Prediction > Table View** na barra lateral. Esta e a ferramenta operacional principal para monitorar risco de carga.
+
+{/* TODO: Add screenshot of loss prediction table */}
+
+A tabela exibe CTRCs pontuados pelo modelo de machine learning, mostrando:
+
+| Coluna | Descricao |
+|--------|-----------|
+| **CTRC** | O numero do documento de embarque |
+| **Localizacao** | Localizacao atual da carga |
+| **Origem** | Unidade de emissao |
+| **Destino** | Destino de entrega |
+| **Risco** | Badge colorida: ALTO (vermelho), MEDIO (amarelo), BAIXO (verde) |
+| **Probabilidade** | Probabilidade numerica com uma barra visual |
+| **Peso** | Peso da carga em quilogramas |
+| **Valor** | Valor da carga em BRL (Reais) |
+| **Emissao** | Data em que o CTRC foi emitido |
+
+**Filtragem e busca:**
+
+- Use a **barra de busca** no topo para encontrar CTRCs especificos por numero
+- Filtre por **unidade** usando o dropdown (mostra todas as instalacoes da sua rede)
+- Filtre por **nivel de risco**: Alto + Medio (padrao), apenas Alto, apenas Medio, apenas Baixo, ou Todos
+- Clique nos cabecalhos das colunas para **ordenar** por probabilidade, peso, valor ou data de emissao
+- **Exporte para CSV** usando o botao de download para analise offline
+
+<Callout type="info">
+Por padrao, a tabela mostra CTRCs de risco alto e medio ordenados por probabilidade (maior primeiro). Isso ajuda voce a focar nos embarques que precisam de mais atencao.
+</Callout>
+
+## Usando o Collector
+
+O **Collector** e uma interface otimizada para dispositivos moveis projetada para operadores de campo que verificam fisicamente cargas de alto risco.
+
+Para acessa-lo, navegue ate **Services > Loss Prediction > Device View** na barra lateral, ou abra `/collector` diretamente em um dispositivo movel.
+
+{/* TODO: Add screenshot of collector on mobile */}
+
+<Steps>
+<Step title="Selecione uma unidade">
+Use o dropdown no topo para filtrar predicoes por instalacao. Isso restringe a lista a cargas atualmente em sua localizacao.
+</Step>
+<Step title="Revise os cartoes de carga">
+Cada cartao mostra um CTRC de risco alto ou medio com sua badge de risco, numero do documento, numero da nota fiscal, remetente, rota (origem ate destino) e contagem de volumes. Uma borda colorida a esquerda indica o nivel de risco.
+</Step>
+<Step title="Verifique um embarque">
+Toque no botao azul da camera em qualquer cartao. Isso abre a camera do seu dispositivo. Tire uma foto da carga para verificacao.
+</Step>
+<Step title="Confirme">
+Apos capturar a foto, toque em **Usar Foto** para enviar a verificacao. O CTRC e removido da lista e marcado como verificado.
+</Step>
+</Steps>
+
+<Callout type="tip">
+O Collector filtra automaticamente CTRCs de risco ALTO e MEDIO que ainda nao foram verificados. Uma vez que voce verifica um embarque, ele desaparece da lista imediatamente.
+</Callout>
+
+## Navegando dados brutos
+
+O modulo **Database** permite que voce navegue pelas tabelas de dados brutos que alimentam a plataforma. Navegue ate **Database** na barra lateral.
+
+Voce pode alternar entre quatro tabelas:
+
+- **CTRCs (base_455)** — todos os registros de embarque com origem, destino, valor, peso e mais
+- **Loss Predictions** — saidas do modelo incluindo probabilidade, nivel de risco, confianca e versao do modelo
+- **Units** — dados mestres de instalacoes com codigos, nomes, localizacoes e coordenadas
+- **Network Links** — conexoes de rotas entre instalacoes com tipo de veiculo e precificacao
+
+Use a barra de busca para filtrar linhas por qualquer valor de coluna. A tabela mostra ate 100 linhas por vez com uma contagem de linhas filtradas vs. total.
+
+## Ajustando configuracoes
+
+Clique em **Configuracoes** na barra lateral (ou no icone de engrenagem na parte inferior) para acessar as configuracoes da sua conta.
+
+- Aba **Minha Conta**: visualize suas informacoes de perfil (nome, e-mail, papel, tenant) e altere sua senha
+- Aba **Usuarios** (apenas admins): gerencie usuarios na sua organizacao — convide novos usuarios, edite papeis, desative contas
+- Aba **Tipos de Usuario** (apenas admins): crie e gerencie modelos de tipos de usuario que definem acesso a modulos
+- Aba **Tenants** (apenas super admins): gerencie organizacoes tenant
+
+<Card title="Proximo: Visao Geral da Plataforma" href="/v1/platform">
+Explore todos os modulos da plataforma em detalhe.
+</Card>

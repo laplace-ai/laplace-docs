@@ -1,0 +1,56 @@
+---
+title: "Authentication"
+description: "Overview of the Laplace Platform authentication system — secure login, role-based access, and invite-based onboarding."
+---
+
+# Authentication
+
+The Laplace Platform uses a **secure authentication system** with role-based access control. Every user belongs to an organization and access is controlled at both the organization and user level.
+
+## How it works
+
+<Steps>
+<Step title="Administrator invites a user">
+An administrator creates a new user in the Settings panel, specifying their name, email, role, and access profile. The system generates a one-time invite token and sends an email with an activation link.
+</Step>
+<Step title="User sets their password">
+The new user clicks the invite link, which takes them to the password setup page. After validating the token, they set their password and their account is activated.
+</Step>
+<Step title="User logs in">
+The user navigates to the login page and enters their email and password. The platform verifies credentials and creates a secure session.
+</Step>
+<Step title="Session is maintained">
+The platform maintains your session automatically. You do not need to log in again unless your session expires after an extended period of inactivity.
+</Step>
+<Step title="Access is enforced">
+Every action on the platform checks your role and access profile. You only see the features and data that your organization and profile grant access to.
+</Step>
+</Steps>
+
+## Key concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Roles** | Two roles — Administrator and User — control what actions you can perform |
+| **Access profiles** | Templates that define which features a user can see (e.g., "Analyst", "Collector", "Manager") |
+| **Invite-based registration** | No self-registration; administrators create and invite users |
+| **Facility access** | Administrators can restrict which facilities (units) a user can see |
+
+## Security measures
+
+- **Secure sessions**: All sessions are cryptographically secured and verified on every request
+- **Session expiration**: Sessions expire automatically after a period of inactivity
+- **Invite-only access**: No self-registration — only administrators can create user accounts
+- **Data isolation**: All data is scoped to your organization — you can only see your own organization's data
+
+<Card title="Login" href="/v1/authentication/login">
+Detailed walkthrough of the login flow.
+</Card>
+
+<Card title="Roles" href="/v1/authentication/roles">
+Understanding the role system and permissions.
+</Card>
+
+<Card title="Invites" href="/v1/authentication/invites">
+How the invite-based user onboarding system works.
+</Card>

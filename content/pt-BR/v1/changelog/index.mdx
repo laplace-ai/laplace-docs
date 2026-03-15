@@ -1,0 +1,175 @@
+---
+title: "Changelog"
+description: "Histórico de versões da Plataforma Laplace — todos os lançamentos com destaques, novas funcionalidades e melhorias."
+---
+
+# Changelog
+
+Todas as alterações relevantes da Plataforma Laplace são documentadas aqui.
+
+---
+
+## v0.3.0
+
+**Lançamento**: 12 de março de 2026
+
+Este lançamento traz uma grande reformulação da barra lateral, suporte bilíngue completo, melhorias no coletor e otimizações de desempenho.
+
+### Reformulação da barra lateral
+
+- Barra lateral completamente redesenhada com **navegação retrátil** e hierarquia de módulos limpa
+- A barra lateral agora mantém seu estado retraído/expandido entre sessões (salvo no localStorage)
+- Adição de **dicas em tooltip** quando a barra lateral está retraída, mostrando o rótulo de cada item de navegação ao passar o mouse
+- Introdução de **logo/ícone do tenant** no topo da barra lateral — logo do Laplace para tenant interno, círculos coloridos com iniciais para tenants externos
+- Adição de **alternador de tema** (sol/lua) e **link de configurações** na seção inferior da barra lateral
+- Menu de usuário na parte inferior com dropdown para configurações e sair
+- **Filtragem baseada em módulos**: A barra lateral exibe dinamicamente apenas os módulos que o usuário tem acesso, com base na assinatura do tenant e no tipo de usuário
+
+### Internacionalização bilíngue
+
+- Suporte completo a **PT-BR e EN-US** em toda a plataforma usando next-intl
+- Alternador de idioma disponível na página de login, cabeçalho do coletor e configurações
+- Todos os rótulos de interface, botões, mensagens de erro e textos de status traduzidos
+- Arquivos de tradução: `messages/pt-BR.json` e `messages/en-US.json`
+
+### Reformulação da página de Configurações
+
+- Abas horizontais substituídas por um **layout de navegação lateral** (inspirado nas configurações do Claude.ai)
+- Três seções: **Geral** (tema + idioma), **Minha Conta**, **Gerenciamento de Usuários** (apenas admin)
+- Geral agora é a seção padrão para todos os usuários
+- Gerenciamento de Usuários agrupa Usuários, Tipos de Usuário e Tenants em uma única seção com abas internas
+- Acessível por deep link via query params na URL (`/settings?tab=general`)
+
+### Melhorias no coletor
+
+- Correção do fluxo de captura de câmera para dispositivos móveis
+- Layout de cards melhorado — campos empilhados verticalmente: Prioridade → CTRC → Qtd. NF → Empresa → Rota
+- Adição da exibição do número da nota fiscal (NF) nos cards de carga
+- Tag de empresa agora visível no modo escuro (adição de borda para contraste)
+- Melhorias no estilo do badge de contagem de volumes
+
+### Correção da barra de busca
+
+- Correção do comportamento do campo de busca na tabela de predição de perdas
+- A busca agora filtra corretamente por número de CTRC
+
+### Correções de bugs
+
+- Correção da chave de tradução `statusBar.breadcrumb.settings` ausente
+- Correção de todas as traduções em português para usar caracteres especiais corretos (ç, ã, õ, é, á, ú, í, ô)
+- Correção da sobreposição do rodapé na página do digital twin
+
+### Melhorias de desempenho
+
+- Tempos de resposta da API otimizados com índices parciais no banco de dados
+- Carga inicial de dados reduzida de 1000 para 100 linhas
+- Melhoria no comportamento de redimensionamento do mapa quando a barra lateral retraí/expande
+
+### Plano do dashboard
+
+- Adição de documentação interna para o plano de implementação do Dashboard de Predição de Perdas
+- As views de Dashboard e Modelos agora mostram dados mockados com um banner de aviso "MOCKUP" claro
+
+---
+
+## v0.2.0
+
+**Lançamento**: 8 de março de 2026
+
+Este lançamento introduz o sistema completo de autenticação, painel de configurações, design system e navegação por módulos na barra lateral.
+
+### Sistema de autenticação
+
+- **Autenticação baseada em JWT** com tokens de acesso (cookie) e tokens de atualização (localStorage)
+- **Página de login** com formulário de email/senha e alternador de idioma
+- **Sistema de convites**: Links de convite criados por admins para onboarding seguro de usuários
+- **Gerenciamento do ciclo de vida de tokens**: Atualização automática, detecção de expiração com buffer de 30 segundos
+- **Middleware do Next.js** para proteção de rotas (redireciona para login se não autenticado)
+
+### Controle de acesso baseado em papéis
+
+- Hierarquia de papéis em três níveis: **super_admin**, **admin**, **user**
+- **Funcionalidades de super admin**: Alternância de tenant, página de seleção de tenant, visibilidade cross-tenant
+- **Funcionalidades de admin**: Gerenciamento de usuários, gerenciamento de tipos de usuário, envio de convites
+- **Filtragem de barra lateral por módulos**: Usuários veem apenas os módulos que seu tenant e tipo de usuário permitem
+
+### Página de configurações
+
+- **Aba Usuários** (admin/super_admin): Gerenciar usuários, enviar convites, editar papéis, desativar contas
+- **Aba Tipos de Usuário** (admin/super_admin): Criar e gerenciar modelos de tipo de usuário com acesso a módulos
+- **Aba Tenants** (super_admin): Criar e gerenciar organizações de tenant, configurar assinaturas de módulos
+- **Aba Minha Conta** (todos os usuários): Visualizar informações do perfil, alterar senha
+
+### Design system
+
+- Sistema abrangente de **design tokens com variáveis CSS** para temas
+- Suporte completo a **modo claro e modo escuro** com consistência de modo (tudo alterna junto)
+- Modo claro: tons neutros quentes (inspirado no Notion)
+- Modo escuro: cinzas neutros (sem tonalidade azul)
+- Azul (`#3A8DFF`) usado exclusivamente como cor de destaque para elementos interativos
+
+### Navegação baseada em módulos
+
+- Itens da barra lateral filtrados por módulos do tenant e permissões do tipo de usuário
+- Badges "Em breve" para módulos não lançados (Control Tower, Load Consolidation)
+- Navegação aninhada com seções expansíveis (Serviços > Loss Prediction > sub-views)
+
+---
+
+## v0.1.0
+
+**Lançamento**: 1 de março de 2026
+
+O lançamento inicial da Plataforma Laplace com funcionalidades essenciais para visualização de redes logísticas e predição de perdas de carga.
+
+### Mapa do Digital Twin
+
+- **Mapa interativo Mapbox GL** mostrando instalações logísticas como marcadores azuis
+- **Visualização de rotas** com camadas de linhas GeoJSON conectando unidades
+- **Painel de detalhes da unidade** que desliza pela direita ao clicar em um marcador
+- Estilos de mapa claro/escuro correspondendo ao tema da plataforma
+- Responsivo ao retrair/expandir da barra lateral
+
+### Tabela de Loss Prediction
+
+- **Tabela de dados** com todos os CTRCs pontuados por ML
+- **Badges de risco** (ALTO, MEDIO, BAIXO) com codificação por cores
+- **Barras de probabilidade** com porcentagem numérica e preenchimento visual
+- **Ordenação por colunas** (probabilidade, peso, valor, data de emissão, CTRC)
+- **Filtro de unidade** por dropdown
+- **Filtro de nível de risco** com presets (Alto + Medio, Alto apenas, etc.)
+- **Busca** por número de CTRC
+- **Exportação CSV** para análise offline
+- **Formatação de moeda BRL** e exibição de números com localização
+
+### Database browser
+
+- **Navegador de quatro tabelas**: CTRCs, Loss Predictions, Units, Network Links
+- Barra lateral esquerda com lista de tabelas, painel direito com grade de dados
+- **Busca client-side** em todas as colunas
+- Exibição de contagem de linhas (filtradas/total)
+
+### Coletor
+
+- **Interface de cards otimizada para mobile** para verificação de cargas
+- Filtro de unidade por dropdown
+- **Integração com câmera** para verificação fotográfica
+- Atualizações de interface otimistas na verificação
+- Paginação para grandes conjuntos de resultados
+
+### Unidades
+
+- **Página de lista de unidades** dentro do Digital Model
+- **Página de detalhes da unidade** com CTRCs, estatísticas gerais e navegação a partir do mapa
+
+<Callout type="info">
+A plataforma está em desenvolvimento ativo. Novas funcionalidades e melhorias são lançadas regularmente. Volte para conferir atualizações conforme novos módulos e capacidades são adicionados.
+</Callout>
+
+<Card title="Primeiros Passos" href="/v1/getting-started">
+Novo na plataforma? Comece pelo guia de primeiros passos.
+</Card>
+
+<Card title="Visão Geral da Plataforma" href="/v1/platform">
+Explore todos os módulos disponíveis da plataforma.
+</Card>

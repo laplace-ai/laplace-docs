@@ -1,0 +1,126 @@
+---
+title: "Roles"
+description: "The Laplace Platform role system — Administrator and User roles with their capabilities and access levels."
+---
+
+# Roles
+
+The Laplace Platform uses a **two-tier role system** to control access. Each user is assigned exactly one role, and the Administrator role inherits all capabilities of the User role.
+
+## Role hierarchy
+
+```
+Administrator
+    |
+    |  inherits all user capabilities
+    |  + user management
+    v
+   User
+```
+
+## Role definitions
+
+### User
+
+The **User** role is the standard access level for most platform users — logistics operators, analysts, field workers, and other team members.
+
+**Capabilities:**
+
+- Access the features assigned to your access profile (e.g., Digital Twin, Loss Prediction, Collector)
+- View data within your organization's scope
+- Use all features of your permitted modules (view predictions, verify cargo, browse data)
+- Change your own password in Settings
+- View your account information
+
+**Limitations:**
+
+- Cannot see or access features not assigned to your access profile
+- Cannot manage other users
+- Cannot create or modify access profiles
+
+### Administrator
+
+The **Administrator** role is for organization managers — typically operations managers or team leads who need to manage their team's users and access.
+
+**Capabilities (in addition to all User capabilities):**
+
+- View the **Users** tab in Settings — see all users in your organization
+- **Invite new users** — create users by email, assign roles and access profiles
+- **Edit users** — change roles, access profiles, and active status
+- **Deactivate users** — disable accounts without deleting them
+- **Resend invites** — generate new invite links for users who have not set their password
+- **Manage access profiles** — create, edit, and delete profile templates that define feature access
+- **Manage facility access** — restrict which units (facilities) individual users can see
+- Has access to all features enabled for your organization
+
+## Role comparison
+
+| Capability | User | Administrator |
+|-----------|------|---------------|
+| Access permitted features | Yes | Yes |
+| View organization data | Yes | Yes |
+| Change own password | Yes | Yes |
+| View account info | Yes | Yes |
+| Invite users | - | Yes |
+| Edit users | - | Yes |
+| Deactivate users | - | Yes |
+| Resend invites | - | Yes |
+| Manage access profiles | - | Yes |
+| Manage facility access | - | Yes |
+
+## Access profiles (feature access)
+
+Within each role, **access profiles** provide a second layer of access control that determines which features a user can see.
+
+An access profile is a template with:
+
+- A **name** (e.g., "Analyst", "Collector", "Manager")
+- An optional **description**
+- A set of **features** that the profile grants access to
+
+When an administrator creates or edits a user, they assign an access profile. The features defined in that profile determine which sidebar items the user sees.
+
+**Example access profiles:**
+
+| Profile | Features | Use Case |
+|---------|----------|----------|
+| Analyst | Digital Twin, Loss Prediction Table, Database | Operations analyst who reviews predictions and raw data |
+| Collector | Loss Prediction Collector View | Field operator who only needs the mobile verification interface |
+| Manager | Digital Twin, Digital Model, Loss Prediction (all views), Database | Operations manager with full visibility |
+
+<Callout type="info">
+Administrators always have access to all features enabled for your organization, regardless of access profile assignment. Access profiles only restrict the User role.
+</Callout>
+
+## Facility access restrictions
+
+Beyond feature access, administrators can restrict which **facilities (units)** a user can see. This is configured per user in the Settings panel:
+
+- **No restrictions** (default): The user sees data from all facilities in your network
+- **Specific facilities**: The user only sees data from the selected facilities
+
+This is useful for large organizations where operators at specific locations should only see data relevant to their facility, not the entire network.
+
+## How access is determined
+
+When you load the platform, your access is determined by checking three layers:
+
+<Steps>
+<Step title="Are you authenticated?">
+The platform checks for a valid session. If your session is missing or expired, you are redirected to the login page.
+</Step>
+<Step title="What features does your organization have?">
+Your organization's enabled features determine what is available at the organization level.
+</Step>
+<Step title="What does your access profile allow?">
+Your assigned access profile further filters the feature list. The sidebar only shows the features available to both your organization and your profile.
+</Step>
+</Steps>
+
+<Card title="Invites" href="/v1/authentication/invites">
+Learn how new users are onboarded through the invite system.
+</Card>
+
+<Card title="Settings" href="/v1/settings">
+See how administrators manage users and access profiles.
+</Card>

@@ -1,0 +1,76 @@
+---
+title: "Visao Geral da Plataforma"
+description: "Uma visao geral abrangente dos modulos da Plataforma Laplace — Digital Twin, Digital Model, Loss Prediction, Collector e Database Browser."
+---
+
+# Visao Geral da Plataforma
+
+A Plataforma Laplace e organizada em **modulos** — cada um servindo a um proposito operacional distinto. Juntos, eles formam um digital twin completo da sua rede logistica.
+
+Esta secao cobre cada modulo em detalhe: o que faz, como usar e quais dados expoe.
+
+## Arquitetura de modulos
+
+A barra lateral da plataforma reflete a hierarquia de modulos:
+
+```
+Digital Twin          →  Interactive logistics network map
+Digital Model
+  └── Units           →  Facility management and detail views
+Services
+  └── Loss Prediction
+        ├── Table View    →  Risk-scored CTRC table with filters
+        ├── Device View   →  Mobile cargo verification (Collector)
+        ├── Dashboard     →  Analytics and model performance (coming soon)
+        └── Models        →  ML model management (coming soon)
+  └── Control Tower   →  Operations monitoring (coming soon)
+  └── Load Consolidation  →  Shipment optimization (coming soon)
+Database              →  Raw data browser
+```
+
+<Callout type="info">
+A visibilidade dos modulos e controlada pela assinatura do seu tenant e pelo seu tipo de usuario. Voce so vera os modulos que sua organizacao tem acesso e que seu administrador atribuiu ao seu tipo de usuario.
+</Callout>
+
+## Modulos disponiveis
+
+<Card title="Digital Twin" href="/v1/platform/digital-twin">
+O mapa interativo Mapbox GL que visualiza toda a sua rede logistica — instalacoes, rotas e conexoes. A pagina inicial padrao.
+</Card>
+
+<Card title="Digital Twin — Unidades" href="/v1/platform/digital-twin/units">
+Navegue, busque e inspecione unidades individuais (instalacoes) na sua rede logistica. Visualize detalhes da unidade, dados operacionais e embarques vinculados.
+</Card>
+
+<Card title="Loss Prediction" href="/v1/platform/loss-prediction">
+Pontuacao de risco de perda de carga com ML. Navegue pelas predicoes em uma tabela ordenavel, filtre por nivel de risco e unidade, e exporte dados para analise offline.
+</Card>
+
+<Card title="Collector" href="/v1/platform/collector">
+Uma interface de verificacao otimizada para dispositivos moveis para operadores de campo. Revise cartoes de carga de alto risco e verifique embarques com evidencia fotografica.
+</Card>
+
+<Card title="Database Browser" href="/v1/platform/database-browser">
+Navegue diretamente pelas tabelas de dados brutos — CTRCs, predicoes de perda, unidades e links da rede. Util para validacao de dados e investigacao ad-hoc.
+</Card>
+
+## Controle de acesso por modulo
+
+A Plataforma Laplace utiliza um **sistema de controle de acesso baseado em modulos**. Isso significa:
+
+1. **Nivel de tenant**: Cada tenant (organizacao) assina modulos especificos. Apenas modulos assinados aparecem na barra lateral.
+2. **Nivel de tipo de usuario**: Dentro de um tenant, administradores criam **tipos de usuario** (ex.: "Analista", "Coletor", "Gerente") que definem quais modulos um grupo de usuarios pode acessar.
+3. **Nivel de usuario**: Cada usuario recebe um tipo de usuario, que determina sua navegacao na barra lateral.
+
+Este sistema em camadas garante que os usuarios vejam apenas o que e relevante para seu papel. Um operador de campo pode ver apenas o Collector, enquanto um gerente de operacoes ve o Digital Twin, a tabela de Loss Prediction e o Database Browser.
+
+Para mais informacoes sobre como o controle de acesso funciona, veja [Autenticacao](/v1/authentication) e [Papeis](/v1/authentication/roles).
+
+## Barra de status
+
+No topo de cada pagina, uma barra de status fina mostra:
+
+- Um **breadcrumb** indicando sua localizacao atual (ex.: "Services > Loss Prediction > Table View")
+- Um **indicador de conexao** mostrando "Conectado ao Laplace Engine" com o timestamp da ultima sincronizacao
+
+A barra de status ajuda voce a se orientar enquanto navega entre modulos, especialmente em visualizacoes aninhadas.

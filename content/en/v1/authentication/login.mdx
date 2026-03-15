@@ -1,0 +1,84 @@
+---
+title: "Login"
+description: "The Laplace Platform login flow — email/password authentication and post-login experience."
+---
+
+# Login
+
+The login page is the entry point to the Laplace Platform. It authenticates users with email and password credentials and takes you to your default starting page.
+
+{/* TODO: Add screenshot of the login page */}
+
+## Login page
+
+The login page features a clean, centered card with:
+
+- **Laplace logo and name** at the top
+- **Language toggle** (top-right corner) to switch between PT-BR and EN-US before logging in
+- **Email field** with placeholder "you@company.com"
+- **Password field** with masked input
+- **Sign In button** with loading state
+
+The page uses the platform's design system — warm neutrals in light mode, neutral grays in dark mode — and adapts to your system theme preference.
+
+## How to log in
+
+<Steps>
+<Step title="Enter credentials">
+Type your email address and password. Both fields are required. Your browser can autofill saved credentials.
+</Step>
+<Step title="Submit">
+Click **Sign In** (or "Entrar" in Portuguese). The button shows a loading spinner while the request is in progress.
+</Step>
+<Step title="Access the platform">
+After successful authentication, you are redirected to the platform's main page — the Digital Twin map by default.
+</Step>
+</Steps>
+
+## Error handling
+
+If authentication fails, an error message appears below the sign-in button. Common error scenarios:
+
+| Error | Cause | What to do |
+|-------|-------|------------|
+| "Failed to sign in" | Incorrect email or password | Double-check your credentials and try again |
+| Network error | Service is unreachable | Check your internet connection or contact your administrator |
+| Account inactive | Your account has been deactivated | Contact your organization's administrator |
+
+<Callout type="info">
+There is no "forgot password" self-service flow. If you forget your password, contact your organization's administrator. They can resend your invite link, which lets you set a new password.
+</Callout>
+
+## Session management
+
+After login, the platform manages your session automatically:
+
+- Your session is maintained in the background — you do not need to log in again during normal use
+- If your session expires after extended inactivity, you will be redirected to the login page
+- Session refresh happens silently — you will not see any interruption during normal use
+
+## Signing out
+
+To sign out:
+
+1. Click your **user avatar** at the bottom of the sidebar
+2. In the dropdown menu, click **Sign Out** (or "Sair" in Portuguese)
+
+This clears your session and redirects you to the login page.
+
+## Language on the login page
+
+The login page includes a language toggle that lets you switch between Portuguese and English before signing in. This is useful for:
+
+- New users who prefer a different language from the browser default
+- Shared devices where different operators may prefer different languages
+
+The language preference is preserved after login and applies to the entire platform.
+
+<Card title="Roles" href="/v1/authentication/roles">
+Learn about the two user roles and their permissions.
+</Card>
+
+<Card title="Invites" href="/v1/authentication/invites">
+Understand how new users are onboarded through the invite system.
+</Card>

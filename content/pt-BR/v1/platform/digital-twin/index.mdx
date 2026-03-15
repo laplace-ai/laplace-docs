@@ -1,0 +1,112 @@
+---
+title: "Digital Twin"
+description: "O modulo Digital Twin — um mapa interativo Mapbox GL que visualiza sua rede logistica com instalacoes, rotas e sobreposicoes de dados em tempo real."
+---
+
+# Digital Twin
+
+O Digital Twin e o coracao da Plataforma Laplace. Ele fornece uma visualizacao interativa baseada em mapa de toda a sua rede logistica — cada instalacao, cada conexao de rota, tudo renderizado em um mapa em tempo real com Mapbox GL.
+
+Esta e a pagina inicial padrao quando voce faz login na plataforma.
+
+{/* TODO: Add screenshot of the full Digital Twin map view */}
+
+## O que voce ve no mapa
+
+O mapa do Digital Twin exibe tres camadas de informacao:
+
+### Marcadores de unidade
+
+Cada instalacao logistica (armazem, centro de distribuicao, hub, terminal, filial) da sua rede aparece como um **marcador azul** no mapa. Os marcadores sao posicionados nas coordenadas geograficas da instalacao.
+
+Passar o mouse sobre um marcador mostra o codigo da unidade. Clicar em um marcador abre o **painel de detalhes da unidade** no lado direito da tela.
+
+{/* TODO: Add screenshot showing unit markers on the map */}
+
+### Conexoes de rotas
+
+Linhas conectando marcadores de unidade representam os **links da rede** entre instalacoes — as rotas ao longo das quais a carga flui. Essas conexoes sao desenhadas como linhas sutis que ajudam a visualizar a forma e densidade da sua rede logistica.
+
+Ao selecionar uma unidade, as conexoes de e para essa unidade sao destacadas, facilitando a visualizacao do papel daquela instalacao na rede.
+
+### Estilo do mapa
+
+O mapa se adapta automaticamente ao seu tema:
+
+| Tema | Estilo do Mapa |
+|------|---------------|
+| Modo claro | Mapbox Light (limpo, minimalista) |
+| Modo escuro | Mapbox Dark (discreto, confortavel para os olhos) |
+
+## Interagindo com o mapa
+
+### Navegacao
+
+- **Zoom**: Role a roda do mouse para aumentar e diminuir o zoom
+- **Pan**: Clique e arraste para mover o mapa
+- **Rotacao**: Clique com o botao direito e arraste para rotacionar a perspectiva do mapa
+
+O mapa e centralizado no Brasil por padrao, ja que o Laplace atualmente foca em redes logisticas brasileiras.
+
+### Selecionando uma unidade
+
+Clique em qualquer marcador de unidade para abrir o **painel de detalhes da unidade**. Este painel desliza pelo lado direito e mostra:
+
+- **Codigo da unidade** (ex.: "ATI SPA") com um indicador de status ativo/inativo
+- **Nome da unidade** (ex.: "Sao Paulo")
+- **Localizacao** (cidade e estado)
+- **Tipo da unidade** (ex.: hub, filial, centro de distribuicao)
+- **Status** (ativo ou inativo)
+- **Secao de servicos** (em breve — mostrara loss prediction e analytics da unidade)
+- Um botao **"Ver Unidade Detalhada"** que navega para a pagina completa de detalhes da unidade
+
+{/* TODO: Add screenshot of the unit detail panel */}
+
+Para fechar o painel, clique no botao X no canto superior direito do painel, ou clique no fundo do mapa.
+
+### Modo imersivo
+
+Quando a pagina do Digital Twin esta ativa, o mapa pode entrar no **modo imersivo** — ocultando a barra superior e a barra de status inferior para oferecer o maximo de espaco para o mapa. A barra lateral permanece visivel para navegacao.
+
+Isso e util quando voce quer apresentar a visualizacao da rede em uma tela grande ou projetor.
+
+## Destaque de rotas
+
+Ao clicar em uma unidade, as conexoes de rotas mudam:
+
+- **Rotas conectadas** (rotas de ou para a unidade selecionada) ficam mais prominentes
+- **Outras rotas** esmaecem para uma opacidade sutil
+
+Este destaque visual ajuda voce a entender imediatamente quais instalacoes estao diretamente conectadas a unidade selecionada, revelando o papel da unidade na rede logistica.
+
+## Performance
+
+O mapa do Digital Twin e otimizado para performance:
+
+- O componente do mapa e **importado dinamicamente** com SSR desabilitado (mapas requerem APIs do navegador)
+- Linhas de rota usam **fontes GeoJSON** para renderizacao eficiente de centenas de conexoes
+- O mapa **redimensiona automaticamente** quando a barra lateral e recolhida ou expandida
+- Dados de unidades e links sao buscados uma vez ao carregar a pagina e armazenados em cache no estado do componente
+
+<Callout type="tip">
+Recolha a barra lateral para uma visualizacao mais ampla do mapa. O mapa redimensiona automaticamente para preencher o espaco disponivel, oferecendo uma melhor visao geral de toda a rede.
+</Callout>
+
+## Fontes de dados
+
+O Digital Twin busca dados de dois endpoints da API:
+
+| Dados | Endpoint | Descricao |
+|-------|----------|-----------|
+| Unidades | `GET /v1/units` | Todas as instalacoes com codigos, nomes, coordenadas e metadados |
+| Links da Rede | `GET /v1/network-links` | Conexoes de rotas entre instalacoes com tipo de veiculo e classificacao |
+
+Esses dados sao atualizados cada vez que voce navega para a pagina do Digital Twin.
+
+<Card title="Unidades" href="/v1/platform/digital-twin/units">
+Saiba mais sobre as visualizacoes de gerenciamento de unidades — listagem, busca e inspecao de instalacoes individuais.
+</Card>
+
+<Card title="Loss Prediction" href="/v1/platform/loss-prediction">
+Veja como o servico de loss prediction pontua embarques e como revisa-los na visualizacao em tabela.
+</Card>

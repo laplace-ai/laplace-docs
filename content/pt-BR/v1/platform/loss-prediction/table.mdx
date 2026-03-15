@@ -1,0 +1,149 @@
+---
+title: "Tabela de Predição de Perda"
+description: "A visualização em Tabela de Predição de Perda — uma tabela de dados ordenável e filtrável para revisar CTRCs pontuados por ML com badges de risco, barras de probabilidade e exportação CSV."
+---
+
+# Tabela de Predição de Perda
+
+A Visualização em Tabela é a interface analítica principal do módulo de Predição de Perda. Ela apresenta todos os CTRCs pontuados por ML em uma tabela de dados rica, com badges de risco, visualizações de probabilidade, ordenação, filtragem e funcionalidades de exportação.
+
+Navegue até **Serviços > Predição de Perda > Visualização em Tabela** na barra lateral.
+
+{/* TODO: Add screenshot of the full loss prediction table */}
+
+## Layout da tabela
+
+### Barra de cabeçalho
+
+O topo da visualização em tabela contém:
+
+- **Título**: "Predição de Perda" com um badge "Pontuados" mostrando o total de CTRCs pontuados
+- **Barra de pesquisa**: Pesquise por número de CTRC para encontrar embarques específicos
+- **Dropdown de filtro por unidade**: Filtre predições por unidade (mostra todas as unidades da sua rede)
+- **Dropdown de filtro por nível de risco**: Filtre por nível de risco com opções predefinidas
+- **Botão Exportar CSV**: Baixe o conjunto de dados filtrado atual
+
+### Opções de filtro por nível de risco
+
+| Opção | Descrição |
+|--------|-------------|
+| **Alto + Medio** | Mostra CTRCs de alto e médio risco (padrão) |
+| **Alto apenas** | Mostra apenas CTRCs de alto risco |
+| **Medio apenas** | Mostra apenas CTRCs de médio risco |
+| **Baixo apenas** | Mostra apenas CTRCs de baixo risco |
+| **Todos os Níveis de Risco** | Mostra todos os CTRCs pontuados independente do risco |
+
+<Callout type="tip">
+O filtro padrão "Alto + Medio" é intencional — ele foca sua atenção nas predições acionáveis. Mude para "Todos os Níveis de Risco" quando precisar de uma visão completa, como para relatórios ou validação de dados.
+</Callout>
+
+### Colunas da tabela
+
+| Coluna | Chave | Ordenável | Descrição |
+|--------|-----|----------|-------------|
+| **CTRC** | `ctrc` | Sim | O número do documento de embarque, exibido em fonte monospace |
+| **Localização** | `localizacao_atual` | Não | Localização atual (unidade) da carga |
+| **Origem** | `unidade_emissora` | Não | A unidade que emitiu o CTRC |
+| **Destino** | `unidade_receptora` | Não | A unidade receptora |
+| **Risco** | `risk_level` | Não | Badge com cor: ALTO (vermelho), MEDIO (amarelo), BAIXO (verde) |
+| **Probabilidade** | `probability` | Sim | Probabilidade numérica (ex.: "87,3%") com uma barra de progresso colorida |
+| **Peso (KG)** | `peso_real_em_kg` | Sim | Peso da carga em quilogramas, formatado com separadores de localidade |
+| **Valor (R$)** | `valor_da_mercadoria` | Sim | Valor da carga em BRL, formatado como moeda (ex.: "R$ 12.450,00") |
+| **Emissão** | `day_created_at` | Sim | A data em que o CTRC foi emitido |
+| **Status** | `prediction` | Não | Se o modelo prevê perda ou não perda |
+
+### Badges de risco
+
+Cada CTRC possui um badge de risco com cor correspondente:
+
+- **ALTO**: Fundo vermelho, texto vermelho — maior risco
+- **MEDIO**: Fundo âmbar/amarelo, texto âmbar — risco moderado
+- **BAIXO**: Fundo verde, texto verde — baixo risco
+
+### Barras de probabilidade
+
+A coluna de probabilidade mostra tanto um percentual numérico quanto uma pequena barra de progresso. A cor de preenchimento da barra corresponde ao nível de risco:
+
+- Preenchimento vermelho para ALTO
+- Preenchimento amarelo/âmbar para MEDIO
+- Preenchimento verde para BAIXO
+
+A largura da barra representa o valor da probabilidade (0-100%), proporcionando uma leitura visual rápida entre as linhas.
+
+## Ordenação
+
+Clique em qualquer cabeçalho de coluna ordenável para ordenar a tabela. Clique novamente para alternar entre ordem crescente e decrescente. A coluna de ordenação ativa e a direção são refletidas no cabeçalho da coluna.
+
+| Campo de Ordenação | Direção Padrão | Caso de Uso |
+|-----------|-------------------|----------|
+| Probabilidade | Decrescente | Revise os CTRCs de maior risco primeiro (padrão recomendado) |
+| Peso | Decrescente | Encontre os embarques mais pesados |
+| Valor | Decrescente | Foque nas cargas mais valiosas |
+| Emissão | Decrescente | Veja os embarques mais recentes |
+| CTRC | Crescente | Busca alfabética |
+
+<Callout type="info">
+A tabela ordena por probabilidade em ordem decrescente por padrão. Isso coloca as predições mais acionáveis no topo, permitindo que você identifique rapidamente os embarques que precisam de atenção.
+</Callout>
+
+## Filtragem
+
+### Por unidade
+
+O dropdown de unidade lista todas as unidades da sua rede logística. Selecionar uma unidade filtra a tabela para mostrar apenas CTRCs atualmente naquela localização. Isso é útil para:
+
+- Revisar o risco em uma unidade específica
+- Preparar uma lista de verificação para operadores de campo em uma unidade específica
+- Investigar padrões em um hub ou filial específica
+
+### Por nível de risco
+
+O dropdown de nível de risco permite restringir a faixas de risco específicas. As opções predefinidas cobrem cenários operacionais comuns:
+
+- **Alto + Medio**: Monitoramento diário (padrão)
+- **Alto apenas**: Revisão crítica
+- **Medio apenas**: Revisão secundária
+- **Todos**: Dados completos para relatórios
+
+### Por pesquisa
+
+A barra de pesquisa realiza um filtro do lado do cliente na coluna CTRC. Digite um número de CTRC completo ou parcial para encontrar embarques específicos. A pesquisa não diferencia maiúsculas de minúsculas.
+
+## Paginação
+
+A tabela exibe **10 linhas por página** de um lote de até 100 registros obtidos da API. Os controles de navegação na parte inferior mostram:
+
+- Contagem total de linhas (ex.: "23 de 150 linhas")
+- Indicador de linhas por página
+- Navegação de página (anterior/próxima)
+
+<Callout type="info">
+A tabela busca lotes de 100 registros por vez da API e os pagina no lado do cliente. Quando você altera filtros ou ordenação, um novo lote é buscado para garantir precisão.
+</Callout>
+
+## Exportação CSV
+
+Clique no botão **Exportar CSV** (ícone de download) para exportar os dados visíveis atualmente como um arquivo CSV. A exportação inclui todas as colunas mostradas na tabela e respeita os filtros e a ordem de classificação ativos.
+
+Use as exportações CSV para:
+
+- Análise offline em aplicações de planilha
+- Compartilhar dados de risco com stakeholders que não possuem acesso à plataforma
+- Arquivar snapshots de predições para conformidade ou auditoria
+
+## Formatação de moeda e números
+
+A tabela usa **formatação de localidade brasileira** (pt-BR) para:
+
+- **Valores monetários**: Exibidos como `R$ 12.450,00` (formato BRL com ponto como separador de milhares e vírgula como separador decimal)
+- **Valores de peso**: Exibidos com formatação numérica adequada à localidade (ex.: `1.250` para 1.250 kg)
+
+Isso garante que os dados sejam imediatamente legíveis para operadores logísticos brasileiros sem necessidade de conversão mental.
+
+<Card title="Coletor" href="/v1/platform/collector">
+Saiba como operadores de campo verificam cargas de alto risco usando a interface móvel do Coletor.
+</Card>
+
+<Card title="Visão Geral da Predição de Perda" href="/v1/platform/loss-prediction">
+Retorne à visão geral do módulo de Predição de Perda.
+</Card>

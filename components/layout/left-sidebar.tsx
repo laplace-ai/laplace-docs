@@ -11,6 +11,7 @@ import { useAuth } from "@/lib/auth-context";
 import { SidebarItem } from "@/components/navigation/sidebar-item";
 import { VersionSelector } from "@/components/navigation/version-selector";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LanguageToggle } from "@/components/ui/language-toggle";
 import { cn } from "@/lib/utils";
 import {
   BookOpen,
@@ -148,12 +149,15 @@ export function LeftSidebar({ className, onNavigate }: LeftSidebarProps) {
                 <p className="truncate text-xs font-medium text-[var(--content-text-primary)]">
                   {user.name}
                 </p>
-                <p className="truncate text-[10px] text-[var(--content-text-secondary)]">
-                  {user.role.replace("_", " ")}
-                </p>
+                {(user.role === "admin" || user.role === "super_admin") && (
+                  <p className="truncate text-[10px] text-[var(--content-text-secondary)]">
+                    Administrator
+                  </p>
+                )}
               </div>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
+              <LanguageToggle />
               <ThemeToggle />
               <button
                 onClick={logout}
@@ -169,7 +173,10 @@ export function LeftSidebar({ className, onNavigate }: LeftSidebarProps) {
             <span className="text-xs text-[var(--content-text-secondary)]">
               Powered by Laplace Logistics
             </span>
-            <ThemeToggle />
+            <div className="flex items-center gap-0.5">
+              <LanguageToggle />
+              <ThemeToggle />
+            </div>
           </div>
         )}
       </div>

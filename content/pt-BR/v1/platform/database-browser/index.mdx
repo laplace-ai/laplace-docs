@@ -1,0 +1,147 @@
+---
+title: "Explorador de Dados"
+description: "O módulo Explorador de Dados — navegue por tabelas de dados brutos de CTRCs, predições de perda, unidades e links de rede diretamente da plataforma."
+---
+
+# Explorador de Dados
+
+O Explorador de Dados fornece acesso direto às tabelas de dados brutos que alimentam a Plataforma Laplace. É uma ferramenta orientada a desenvolvedores e analistas para validação de dados, investigação ad-hoc e compreensão da estrutura de dados subjacente.
+
+Navegue até **Database** na barra lateral.
+
+{/* TODO: Add screenshot of the database browser with table list and data grid */}
+
+## Layout da interface
+
+O Explorador de Dados utiliza um **layout de dois painéis**:
+
+### Painel esquerdo — Lista de tabelas
+
+Uma barra lateral (dentro da área de conteúdo principal) lista todas as tabelas de banco de dados disponíveis. Clique em um nome de tabela para carregar seus dados na grade principal.
+
+Tabelas disponíveis:
+
+| Tabela | Rótulo | Descrição |
+|-------|-------|-------------|
+| `ctrcs` | CTRCs (base_455) | Registros de embarque da fonte de dados base_455 — os dados operacionais principais |
+| `loss_predictions` | Predições de Perda | Saídas do modelo de ML incluindo probabilidade, nível de risco, confiança e versão do modelo |
+| `units` | Unidades | Dados mestre de unidades com códigos, nomes, localizações e coordenadas geográficas |
+| `network_links` | Links de Rede | Conexões de rotas entre unidades com tipo de veículo, classificação e preço |
+
+### Painel direito — Grade de dados
+
+A área principal exibe uma tabela rolável com os dados da tabela selecionada. Cada tabela possui um conjunto predefinido de colunas.
+
+## Esquemas das tabelas
+
+### CTRCs (base_455)
+
+A tabela de CTRCs contém dados de embarque limpos da fonte base_455. Este é o conjunto de dados operacionais principal.
+
+| Coluna | Descrição |
+|--------|-------------|
+| `ctrc` | Número do documento de embarque (identificador principal) |
+| `day_created_at` | Data de criação do CTRC |
+| `localizacao_atual` | Localização atual da carga |
+| `unidade_emissora` | Unidade emissora (unidade de origem) |
+| `unidade_receptora` | Unidade receptora (unidade de destino) |
+| `cliente_remetente` | Nome do cliente remetente |
+| `cliente_destinatario` | Nome do cliente destinatário |
+| `cidade_origem_da_prestacao` | Cidade de origem |
+| `cidade_de_entrega` | Cidade de entrega |
+| `uf_de_entrega` | Estado de entrega (ex.: SP, PR, RJ) |
+| `valor_do_frete` | Valor do frete em BRL |
+| `valor_da_mercadoria` | Valor da carga em BRL |
+| `peso_real_em_kg` | Peso real da carga em quilogramas |
+| `quantidade_de_volumes` | Quantidade de volumes da carga |
+| `mercadoria` | Tipo de mercadoria |
+
+### Predições de Perda
+
+A tabela de predições contém as saídas do modelo para CTRCs pontuados.
+
+| Coluna | Descrição |
+|--------|-------------|
+| `ctrc` | O número do CTRC pontuado (chave estrangeira para a tabela de CTRCs) |
+| `probability` | Probabilidade de perda (0.0 a 1.0) |
+| `risk_level` | Nível de risco derivado: ALTO, MEDIO ou BAIXO |
+| `confidence` | Pontuação de confiança do modelo |
+| `prediction` | Predição binária (perda / não perda) |
+| `model_version` | Versão do modelo que produziu esta predição |
+
+### Unidades
+
+A tabela de unidades contém dados mestre de todas as unidades da rede logística.
+
+| Coluna | Descrição |
+|--------|-------------|
+| `code` | Código único da unidade (ex.: "ATI SPA") |
+| `type` | Tipo da unidade (hub, filial, centro de distribuição, etc.) |
+| `name` | Nome legível da unidade |
+| `city` | Cidade da localização |
+| `state` | Sigla do estado |
+| `active` | Se a unidade está atualmente ativa |
+| `latitude` | Latitude geográfica (usada para posicionamento no mapa) |
+| `longitude` | Longitude geográfica (usada para posicionamento no mapa) |
+
+### Links de Rede
+
+A tabela de links de rede define conexões de rotas entre unidades.
+
+| Coluna | Descrição |
+|--------|-------------|
+| `origin_code` | Código da unidade de origem |
+| `destination_code` | Código da unidade de destino |
+| `vehicle_type` | Tipo de veículo nesta rota |
+| `classification` | Classificação da rota |
+| `price_brl` | Preço da rota em BRL |
+
+## Pesquisa
+
+Cada visualização de tabela inclui uma barra de pesquisa. A pesquisa realiza um **filtro de texto completo do lado do cliente** em todas as colunas visíveis. Digite qualquer valor e a tabela filtra instantaneamente para linhas que contenham aquele texto em qualquer coluna.
+
+A pesquisa é:
+
+- **Sem distinção de maiúsculas/minúsculas**: "sao paulo" encontra "Sao Paulo"
+- **Correspondência por substring**: "SPA" encontra "ATI SPA" e "SPA001"
+- **Entre colunas**: Pesquisa em todas as colunas simultaneamente
+
+A contagem de resultados atualiza em tempo real, mostrando o número de linhas filtradas vs. total (ex.: "23 de 150 linhas").
+
+## Carregamento de dados
+
+O Explorador de Dados busca **até 100 linhas** por tabela da API. Ele é projetado como uma ferramenta de consulta rápida, não como uma interface completa de exportação de dados.
+
+Quando você alterna entre tabelas:
+
+- A consulta de pesquisa é limpa
+- Um indicador de carregamento aparece enquanto os dados são buscados
+- Os dados da nova tabela substituem a visualização anterior
+
+<Callout type="info">
+O Explorador de Dados mostra um snapshot das primeiras 100 linhas de cada tabela. Para acesso completo aos dados, use a funcionalidade de exportação CSV na tabela de Predição de Perda ou conecte-se diretamente ao banco de dados.
+</Callout>
+
+## Casos de uso
+
+O Explorador de Dados é particularmente útil para:
+
+| Caso de Uso | Como |
+|----------|-----|
+| **Validação de dados** | Verifique que os pipelines ETL carregaram os dados corretamente ao conferir linhas individualmente |
+| **Investigação** | Consulte um CTRC específico para ver seus atributos brutos e predição |
+| **Consulta de unidades** | Encontre coordenadas, tipo ou status de uma unidade |
+| **Análise de rotas** | Navegue pelos links de rede para entender conexões de rotas e preços |
+| **Depuração** | Compare dados brutos com visualizações da plataforma para identificar discrepâncias |
+
+<Callout type="warning">
+O Explorador de Dados exibe dados brutos do backend. Alguns valores podem estar em seu formato original (ex.: números não formatados, strings de data brutas). Para visualizações formatadas com moeda, percentuais e datas localizadas, use a Tabela de Predição de Perda ou as páginas de Detalhe de Unidade.
+</Callout>
+
+<Card title="Visão Geral da Plataforma" href="/v1/platform">
+Retorne à visão geral da plataforma para explorar outros módulos.
+</Card>
+
+<Card title="Arquitetura" href="/v1/architecture">
+Saiba mais sobre a arquitetura técnica por trás do pipeline de dados.
+</Card>

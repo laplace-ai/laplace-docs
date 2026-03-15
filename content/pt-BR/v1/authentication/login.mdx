@@ -1,0 +1,84 @@
+---
+title: "Login"
+description: "O fluxo de login da Plataforma Laplace — autenticação por email/senha e experiência pós-login."
+---
+
+# Login
+
+A página de login é o ponto de entrada da Plataforma Laplace. Ela autentica usuários com credenciais de email e senha e leva você à sua página inicial padrão.
+
+{/* TODO: Add screenshot of the login page */}
+
+## Página de login
+
+A página de login apresenta um card centralizado e limpo com:
+
+- **Logo e nome Laplace** no topo
+- **Alternância de idioma** (canto superior direito) para alternar entre PT-BR e EN-US antes de fazer login
+- **Campo de email** com placeholder "you@company.com"
+- **Campo de senha** com entrada mascarada
+- **Botão Entrar** com estado de carregamento
+
+A página utiliza o design system da plataforma — tons quentes neutros no modo claro, cinzas neutros no modo escuro — e se adapta à preferência de tema do seu sistema.
+
+## Como fazer login
+
+<Steps>
+<Step title="Insira suas credenciais">
+Digite seu endereço de email e senha. Ambos os campos são obrigatórios. Seu navegador pode preencher automaticamente credenciais salvas.
+</Step>
+<Step title="Envie">
+Clique em **Entrar**. O botão mostra um spinner de carregamento enquanto a requisição está em andamento.
+</Step>
+<Step title="Acesse a plataforma">
+Após a autenticação bem-sucedida, você é redirecionado para a página principal da plataforma — o mapa do Digital Twin por padrão.
+</Step>
+</Steps>
+
+## Tratamento de erros
+
+Se a autenticação falhar, uma mensagem de erro aparece abaixo do botão de login. Cenários de erro comuns:
+
+| Erro | Causa | O que fazer |
+|-------|-------|------------|
+| "Falha ao fazer login" | Email ou senha incorretos | Verifique suas credenciais e tente novamente |
+| Erro de rede | Serviço inacessível | Verifique sua conexão com a internet ou contate o administrador |
+| Conta inativa | Sua conta foi desativada | Entre em contato com o administrador da sua organização |
+
+<Callout type="info">
+Não existe um fluxo de "esqueci a senha" por autoatendimento. Se você esquecer sua senha, entre em contato com o administrador da sua organização. Ele pode reenviar o link de convite, que permite que você defina uma nova senha.
+</Callout>
+
+## Gerenciamento de sessão
+
+Após o login, a plataforma gerencia sua sessão automaticamente:
+
+- Sua sessão é mantida em segundo plano — você não precisa fazer login novamente durante o uso normal
+- Se sua sessão expirar após inatividade prolongada, você será redirecionado para a página de login
+- A renovação da sessão acontece silenciosamente — você não verá nenhuma interrupção durante o uso normal
+
+## Saindo da conta
+
+Para sair:
+
+1. Clique no seu **avatar de usuário** na parte inferior da barra lateral
+2. No menu dropdown, clique em **Sair**
+
+Isso limpa sua sessão e redireciona você para a página de login.
+
+## Idioma na página de login
+
+A página de login inclui uma alternância de idioma que permite trocar entre Português e Inglês antes de entrar. Isso é útil para:
+
+- Novos usuários que preferem um idioma diferente do padrão do navegador
+- Dispositivos compartilhados onde diferentes operadores podem preferir idiomas diferentes
+
+A preferência de idioma é preservada após o login e se aplica a toda a plataforma.
+
+<Card title="Perfis de Acesso" href="/v1/authentication/roles">
+Saiba mais sobre as duas funções de usuário e suas permissões.
+</Card>
+
+<Card title="Convites" href="/v1/authentication/invites">
+Entenda como novos usuários são integrados através do sistema de convites.
+</Card>

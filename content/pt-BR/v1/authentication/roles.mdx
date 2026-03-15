@@ -1,0 +1,126 @@
+---
+title: "Perfis de Acesso"
+description: "O sistema de funções da Plataforma Laplace — funções de Administrador e Usuário com suas capacidades e níveis de acesso."
+---
+
+# Perfis de Acesso
+
+A Plataforma Laplace utiliza um **sistema de funções em dois níveis** para controlar o acesso. Cada usuário recebe exatamente uma função, e a função de Administrador herda todas as capacidades da função de Usuário.
+
+## Hierarquia de funções
+
+```
+Administrador
+    |
+    |  herda todas as capacidades do usuário
+    |  + gerenciamento de usuários
+    v
+  Usuário
+```
+
+## Definições de funções
+
+### Usuário
+
+A função de **Usuário** é o nível de acesso padrão para a maioria dos usuários da plataforma — operadores logísticos, analistas, trabalhadores de campo e outros membros da equipe.
+
+**Capacidades:**
+
+- Acessar as funcionalidades atribuídas ao seu perfil de acesso (ex.: Digital Twin, Predição de Perda, Coletor)
+- Visualizar dados dentro do escopo da sua organização
+- Usar todas as funcionalidades dos módulos permitidos (ver predições, verificar carga, navegar dados)
+- Alterar sua própria senha em Configurações
+- Visualizar informações da sua conta
+
+**Limitações:**
+
+- Não pode ver ou acessar funcionalidades não atribuídas ao seu perfil de acesso
+- Não pode gerenciar outros usuários
+- Não pode criar ou modificar perfis de acesso
+
+### Administrador
+
+A função de **Administrador** é para gestores da organização — tipicamente gerentes de operações ou líderes de equipe que precisam gerenciar os usuários e acessos da sua equipe.
+
+**Capacidades (além de todas as capacidades de Usuário):**
+
+- Visualizar a aba **Usuários** em Configurações — ver todos os usuários da sua organização
+- **Convidar novos usuários** — criar usuários por email, atribuir funções e perfis de acesso
+- **Editar usuários** — alterar funções, perfis de acesso e status ativo
+- **Desativar usuários** — desabilitar contas sem excluí-las
+- **Reenviar convites** — gerar novos links de convite para usuários que ainda não definiram sua senha
+- **Gerenciar perfis de acesso** — criar, editar e excluir templates de perfil que definem o acesso a funcionalidades
+- **Gerenciar acesso a unidades** — restringir quais unidades cada usuário pode ver
+- Tem acesso a todas as funcionalidades habilitadas para sua organização
+
+## Comparação de funções
+
+| Capacidade | Usuário | Administrador |
+|-----------|------|---------------|
+| Acessar funcionalidades permitidas | Sim | Sim |
+| Visualizar dados da organização | Sim | Sim |
+| Alterar própria senha | Sim | Sim |
+| Visualizar informações da conta | Sim | Sim |
+| Convidar usuários | - | Sim |
+| Editar usuários | - | Sim |
+| Desativar usuários | - | Sim |
+| Reenviar convites | - | Sim |
+| Gerenciar perfis de acesso | - | Sim |
+| Gerenciar acesso a unidades | - | Sim |
+
+## Perfis de acesso (acesso a funcionalidades)
+
+Dentro de cada função, **perfis de acesso** fornecem uma segunda camada de controle que determina quais funcionalidades um usuário pode ver.
+
+Um perfil de acesso é um template com:
+
+- Um **nome** (ex.: "Analista", "Coletor", "Gestor")
+- Uma **descrição** opcional
+- Um conjunto de **funcionalidades** que o perfil concede acesso
+
+Quando um administrador cria ou edita um usuário, ele atribui um perfil de acesso. As funcionalidades definidas nesse perfil determinam quais itens da barra lateral o usuário vê.
+
+**Exemplos de perfis de acesso:**
+
+| Perfil | Funcionalidades | Caso de Uso |
+|---------|----------|----------|
+| Analista | Digital Twin, Tabela de Predição de Perda, Database | Analista de operações que revisa predições e dados brutos |
+| Coletor | Visão de Coletor da Predição de Perda | Operador de campo que precisa apenas da interface móvel de verificação |
+| Gestor | Digital Twin, Modelo Digital, Predição de Perda (todas as visualizações), Database | Gestor de operações com visibilidade completa |
+
+<Callout type="info">
+Administradores sempre têm acesso a todas as funcionalidades habilitadas para sua organização, independente da atribuição de perfil de acesso. Os perfis de acesso restringem apenas a função de Usuário.
+</Callout>
+
+## Restrições de acesso a unidades
+
+Além do acesso a funcionalidades, administradores podem restringir quais **unidades** um usuário pode ver. Isso é configurado por usuário no painel de Configurações:
+
+- **Sem restrições** (padrão): O usuário vê dados de todas as unidades da sua rede
+- **Unidades específicas**: O usuário vê apenas dados das unidades selecionadas
+
+Isso é útil para organizações grandes onde operadores em localizações específicas devem ver apenas dados relevantes à sua unidade, não à rede inteira.
+
+## Como o acesso é determinado
+
+Quando você carrega a plataforma, seu acesso é determinado verificando três camadas:
+
+<Steps>
+<Step title="Você está autenticado?">
+A plataforma verifica se há uma sessão válida. Se sua sessão estiver ausente ou expirada, você é redirecionado para a página de login.
+</Step>
+<Step title="Quais funcionalidades sua organização possui?">
+As funcionalidades habilitadas da sua organização determinam o que está disponível no nível organizacional.
+</Step>
+<Step title="O que seu perfil de acesso permite?">
+Seu perfil de acesso atribuído filtra ainda mais a lista de funcionalidades. A barra lateral mostra apenas as funcionalidades disponíveis tanto para sua organização quanto para seu perfil.
+</Step>
+</Steps>
+
+<Card title="Convites" href="/v1/authentication/invites">
+Saiba como novos usuários são integrados através do sistema de convites.
+</Card>
+
+<Card title="Configurações" href="/v1/settings">
+Veja como administradores gerenciam usuários e perfis de acesso.
+</Card>

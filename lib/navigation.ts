@@ -83,7 +83,6 @@ export const navigation: NavSection[] = [
       { title: "Login", href: "/docs/authentication/login" },
       { title: "Roles", href: "/docs/authentication/roles" },
       { title: "Invites", href: "/docs/authentication/invites" },
-      { title: "Tenants", href: "/docs/authentication/tenants" },
     ],
   },
   {
@@ -99,16 +98,6 @@ export const navigation: NavSection[] = [
     icon: "Settings",
     requiredRole: "admin",
     items: [{ title: "Overview", href: "/docs/settings" }],
-  },
-  {
-    title: "Architecture",
-    icon: "Blocks",
-    requiredRole: "super_admin",
-    items: [
-      { title: "Overview", href: "/docs/architecture" },
-      { title: "Tech Stack", href: "/docs/architecture/tech-stack" },
-      { title: "Infrastructure", href: "/docs/architecture/infrastructure" },
-    ],
   },
 ];
 

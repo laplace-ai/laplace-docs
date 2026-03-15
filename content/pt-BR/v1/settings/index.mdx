@@ -1,0 +1,215 @@
+---
+title: "Configurações"
+description: "A página de Configurações da Plataforma Laplace — gerenciamento de usuários, perfis de acesso, configurações de conta e gerenciamento de senha."
+---
+
+# Configurações
+
+A página de Configurações é o centro administrativo da Plataforma Laplace. Ela oferece abas para gerenciar usuários, perfis de acesso e sua própria conta. O que você vê depende do seu papel — usuários comuns veem apenas a aba da sua conta, enquanto administradores têm acesso aos recursos de gerenciamento.
+
+Navegue até **Configurações** pela barra lateral (ícone de engrenagem na parte inferior) ou pelo menu dropdown do usuário.
+
+{/* TODO: Add screenshot of the Settings page with tabs */}
+
+## Abas por papel
+
+| Aba | Visível para | Finalidade |
+|-----|-------------|---------|
+| **Usuários** | Administradores | Gerenciar usuários da sua organização |
+| **Perfis de Acesso** | Administradores | Criar e gerenciar modelos de perfil de acesso |
+| **Minha Conta** | Todos os usuários | Visualizar perfil e alterar senha |
+
+Usuários comuns acessam a aba **Minha Conta** por padrão. Administradores acessam a aba **Usuários**.
+
+## Aba Usuários
+
+A aba Usuários permite que administradores gerenciem todos os usuários da sua organização.
+
+{/* TODO: Add screenshot of the Users tab */}
+
+### Lista de usuários
+
+A aba exibe uma tabela com todos os usuários contendo:
+
+- **Nome**: O nome completo do usuário
+- **Email**: O endereço de email de login
+- **Papel**: Badge indicando Administrador ou Usuário
+- **Perfil de Acesso**: O perfil atribuído (ou "Sem perfil" se não atribuído)
+- **Status**: Ativo, Inativo ou Pendente (aguardando aceitação do convite)
+- **Ações**: Um menu de três pontos com ações específicas do contexto
+
+Um badge de contagem de usuários mostra o total de usuários (ex.: "4 usuários").
+
+### Convidando um novo usuário
+
+<Steps>
+<Step title="Clique em Convidar Usuário">
+Clique no botão **Convidar Usuário** (com ícone de +) no topo da aba.
+</Step>
+<Step title="Preencha o formulário">
+Um diálogo aparece com campos para:
+
+- **Nome**: O nome completo do novo usuário
+- **Email**: O endereço de email (deve ser único)
+- **Papel**: Selecione Administrador ou Usuário no dropdown
+- **Perfil de Acesso**: Selecione um modelo de perfil que define o acesso às funcionalidades
+- **Restrições de Filial**: Opcionalmente restrinja o usuário a filiais específicas (deixe vazio para todas as filiais)
+
+</Step>
+<Step title="Envie o convite">
+Clique em **Enviar Convite**. O sistema cria a conta do usuário, gera um token de convite e envia um email com o link de ativação.
+</Step>
+</Steps>
+
+Uma notificação toast confirma que o convite foi enviado (ex.: "Convite enviado para maria@company.com").
+
+### Editando um usuário
+
+Clique no menu de três pontos na linha do usuário e selecione a ação apropriada:
+
+| Ação | Descrição |
+|--------|-------------|
+| **Editar Usuário** | Abre um diálogo para alterar o nome, papel ou perfil de acesso do usuário |
+| **Acesso a Filiais** | Abre um diálogo para gerenciar quais filiais o usuário pode acessar |
+| **Reenviar Convite** | Envia um novo email de convite (para usuários com status `pending`) |
+| **Desativar** | Desabilita a conta do usuário (ele não poderá mais fazer login) |
+| **Ativar** | Reabilita um usuário previamente desativado |
+
+### Gerenciamento de acesso a filiais
+
+O diálogo de **Acesso a Filiais** mostra uma lista de checkboxes com todas as unidades da sua rede. Você pode:
+
+- **Selecionar Todos**: Conceder acesso a todas as filiais
+- **Limpar Todos**: Remover todas as restrições de filial (equivalente a acesso total)
+- **Seleção individual**: Marcar filiais específicas para restringir o usuário apenas a essas localidades
+
+Quando nenhuma filial está selecionada, o usuário tem acesso a todas as filiais (sem restrições). Este é o comportamento padrão.
+
+O diálogo mostra um resumo: "Todas as filiais (sem restrições)" ou "X filial(is) selecionada(s)".
+
+<Callout type="info">
+As restrições de acesso a filiais afetam os dados que o usuário vê em todas as funcionalidades — o mapa mostra apenas as unidades permitidas, a tabela de predição de perdas mostra apenas CTRCs das filiais do usuário, e assim por diante.
+</Callout>
+
+## Aba Perfis de Acesso
+
+Perfis de acesso são modelos que definem quais funcionalidades da plataforma um grupo de usuários pode acessar. Eles oferecem uma maneira conveniente de gerenciar o acesso para diferentes papéis na sua organização sem configurar cada usuário individualmente.
+
+{/* TODO: Add screenshot of the Access Profiles tab */}
+
+### Lista de perfis
+
+A aba mostra todos os perfis de acesso com:
+
+- **Nome**: O nome do perfil (ex.: "Analista", "Conferente", "Gerente")
+- **Descrição**: Uma descrição opcional da finalidade do perfil
+- **Funcionalidades**: Badges mostrando as funcionalidades atribuídas
+
+Um badge de contagem de perfis mostra o total (ex.: "3 perfis").
+
+### Criando um perfil de acesso
+
+<Steps>
+<Step title="Clique em Criar Perfil">
+Clique no botão no topo da aba.
+</Step>
+<Step title="Preencha o formulário">
+Um diálogo aparece com:
+
+- **Nome**: Um nome descritivo (ex.: "Analista", "Conferente", "Gerente")
+- **Descrição**: Explicação opcional da finalidade do perfil
+- **Acesso a Funcionalidades**: Uma lista de todas as funcionalidades disponíveis. Selecione as funcionalidades que este perfil deve ter acesso.
+
+</Step>
+<Step title="Salvar">
+Clique em **Criar**. O perfil é criado e pode ser atribuído a usuários.
+</Step>
+</Steps>
+
+### Editando um perfil de acesso
+
+Clique em um perfil na lista para abrir o diálogo de edição. Você pode alterar o nome, a descrição e a seleção de funcionalidades. As alterações se aplicam imediatamente a todos os usuários atribuídos a este perfil.
+
+### Excluindo um perfil de acesso
+
+Clique na opção de exclusão no menu de contexto do perfil. Um diálogo de confirmação pergunta "Tem certeza de que deseja excluir este perfil de acesso?" antes de prosseguir.
+
+<Callout type="warning">
+Excluir um perfil de acesso afeta todos os usuários atualmente atribuídos a ele. Esses usuários perderão suas atribuições de funcionalidades e poderão ver uma barra lateral reduzida até que um novo perfil seja atribuído.
+</Callout>
+
+### Funcionalidades disponíveis
+
+A lista de acesso a funcionalidades inclui todas as funcionalidades disponíveis na plataforma:
+
+| Funcionalidade | Descrição |
+|---------|-------------|
+| Digital Twin | Mapa interativo da rede logística |
+| Digital Model | Modelagem da rede |
+| Units | Gerenciamento de unidades/filiais |
+| Loss Prediction | Predições de probabilidade de perda de carga |
+| Loss Prediction Table | Visualização em tabela das predições |
+| Loss Prediction Collector | Interface móvel de verificação |
+| Loss Prediction Dashboard | Dashboard de analytics |
+| Loss Prediction Models | Gerenciamento de modelos |
+| Control Tower | Monitoramento de operações em tempo real (em breve) |
+| Load Consolidation | Consolidação de cargas (em breve) |
+| Database Browser | Exploração de dados brutos |
+
+O resumo mostra quantas funcionalidades estão selecionadas (ex.: "5 funcionalidade(s) selecionada(s)").
+
+## Aba Minha Conta
+
+A aba Minha Conta está disponível para todos os usuários. Ela mostra suas informações de perfil e permite alterar sua senha.
+
+### Informações da conta
+
+Uma seção somente leitura exibe:
+
+| Campo | Descrição |
+|-------|-------------|
+| **Nome** | Seu nome completo |
+| **Email** | Seu endereço de email de login |
+| **Papel** | Seu papel (Administrador ou Usuário) |
+| **Organização** | A organização à qual você pertence |
+
+### Alterar senha
+
+Abaixo das informações da conta, um formulário de alteração de senha permite atualizar sua senha:
+
+<Steps>
+<Step title="Digite a senha atual">
+Digite sua senha atual para verificar sua identidade.
+</Step>
+<Step title="Digite a nova senha">
+Digite sua nova senha (mínimo de 8 caracteres).
+</Step>
+<Step title="Confirme a nova senha">
+Digite novamente a nova senha para confirmação.
+</Step>
+<Step title="Enviar">
+Clique em **Atualizar Senha**. Uma notificação toast confirma a alteração.
+</Step>
+</Steps>
+
+**Regras de validação:**
+
+- A nova senha deve ter pelo menos 8 caracteres
+- A nova senha e a confirmação devem ser iguais
+- A senha atual deve estar correta
+
+<Callout type="tip">
+Você pode alterar sua senha a qualquer momento. Se você esquecer sua senha, peça ao seu administrador para reenviar o link de convite, que permitirá definir uma nova senha.
+</Callout>
+
+## Suporte bilíngue
+
+Todos os rótulos, botões e mensagens das Configurações são totalmente traduzidos em inglês (EN-US) e português (PT-BR). O idioma usado nas Configurações segue sua preferência global de idioma, que pode ser alterada pelo seletor de idioma na página de login ou no cabeçalho da plataforma.
+
+<Card title="Papéis" href="/v1/authentication/roles">
+Saiba mais sobre o sistema de papéis que determina o acesso às Configurações.
+</Card>
+
+<Card title="Autenticação" href="/v1/authentication">
+Visão geral do sistema de autenticação.
+</Card>

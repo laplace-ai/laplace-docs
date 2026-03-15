@@ -1,0 +1,109 @@
+---
+title: "Referência da API"
+description: "Acesse seus dados logísticos programaticamente usando a API da Plataforma Laplace."
+---
+
+# Referência da API
+
+A API da Plataforma Laplace oferece acesso programático aos seus dados logísticos — remessas, predições de perdas, unidades da rede e verificações. Use-a para construir dashboards personalizados, integrações ou automações sobre o seu digital twin.
+
+## URL Base
+
+```
+https://laplace-platform-api-cbbnhnqg.uc.gateway.dev
+```
+
+A API é servida através do Google API Gateway. Todas as requisições devem usar HTTPS.
+
+## Documentação Interativa (Swagger)
+
+A documentação interativa completa da API está disponível em:
+
+```
+https://laplace-platform-api-cbbnhnqg.uc.gateway.dev/apidocs
+```
+
+Você pode explorar endpoints, ver descrições de parâmetros e testar requisições diretamente no navegador usando o recurso **Try it out**.
+
+## Autenticação
+
+Todos os endpoints (exceto `/health`) requerem autenticação por um dos dois métodos:
+
+### API Key (recomendado para integrações)
+
+Passe sua API key no header `X-API-Key`:
+
+```bash
+curl -H "X-API-Key: sk-your-key" \
+  "https://laplace-platform-api-cbbnhnqg.uc.gateway.dev/v1/ctrcs"
+```
+
+API keys são vinculadas a um tenant específico. Entre em contato com seu administrador para obter uma.
+
+### Token JWT (usado pela aplicação web)
+
+Passe seu token de acesso JWT no header `Authorization`:
+
+```bash
+curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..." \
+  "https://laplace-platform-api-cbbnhnqg.uc.gateway.dev/v1/ctrcs"
+```
+
+Tokens JWT são obtidos através do fluxo de login e expiram após 15 minutos.
+
+## Formato de Resposta
+
+Todos os endpoints de listagem retornam respostas paginadas:
+
+```json
+{
+  "data": [],
+  "pagination": {
+    "offset": 0,
+    "limit": 50,
+    "total": 8406,
+    "has_more": true
+  }
+}
+```
+
+Respostas de erro seguem o formato:
+
+```json
+{
+  "error": "Description of what went wrong"
+}
+```
+
+## Paginação
+
+| Parâmetro | Tipo | Padrão | Descrição |
+|-----------|------|---------|-------------|
+| `limit` | integer | 50 | Tamanho da página (máx. 500) |
+| `offset` | integer | 0 | Número de registros a pular |
+
+Use `has_more` para verificar se há mais páginas disponíveis. Incremente `offset` pelo valor de `limit` para navegar pelos resultados.
+
+## Ordenação
+
+A maioria dos endpoints de listagem suporta ordenação:
+
+| Parâmetro | Tipo | Padrão | Descrição |
+|-----------|------|---------|-------------|
+| `sort` | string | varia | Coluna para ordenar |
+| `order` | string | `desc` | `asc` ou `desc` |
+
+## Seleção de Campos
+
+Use o parâmetro de query `fields` para solicitar apenas as colunas que você precisa. Passe uma lista separada por vírgulas:
+
+```bash
+curl -H "X-API-Key: sk-your-key" \
+  "https://...gateway.dev/v1/ctrcs?fields=ctrc,cidade_de_entrega,valor_da_mercadoria"
+```
+
+Se omitido, um conjunto padrão de campos é retornado. Consulte a documentação de cada endpoint para a lista completa de campos disponíveis.
+
+<Card title="Referência de Endpoints" href="/v1/api/endpoints">
+  Documentação completa de todos os endpoints da API com exemplos de requisição/resposta.
+</Card>

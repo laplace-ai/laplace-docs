@@ -1,0 +1,144 @@
+---
+title: "Mapa Interativo"
+description: "Guia detalhado do mapa interativo Mapbox GL — controles, camadas, marcadores, visualizacao de rotas e renderizacao adaptativa ao tema."
+---
+
+# Mapa Interativo
+
+O mapa interativo e o componente de visualizacao principal do modulo Digital Twin. Construido com **Mapbox GL** e **react-map-gl**, ele renderiza sua rede logistica como uma visualizacao geografica com marcadores de unidades, conexoes de rotas e sobreposicoes interativas.
+
+{/* TODO: Add annotated screenshot of map with markers, routes, and detail panel */}
+
+## Controles do mapa
+
+### Controles de mouse e gestos
+
+| Acao | Como |
+|------|------|
+| **Aumentar zoom** | Roda do mouse para cima, ou pincar para fora no trackpad |
+| **Diminuir zoom** | Roda do mouse para baixo, ou pincar para dentro no trackpad |
+| **Pan** | Clicar e arrastar no mapa |
+| **Rotacionar** | Clicar com botao direito e arrastar |
+| **Resetar rotacao** | Duplo clique na bussola (se visivel) |
+
+### Atalhos de teclado
+
+| Tecla | Acao |
+|-------|------|
+| `+` / `=` | Aumentar zoom |
+| `-` | Diminuir zoom |
+| Setas direcionais | Mover o mapa |
+
+## Camadas do mapa
+
+O mapa renderiza dados em camadas distintas, de baixo para cima:
+
+### 1. Mapa base (estilo Mapbox)
+
+A camada base e um estilo padrao do Mapbox que fornece contexto geografico — estradas, cidades, corpos d'agua e terreno. Ela alterna automaticamente entre variantes clara e escura com base na sua configuracao de tema:
+
+- **Modo claro**: `mapbox://styles/mapbox/light-v11` — um estilo limpo e minimalista com tons quentes
+- **Modo escuro**: `mapbox://styles/mapbox/dark-v11` — um estilo discreto com cinzas neutros
+
+### 2. Linhas de rota (camada GeoJSON)
+
+Conexoes de rotas entre unidades sao renderizadas como **features LineString** em uma camada de fonte GeoJSON. Cada linha conecta duas coordenadas de unidade e representa uma rota de frete na sua rede.
+
+As linhas de rota tem dois estados visuais:
+
+- **Padrao**: Linhas finas e semi-transparentes mostrando toda a topologia da rede
+- **Destacado**: Quando uma unidade e selecionada, rotas conectadas a essa unidade ficam mais prominentes enquanto outras esmaecem
+
+Os dados de rotas sao deduplicados — se o mesmo par de unidades tem multiplos links (ex.: diferentes tipos de veiculo), apenas uma linha e desenhada entre eles para manter o mapa limpo.
+
+### 3. Marcadores de unidade (overlays React)
+
+Marcadores de unidade sao renderizados como **componentes React Marker** posicionados nas coordenadas de latitude/longitude de cada instalacao. Eles usam o azul destaque do Laplace (`#3A8DFF`) como cor de preenchimento.
+
+Cada marcador responde a:
+
+- **Hover**: Mostra o codigo da unidade como tooltip
+- **Clique**: Abre o painel de detalhes da unidade e destaca as rotas conectadas
+
+## Painel de detalhes da unidade
+
+Ao clicar em um marcador de unidade, um **painel de 360px de largura** desliza pelo lado direito do mapa. O painel contem:
+
+### Secao do cabecalho
+
+- **Icone da unidade** com um icone Building2 azul
+- **Codigo da unidade** (ex.: "ATI SPA") exibido em fonte monospacada com a cor azul destaque
+- **Indicador de status ativo** — um ponto verde para unidades ativas, um ponto cinza para inativas
+- **Nome da unidade** (ex.: "Filial Sao Paulo")
+- **Localizacao** com um icone de pin mostrando cidade e estado
+- **Botao de fechar** (X) no canto superior direito
+
+### Secao de visao geral
+
+Uma grade de 2 colunas exibindo:
+
+- **Tipo**: A classificacao da instalacao (hub, filial, centro de distribuicao, etc.)
+- **Status**: Ativo ou Inativo, usando o label localizado
+
+### Secao de servicos
+
+Atualmente exibe um placeholder "Em breve". Em versoes futuras, esta secao mostrara:
+
+- Resumo de loss prediction para a unidade
+- Graficos de distribuicao de risco
+- Insights operacionais e alertas
+
+### Rodape
+
+Um botao de largura total rotulado **"Ver Unidade Detalhada"** que navega para `/digital-model/units/{code}` — a pagina dedicada de detalhes da unidade com dados operacionais completos.
+
+{/* TODO: Add screenshot of detail panel with annotations */}
+
+## Modo imersivo
+
+O mapa do Digital Twin suporta um **modo imersivo** que maximiza o viewport do mapa ocultando o chrome (barra superior e barra de status). Quando o modo imersivo esta ativo:
+
+- O mapa se estende para preencher toda a altura entre a barra lateral e a borda direita
+- O painel de detalhes da unidade ajusta seu posicionamento superior e inferior de acordo
+- A barra lateral permanece visivel para navegacao
+
+O modo imersivo e automaticamente desativado quando voce navega para fora da pagina do Digital Twin.
+
+## Comportamento responsivo
+
+O mapa e projetado para ser responsivo a mudancas de layout:
+
+- **Recolher/expandir barra lateral**: Um `ResizeObserver` monitora o container do mapa e aciona `map.resize()` quando o estado da barra lateral muda, garantindo que o mapa preencha o espaco disponivel sem lacunas em branco.
+- **Redimensionamento da janela**: O Mapbox GL lida automaticamente com eventos de redimensionamento da janela.
+- **Abertura/fechamento do painel**: O painel de detalhes da unidade sobrepoe o mapa em vez de redimensiona-lo, entao o conteudo do mapa desliza atras do painel.
+
+## Consideracoes de performance
+
+O mapa implementa varias otimizacoes:
+
+| Tecnica | Finalidade |
+|---------|------------|
+| Import dinamico com `ssr: false` | Mapbox GL requer APIs do navegador indisponiveis no Node.js |
+| Busca unica de dados | Unidades e links sao buscados uma vez na montagem, nao a cada interacao |
+| Camada de fonte GeoJSON | Mais eficiente que elementos de linha individuais para centenas de rotas |
+| Deduplicacao de rotas | Reduz overhead de renderizacao colapsando pares origem-destino duplicados |
+| ResizeObserver | Lida eficientemente com mudancas de tamanho do container sem polling |
+
+<Callout type="warning">
+O mapa requer um token de acesso Mapbox valido configurado como `NEXT_PUBLIC_MAPBOX_TOKEN` nas suas variaveis de ambiente. Sem ele, o mapa exibe uma mensagem de fallback. Veja [Instalacao](/v1/getting-started/installation) para instrucoes de configuracao.
+</Callout>
+
+## Configuracao
+
+O viewport inicial do mapa e configurado para mostrar uma visao ampla do Brasil:
+
+| Configuracao | Valor |
+|-------------|-------|
+| Centro inicial | Aproximadamente o centro geografico do Brasil |
+| Zoom inicial | Suficiente para mostrar toda a rede nacional |
+| Cor do marcador | `#3A8DFF` (azul destaque Laplace) |
+| Projecao do mapa | Mercator (padrao) |
+
+<Card title="Unidades" href="/v1/platform/digital-twin/units">
+Saiba mais sobre as visualizacoes de gerenciamento de unidades para uma visao detalhada de instalacoes individuais.
+</Card>

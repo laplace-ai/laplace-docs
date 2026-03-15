@@ -1,0 +1,73 @@
+---
+title: "Primeiros Passos"
+description: "Uma visao geral da Plataforma Laplace e como comecar — seja voce um usuario final, administrador ou desenvolvedor."
+---
+
+# Primeiros Passos
+
+Esta secao ajuda voce a se orientar na Plataforma Laplace. Seja voce um operador logistico usando a plataforma pela primeira vez, um administrador configurando sua organizacao ou um desenvolvedor executando o projeto localmente, voce encontrara o ponto de entrada certo aqui.
+
+## Escolha seu caminho
+
+<Card title="Primeiros Passos (Usuarios Finais)" href="/v1/getting-started/first-steps">
+Para operadores e gestores logisticos: aprenda a fazer login, navegar pela plataforma e usar funcionalidades-chave como o mapa e a tabela de Loss Prediction.
+</Card>
+
+<Card title="Instalacao (Desenvolvedores)" href="/v1/getting-started/installation">
+Para desenvolvedores: clone o repositorio, instale as dependencias, configure as variaveis de ambiente e execute a plataforma localmente.
+</Card>
+
+## A plataforma em um relance
+
+A Plataforma Laplace e uma aplicacao web que roda no seu navegador. Ela consiste em:
+
+- **Uma barra lateral** para navegar entre modulos (Digital Twin, Loss Prediction, Collector, Database)
+- **Uma area de conteudo principal** que exibe a interface do modulo ativo
+- **Uma barra superior** com navegacao breadcrumb e um indicador de status mostrando sua conexao com o Laplace Engine
+- **Uma barra de status inferior** com timestamps de sincronizacao
+
+A barra lateral se adapta as suas permissoes. Voce so vera os modulos que sua organizacao tem acesso, e funcionalidades exclusivas de admin como gerenciamento de usuarios ficam ocultas para usuarios regulares.
+
+<Callout type="info">
+A plataforma suporta temas claro e escuro. Alterne entre eles usando o icone de sol/lua na parte inferior da barra lateral ou na pagina de configuracoes.
+</Callout>
+
+## Conceitos-chave
+
+Antes de mergulhar em funcionalidades especificas, e util entender estes conceitos fundamentais:
+
+### Tenants
+
+Um **tenant** e uma organizacao que usa a Plataforma Laplace. Cada tenant tem seus proprios dados, usuarios e assinaturas de modulos. Os dados sao totalmente isolados entre tenants — uma organizacao nunca pode ver os embarques ou predicoes de outra.
+
+### Unidades
+
+Uma **unidade** e uma instalacao logistica — um armazem, centro de distribuicao, hub, terminal ou filial. Unidades sao os nos da sua rede logistica. Elas aparecem como marcadores no mapa do Digital Twin e sao usadas para filtrar dados em toda a plataforma.
+
+### CTRCs
+
+Um **CTRC** (Conhecimento de Transporte Rodoviario de Cargas) e um documento brasileiro de transporte de frete que representa um embarque individual. CTRCs sao a unidade de dados fundamental na plataforma — eles carregam informacoes sobre origem, destino, valor da carga, peso e mais.
+
+### Niveis de risco
+
+O modelo de Loss Prediction atribui a cada CTRC um **nivel de risco** com base em sua probabilidade prevista de perda de carga:
+
+| Nivel de Risco | Faixa de Probabilidade | Cor |
+|----------------|----------------------|-----|
+| **ALTO** | Maior risco previsto | Vermelho |
+| **MEDIO** | Risco previsto moderado | Amarelo/Ambar |
+| **BAIXO** | Menor risco previsto | Verde |
+
+### Papeis
+
+A plataforma tem tres papeis de usuario, cada um com niveis de acesso diferentes:
+
+| Papel | Descricao |
+|-------|-----------|
+| **Usuario** | Acesso padrao aos modulos permitidos. Pode visualizar dados, usar funcionalidades e alterar sua propria senha. |
+| **Admin** | Tudo que um usuario pode fazer, alem de gerenciar outros usuarios dentro de seu tenant (convidar, editar, desativar). |
+| **Super Admin** | Apenas equipe Laplace. Acesso completo cross-tenant, gerenciamento de tenants e visibilidade em todo o sistema. |
+
+<Card title="Proximo: Primeiros Passos" href="/v1/getting-started/first-steps">
+Pronto para comecar a usar a plataforma? Continue para o guia de primeiros passos.
+</Card>

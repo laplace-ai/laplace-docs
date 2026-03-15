@@ -1,0 +1,122 @@
+---
+title: "Verificação de Carga"
+description: "O fluxo de verificação de carga — como operadores de campo usam o Coletor para fotografar e verificar embarques de alto risco."
+---
+
+# Verificação de Carga
+
+A verificação de carga é o processo de confirmar fisicamente a presença e a condição de embarques de alto risco. O módulo Coletor fornece um fluxo estruturado que conecta predições de machine learning com ação em campo.
+
+## Por que a verificação importa
+
+O modelo de Predição de Perda identifica CTRCs com alta probabilidade de perda de carga. Mas uma predição sozinha não previne a perda — é necessário que alguém atue sobre ela. A verificação serve a diversos propósitos:
+
+- **Confirma a presença da carga**: Verifica que o embarque previsto como de risco existe fisicamente na unidade esperada
+- **Cria evidência**: A foto serve como documentação da condição da carga no momento da verificação
+- **Fecha o ciclo de feedback**: Predições verificadas ajudam a equipe de operações a entender quais embarques de alto risco foram tratados
+- **Melhora operações**: Padrões em perdas verificadas vs. não verificadas podem informar melhorias de processo
+
+## O fluxo de verificação
+
+<Steps>
+<Step title="Predição é gerada">
+O serviço de Predição de Perda pontua um novo CTRC e atribui um nível de risco ALTO ou MEDIO. A predição aparece tanto na Visualização em Tabela quanto no Coletor.
+</Step>
+<Step title="Operador abre o Coletor">
+Um operador de campo na unidade relevante abre o Coletor em seu dispositivo móvel e seleciona sua unidade no dropdown de filtro.
+</Step>
+<Step title="Operador localiza a carga">
+Usando as informações do card — número do CTRC, nome do remetente, número da nota fiscal, quantidade de volumes e rota — o operador localiza a carga física na unidade.
+</Step>
+<Step title="Operador fotografa a carga">
+O operador toca no botão da câmera no card, tira uma foto da carga, revisa e confirma com "Usar Foto".
+</Step>
+<Step title="Verificação é registrada">
+O sistema registra a verificação com:
+
+- O número do CTRC
+- A foto codificada em base64
+- A identidade do operador (do contexto de autenticação)
+- Um timestamp
+
+</Step>
+<Step title="Card é removido">
+O CTRC verificado é imediatamente removido da lista de cards do Coletor (atualização otimista). Ele também passa a ser excluído de futuras consultas do Coletor (via filtro `exclude_verified`).
+</Step>
+</Steps>
+
+## Captura de câmera
+
+O componente de captura de câmera fornece uma interface em tela cheia para tirar fotos:
+
+{/* TODO: Add screenshot of the camera capture interface */}
+
+### Controles
+
+| Botão | Ação |
+|--------|--------|
+| **Abrir Câmera** | Ativa a câmera do dispositivo e mostra uma prévia ao vivo |
+| **Cancelar** | Fecha a câmera sem tirar uma foto |
+| **Capturar** (obturador) | Tira uma foto da prévia ao vivo |
+| **Refazer** | Descarta a foto atual e retorna à prévia ao vivo |
+| **Usar Foto** | Confirma a foto e envia a verificação |
+
+### Comportamento da câmera
+
+- O componente solicita acesso à **câmera traseira (voltada para o ambiente)** do dispositivo por padrão, que é ideal para fotografar cargas
+- Se a câmera traseira não estiver disponível, ele usa qualquer câmera disponível como alternativa
+- A prévia da câmera preenche a tela para maximizar a visibilidade
+- As fotos são capturadas como imagens codificadas em base64 e incluídas na requisição à API
+
+<Callout type="info">
+Seu navegador solicitará permissão de câmera na primeira vez que você usar o Coletor. Conceda a permissão para habilitar a verificação com fotos. Se você negar, não será possível tirar fotos de verificação.
+</Callout>
+
+## Dados da verificação
+
+Cada envio de verificação envia os seguintes dados para a API:
+
+| Campo | Descrição |
+|-------|-------------|
+| `ctrc` | O número do CTRC sendo verificado |
+| `photo` | Foto da carga codificada em base64 |
+
+A API registra a verificação, associa ao usuário autenticado e marca o CTRC como verificado no banco de dados.
+
+## Após a verificação
+
+Uma vez que um CTRC é verificado:
+
+- Ele é removido da lista de cards do Coletor
+- Permanece visível na Visualização em Tabela de Predição de Perda (a tabela não filtra por status de verificação por padrão)
+- O registro de verificação é armazenado para fins de auditoria e análise
+- Carregamentos futuros do Coletor excluirão CTRCs já verificados
+
+## Boas práticas para operadores de campo
+
+<Callout type="tip">
+Siga estas orientações para uma verificação de carga eficaz:
+</Callout>
+
+- **Verifique no início do seu turno**: Abra o Coletor e trabalhe primeiro nos cards de maior risco
+- **Tire fotos claras**: Garanta que a carga esteja claramente visível, bem iluminada e identificável na foto
+- **Inclua marcas de identificação**: Capture etiquetas, códigos de barras ou marcações que vinculem a carga física ao CTRC
+- **Trabalhe por unidade**: Filtre pela sua unidade específica para evitar ver cargas de outras localizações
+- **Verifique periodicamente**: Novas predições podem chegar conforme o data warehouse processa novos dados de CTRCs ao longo do dia
+
+## Tratamento de erros
+
+Se o envio de uma verificação falhar (problema de rede, erro do servidor), uma notificação toast indicará o erro. Nesse caso:
+
+1. O card permanece na lista (não é removido em caso de falha)
+2. Verifique sua conexão com a internet
+3. Tente tocar no botão da câmera novamente para refazer a foto e reenviar
+4. Se os erros persistirem, entre em contato com o administrador
+
+<Card title="Visão Geral do Coletor" href="/v1/platform/collector">
+Retorne à visão geral do módulo Coletor.
+</Card>
+
+<Card title="Tabela de Predição de Perda" href="/v1/platform/loss-prediction/table">
+Revise predições na visualização em tabela do desktop.
+</Card>

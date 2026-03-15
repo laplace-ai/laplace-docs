@@ -1,0 +1,179 @@
+---
+title: "Instalacao"
+description: "Como configurar a Plataforma Laplace localmente para desenvolvimento — clonando o repositorio, instalando dependencias, configurando variaveis de ambiente e executando o servidor de desenvolvimento."
+---
+
+# Instalacao
+
+Este guia orienta voce na configuracao do frontend da Plataforma Laplace para desenvolvimento local. Ao final, voce tera a plataforma rodando em `localhost:3000`.
+
+<Callout type="info">
+Este guia e para desenvolvedores. Se voce e um usuario final, nao precisa instalar nada — basta navegar ate a URL da plataforma da sua organizacao no navegador. Veja [Primeiros Passos](/v1/getting-started/first-steps) em vez disso.
+</Callout>
+
+## Pre-requisitos
+
+Antes de comecar, certifique-se de ter o seguinte instalado:
+
+| Ferramenta | Versao | Finalidade |
+|------------|--------|------------|
+| **Node.js** | 18.x ou superior | Runtime JavaScript |
+| **npm** | 9.x ou superior (incluso com Node) | Gerenciador de pacotes |
+| **Git** | Qualquer versao recente | Controle de versao |
+
+Voce tambem precisara de:
+
+- Acesso ao repositorio GitHub `laplace-platform`
+- Um token de acesso do Mapbox (para o mapa do Digital Twin)
+- Credenciais do endpoint da API (fornecidas pelo lider da equipe)
+
+## Configuracao
+
+<Steps>
+<Step title="Clone o repositorio">
+
+```bash
+git clone https://github.com/your-org/laplace-platform.git
+cd laplace-platform
+```
+
+O repositorio usa uma estrategia de branching Git Flow. A branch `develop` e a branch de integracao onde as features chegam primeiro; `master` e a branch de producao.
+
+```bash
+git checkout develop
+```
+
+</Step>
+<Step title="Instale as dependencias">
+
+```bash
+npm install
+```
+
+Isso instala todas as dependencias definidas no `package.json`, incluindo Next.js 16, React 19, Tailwind CSS 4, primitivos Radix UI, Mapbox GL e a biblioteca de i18n.
+
+</Step>
+<Step title="Configure as variaveis de ambiente">
+
+Crie um arquivo `.env.local` na raiz do projeto. Este arquivo esta no gitignore e contem segredos que nunca devem ser commitados.
+
+```bash
+# .env.local
+
+# Mapbox — necessario para o mapa do Digital Twin
+NEXT_PUBLIC_MAPBOX_TOKEN=pk.your_mapbox_token_here
+
+# API — o endpoint do backend
+NEXT_PUBLIC_API_URL=https://your-api-endpoint.run.app
+
+# Opcional: habilitar logs de debug
+# NEXT_PUBLIC_DEBUG=true
+```
+
+<Callout type="warning">
+O `NEXT_PUBLIC_MAPBOX_TOKEN` e obrigatorio para o mapa renderizar. Sem ele, a pagina do Digital Twin mostrara uma mensagem de fallback pedindo para configurar o token.
+</Callout>
+
+Pergunte ao lider da sua equipe pelos valores corretos de `NEXT_PUBLIC_API_URL` e `NEXT_PUBLIC_MAPBOX_TOKEN`. Se voce estiver conectando ao Cloud SQL localmente, talvez tambem precise executar o Cloud SQL Proxy.
+
+</Step>
+<Step title="Inicie o servidor de desenvolvimento">
+
+```bash
+npm run dev
+```
+
+Abra [http://localhost:3000](http://localhost:3000) no seu navegador. Voce devera ver a pagina de login.
+
+</Step>
+<Step title="Faca login">
+
+Use suas credenciais para fazer login. Se voce e um super admin, sera redirecionado para a pagina de selecao de tenant primeiro. Usuarios regulares e admins sao levados diretamente ao mapa do Digital Twin.
+
+</Step>
+</Steps>
+
+## Estrutura do projeto
+
+Entender o layout de diretorios ajuda voce a navegar pelo codigo de forma eficiente:
+
+```
+laplace-platform/
+├── app/
+│   ├── (auth)/              # Rotas publicas: login, convite, selecao de tenant
+│   ├── (platform)/          # Rotas autenticadas: mapa, loss prediction, configuracoes
+│   │   ├── page.tsx         # Digital Twin (pagina raiz — o mapa)
+│   │   ├── database/        # Navegador de banco de dados
+│   │   ├── digital-model/   # Lista de unidades e visualizacoes de detalhes
+│   │   ├── services/        # Tabela de loss prediction, dashboard, modelos
+│   │   └── settings/        # Pagina de configuracoes (usuarios, tipos de usuario, tenants, conta)
+│   ├── collector/           # Pagina do Collector (verificacao de carga mobile-first)
+│   └── api/                 # Rotas de proxy da API
+├── components/              # Componentes React compartilhados
+│   ├── ui/                  # Primitivos de UI base (shadcn/ui + Radix)
+│   ├── settings/            # Componentes do painel de configuracoes
+│   ├── network-map.tsx      # Componente do mapa Mapbox GL
+│   ├── loss-prediction-table.tsx
+│   ├── database-browser.tsx
+│   └── ...
+├── lib/                     # Utilitarios, cliente de API, helpers de auth
+│   ├── api.ts               # Funcoes do cliente de API
+│   ├── auth-api.ts          # Chamadas de API especificas de auth
+│   ├── auth-context.tsx     # React context para estado de auth
+│   └── utils.ts             # Utilitarios gerais
+├── messages/                # Arquivos de traducao i18n
+│   ├── pt-BR.json           # Portugues (Brasil)
+│   └── en-US.json           # Ingles (EUA)
+├── docs/                    # Docs de arquitetura interna
+├── public/                  # Assets estaticos (logos, imagens)
+└── package.json
+```
+
+## Scripts principais
+
+| Comando | Descricao |
+|---------|-----------|
+| `npm run dev` | Inicia o servidor de desenvolvimento com hot reload |
+| `npm run build` | Cria um build de producao otimizado |
+| `npm run start` | Inicia o servidor de producao (apos o build) |
+| `npm run lint` | Executa o ESLint para verificar problemas de qualidade de codigo |
+
+## Estrategia de branching
+
+O projeto usa um Git Flow simplificado:
+
+```
+feat/my-feature  -->  develop  -->  master
+                      (staging)     (production)
+```
+
+- **`develop`** e a branch de integracao. Todas as feature branches fazem merge aqui primeiro.
+- **`master`** e a branch de producao. Apenas codigo testado e estavel vai aqui.
+- **Feature branches** usam o prefixo `feat/` e sao criadas a partir de `develop`.
+- **Correcoes de bugs** usam o prefixo `fix/`.
+- **Vercel faz deploy automatico** de ambas as branches: `develop` recebe uma URL de preview, `master` faz deploy no dominio de producao.
+
+<Callout type="tip">
+Sempre faca pull da ultima versao de `develop` antes de criar uma nova feature branch. Mantenha as branches de curta duracao e faca merge com frequencia para evitar conflitos.
+</Callout>
+
+## Conectando ao backend
+
+O frontend da plataforma se comunica com uma API Flask rodando no Google Cloud Run. Para desenvolvimento local, voce pode:
+
+1. **Apontar para a API implantada** configurando `NEXT_PUBLIC_API_URL` com a URL do servico Cloud Run (recomendado para a maioria dos cenarios de desenvolvimento).
+2. **Executar a API localmente** clonando o repositorio `laplace-platform-api` e executando-o com uma conexao Cloud SQL Proxy.
+
+Se voce precisar de acesso direto ao banco de dados para depuracao, conecte via Cloud SQL Proxy:
+
+```bash
+cloud-sql-proxy laplace-data-lake:southamerica-east1:dw-instance --port=5433
+```
+
+<Callout type="warning">
+Nunca commite `.env.local` ou qualquer arquivo contendo chaves de API, senhas de banco de dados ou tokens. Esses arquivos estao no gitignore por padrao.
+</Callout>
+
+<Card title="Proximo: Primeiros Passos" href="/v1/getting-started/first-steps">
+Aprenda a navegar pela plataforma como usuario final.
+</Card>
