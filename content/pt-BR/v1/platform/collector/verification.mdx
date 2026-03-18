@@ -1,122 +1,104 @@
 ---
-title: "Verificação de Carga"
-description: "O fluxo de verificação de carga — como operadores de campo usam o Coletor para fotografar e verificar embarques de alto risco."
+title: "Verificacao de Carga"
+description: "O fluxo de verificacao de carga — como operadores de campo usam o Coletor para fotografar e verificar embarques de alto risco."
 ---
 
-# Verificação de Carga
+# Verificacao de Carga
 
-A verificação de carga é o processo de confirmar fisicamente a presença e a condição de embarques de alto risco. O módulo Coletor fornece um fluxo estruturado que conecta predições de machine learning com ação em campo.
+A verificacao de carga e o processo de confirmar fisicamente a presenca e a condicao de embarques de alto risco. O modulo Coletor fornece um fluxo estruturado que conecta predicoes com acao em campo.
 
-## Por que a verificação importa
+## Por que a verificacao importa
 
-O modelo de Predição de Perda identifica CTRCs com alta probabilidade de perda de carga. Mas uma predição sozinha não previne a perda — é necessário que alguém atue sobre ela. A verificação serve a diversos propósitos:
+O modelo de Predicao de Perda identifica CTRCs com alta probabilidade de perda de carga. Mas uma predicao sozinha nao previne a perda — e necessario que alguem atue sobre ela. A verificacao serve a diversos propositos:
 
-- **Confirma a presença da carga**: Verifica que o embarque previsto como de risco existe fisicamente na unidade esperada
-- **Cria evidência**: A foto serve como documentação da condição da carga no momento da verificação
-- **Fecha o ciclo de feedback**: Predições verificadas ajudam a equipe de operações a entender quais embarques de alto risco foram tratados
-- **Melhora operações**: Padrões em perdas verificadas vs. não verificadas podem informar melhorias de processo
+- **Confirma a presenca da carga**: Verifica que o embarque previsto como de risco existe fisicamente na unidade esperada
+- **Cria evidencia**: A foto serve como documentacao da condicao da carga no momento da verificacao
+- **Fecha o ciclo de feedback**: Predicoes verificadas ajudam a equipe de operacoes a entender quais embarques de alto risco foram tratados
+- **Melhora operacoes**: Padroes em perdas verificadas vs. nao verificadas podem informar melhorias de processo
 
-## O fluxo de verificação
+## O fluxo de verificacao
 
 <Steps>
-<Step title="Predição é gerada">
-O serviço de Predição de Perda pontua um novo CTRC e atribui um nível de risco ALTO ou MEDIO. A predição aparece tanto na Visualização em Tabela quanto no Coletor.
+<Step title="Predicao e gerada">
+O servico de Predicao de Perda pontua um novo CTRC e atribui um nivel de risco ALTO ou MEDIO. A predicao aparece tanto na Visualizacao em Tabela quanto no Coletor.
 </Step>
 <Step title="Operador abre o Coletor">
-Um operador de campo na unidade relevante abre o Coletor em seu dispositivo móvel e seleciona sua unidade no dropdown de filtro.
+Um operador de campo na unidade relevante abre o Coletor em seu dispositivo movel e seleciona sua unidade no dropdown de filtro.
 </Step>
 <Step title="Operador localiza a carga">
-Usando as informações do card — número do CTRC, nome do remetente, número da nota fiscal, quantidade de volumes e rota — o operador localiza a carga física na unidade.
+Usando as informacoes do card — numero do CTRC, nome do remetente, numero da nota fiscal, quantidade de volumes e rota — o operador localiza a carga fisica na unidade.
 </Step>
 <Step title="Operador fotografa a carga">
-O operador toca no botão da câmera no card, tira uma foto da carga, revisa e confirma com "Usar Foto".
+O operador toca no botao da camera no card, tira uma foto da carga, revisa e confirma com "Usar Foto".
 </Step>
-<Step title="Verificação é registrada">
-O sistema registra a verificação com:
-
-- O número do CTRC
-- A foto codificada em base64
-- A identidade do operador (do contexto de autenticação)
-- Um timestamp
-
+<Step title="Verificacao e registrada">
+O sistema registra a verificacao com o numero do CTRC, a foto, a identidade do operador e um timestamp.
 </Step>
-<Step title="Card é removido">
-O CTRC verificado é imediatamente removido da lista de cards do Coletor (atualização otimista). Ele também passa a ser excluído de futuras consultas do Coletor (via filtro `exclude_verified`).
+<Step title="Card e removido">
+O CTRC verificado e imediatamente removido da lista de cards do Coletor e nao aparecera em sessoes futuras.
 </Step>
 </Steps>
 
-## Captura de câmera
+## Captura de camera
 
-O componente de captura de câmera fornece uma interface em tela cheia para tirar fotos:
+A interface de camera fornece uma visualizacao em tela cheia para tirar fotos:
 
 {/* TODO: Add screenshot of the camera capture interface */}
 
 ### Controles
 
-| Botão | Ação |
+| Botao | Acao |
 |--------|--------|
-| **Abrir Câmera** | Ativa a câmera do dispositivo e mostra uma prévia ao vivo |
-| **Cancelar** | Fecha a câmera sem tirar uma foto |
-| **Capturar** (obturador) | Tira uma foto da prévia ao vivo |
-| **Refazer** | Descarta a foto atual e retorna à prévia ao vivo |
-| **Usar Foto** | Confirma a foto e envia a verificação |
+| **Abrir Camera** | Ativa a camera do dispositivo e mostra uma previa ao vivo |
+| **Cancelar** | Fecha a camera sem tirar uma foto |
+| **Capturar** (obturador) | Tira uma foto da previa ao vivo |
+| **Refazer** | Descarta a foto atual e retorna a previa ao vivo |
+| **Usar Foto** | Confirma a foto e envia a verificacao |
 
-### Comportamento da câmera
+### Comportamento da camera
 
-- O componente solicita acesso à **câmera traseira (voltada para o ambiente)** do dispositivo por padrão, que é ideal para fotografar cargas
-- Se a câmera traseira não estiver disponível, ele usa qualquer câmera disponível como alternativa
-- A prévia da câmera preenche a tela para maximizar a visibilidade
-- As fotos são capturadas como imagens codificadas em base64 e incluídas na requisição à API
+- A camera usa a **camera traseira (voltada para o ambiente)** por padrao, que e ideal para fotografar cargas
+- Se a camera traseira nao estiver disponivel, ela usa qualquer camera disponivel como alternativa
+- A previa da camera preenche a tela para maximizar a visibilidade
 
 <Callout type="info">
-Seu navegador solicitará permissão de câmera na primeira vez que você usar o Coletor. Conceda a permissão para habilitar a verificação com fotos. Se você negar, não será possível tirar fotos de verificação.
+Seu navegador solicitara permissao de camera na primeira vez que voce usar o Coletor. Conceda a permissao para habilitar a verificacao com fotos. Se voce negar, nao sera possivel tirar fotos de verificacao.
 </Callout>
 
-## Dados da verificação
+## Apos a verificacao
 
-Cada envio de verificação envia os seguintes dados para a API:
+Uma vez que um CTRC e verificado:
 
-| Campo | Descrição |
-|-------|-------------|
-| `ctrc` | O número do CTRC sendo verificado |
-| `photo` | Foto da carga codificada em base64 |
+- Ele e removido da lista de cards do Coletor
+- Permanece visivel na Visualizacao em Tabela de Predicao de Perda (a tabela nao filtra por status de verificacao por padrao)
+- O registro de verificacao e armazenado para fins de auditoria e analise
+- Carregamentos futuros do Coletor nao mostrarao CTRCs ja verificados
 
-A API registra a verificação, associa ao usuário autenticado e marca o CTRC como verificado no banco de dados.
-
-## Após a verificação
-
-Uma vez que um CTRC é verificado:
-
-- Ele é removido da lista de cards do Coletor
-- Permanece visível na Visualização em Tabela de Predição de Perda (a tabela não filtra por status de verificação por padrão)
-- O registro de verificação é armazenado para fins de auditoria e análise
-- Carregamentos futuros do Coletor excluirão CTRCs já verificados
-
-## Boas práticas para operadores de campo
+## Boas praticas para operadores de campo
 
 <Callout type="tip">
-Siga estas orientações para uma verificação de carga eficaz:
+Siga estas orientacoes para uma verificacao de carga eficaz:
 </Callout>
 
-- **Verifique no início do seu turno**: Abra o Coletor e trabalhe primeiro nos cards de maior risco
-- **Tire fotos claras**: Garanta que a carga esteja claramente visível, bem iluminada e identificável na foto
-- **Inclua marcas de identificação**: Capture etiquetas, códigos de barras ou marcações que vinculem a carga física ao CTRC
-- **Trabalhe por unidade**: Filtre pela sua unidade específica para evitar ver cargas de outras localizações
-- **Verifique periodicamente**: Novas predições podem chegar conforme o data warehouse processa novos dados de CTRCs ao longo do dia
+- **Verifique no inicio do seu turno**: Abra o Coletor e trabalhe primeiro nos cards de maior risco
+- **Tire fotos claras**: Garanta que a carga esteja claramente visivel, bem iluminada e identificavel na foto
+- **Inclua marcas de identificacao**: Capture etiquetas, codigos de barras ou marcacoes que vinculem a carga fisica ao CTRC
+- **Trabalhe por unidade**: Filtre pela sua unidade especifica para evitar ver cargas de outras localizacoes
+- **Verifique periodicamente**: Novas predicoes podem chegar conforme novos dados de embarques sao processados ao longo do dia
 
 ## Tratamento de erros
 
-Se o envio de uma verificação falhar (problema de rede, erro do servidor), uma notificação toast indicará o erro. Nesse caso:
+Se o envio de uma verificacao falhar (problema de rede ou erro do servidor), uma notificacao indicara o erro. Nesse caso:
 
-1. O card permanece na lista (não é removido em caso de falha)
-2. Verifique sua conexão com a internet
-3. Tente tocar no botão da câmera novamente para refazer a foto e reenviar
+1. O card permanece na lista (nao e removido em caso de falha)
+2. Verifique sua conexao com a internet
+3. Tente tocar no botao da camera novamente para refazer a foto e reenviar
 4. Se os erros persistirem, entre em contato com o administrador
 
-<Card title="Visão Geral do Coletor" href="/v1/platform/collector">
-Retorne à visão geral do módulo Coletor.
+<Card title="Visao Geral do Coletor" href="/v1/platform/collector">
+Retorne a visao geral do modulo Coletor.
 </Card>
 
-<Card title="Tabela de Predição de Perda" href="/v1/platform/loss-prediction/table">
-Revise predições na visualização em tabela do desktop.
+<Card title="Tabela de Predicao de Perda" href="/v1/platform/loss-prediction/table">
+Revise predicoes na visualizacao em tabela do desktop.
 </Card>

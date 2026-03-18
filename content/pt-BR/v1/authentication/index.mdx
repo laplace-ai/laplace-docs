@@ -1,56 +1,56 @@
 ---
-title: "Autenticação"
-description: "Visão geral do sistema de autenticação da Plataforma Laplace — login seguro, controle de acesso baseado em perfis e onboarding por convite."
+title: "Autenticacao"
+description: "Visao geral do sistema de autenticacao da Plataforma Laplace — login seguro, controle de acesso baseado em perfis e onboarding por convite."
 ---
 
-# Autenticação
+# Autenticacao
 
-A Plataforma Laplace utiliza um **sistema de autenticação seguro** com controle de acesso baseado em perfis. Cada usuário pertence a uma organização e o acesso é controlado tanto no nível da organização quanto no nível do usuário.
+A Plataforma Laplace utiliza um **sistema de autenticacao seguro** com controle de acesso baseado em perfis. Cada usuario pertence a uma organizacao e o acesso e controlado tanto no nivel da organizacao quanto no nivel do usuario.
 
 ## Como funciona
 
 <Steps>
-<Step title="Administrador convida um usuário">
-Um administrador cria um novo usuário no painel de Configurações, especificando nome, email, perfil de acesso e função. O sistema gera um token de convite de uso único e envia um email com um link de ativação.
+<Step title="Administrador convida um usuario">
+Um administrador cria um novo usuario no painel de Configuracoes, especificando nome, email, perfil de acesso e funcao. O sistema envia um email com um link de ativacao de uso unico.
 </Step>
-<Step title="Usuário define sua senha">
-O novo usuário clica no link do convite, que o leva à página de definição de senha. Após a validação do token, ele define sua senha e sua conta é ativada.
+<Step title="Usuario define sua senha">
+O novo usuario clica no link do convite, que o leva a pagina de definicao de senha. Ele define sua senha e sua conta e ativada.
 </Step>
-<Step title="Usuário faz login">
-O usuário navega até a página de login e insere seu email e senha. A plataforma verifica as credenciais e cria uma sessão segura.
+<Step title="Usuario faz login">
+O usuario navega ate a pagina de login e insere seu email e senha. A plataforma verifica as credenciais e cria uma sessao segura.
 </Step>
-<Step title="Sessão é mantida">
-A plataforma mantém sua sessão automaticamente. Você não precisa fazer login novamente a menos que sua sessão expire após um período prolongado de inatividade.
+<Step title="Sessao e mantida">
+A plataforma mantem sua sessao automaticamente. Voce nao precisa fazer login novamente a menos que sua sessao expire apos um periodo prolongado de inatividade.
 </Step>
-<Step title="Acesso é aplicado">
-Cada ação na plataforma verifica sua função e perfil de acesso. Você vê apenas as funcionalidades e dados que sua organização e perfil concedem acesso.
+<Step title="Acesso e aplicado">
+Cada acao na plataforma verifica sua funcao e perfil de acesso. Voce ve apenas as funcionalidades e dados que sua organizacao e perfil concedem acesso.
 </Step>
 </Steps>
 
 ## Conceitos principais
 
-| Conceito | Descrição |
+| Conceito | Descricao |
 |---------|-------------|
-| **Funções** | Duas funções — Administrador e Usuário — controlam quais ações você pode realizar |
-| **Perfis de acesso** | Templates que definem quais funcionalidades um usuário pode ver (ex.: "Analista", "Coletor", "Gestor") |
-| **Registro por convite** | Sem auto-registro; administradores criam e convidam usuários |
-| **Acesso a unidades** | Administradores podem restringir quais unidades um usuário pode ver |
+| **Funcoes** | Duas funcoes — Administrador e Usuario — controlam quais acoes voce pode realizar |
+| **Perfis de acesso** | Templates que definem quais funcionalidades um usuario pode ver (ex.: "Analista", "Coletor", "Gestor") |
+| **Registro por convite** | Sem auto-registro; administradores criam e convidam usuarios |
+| **Acesso a unidades** | Administradores podem restringir quais unidades um usuario pode ver |
 
-## Medidas de segurança
+## Medidas de seguranca
 
-- **Sessões seguras**: Todas as sessões são criptograficamente protegidas e verificadas em cada requisição
-- **Expiração de sessão**: Sessões expiram automaticamente após um período de inatividade
-- **Acesso somente por convite**: Sem auto-registro — apenas administradores podem criar contas de usuário
-- **Isolamento de dados**: Todos os dados são limitados à sua organização — você só consegue ver os dados da sua própria organização
+- **Sessoes seguras**: Todas as sessoes sao protegidas e verificadas em cada requisicao
+- **Expiracao de sessao**: Sessoes expiram automaticamente apos um periodo de inatividade
+- **Acesso somente por convite**: Sem auto-registro — apenas administradores podem criar contas de usuario
+- **Isolamento de dados**: Todos os dados sao limitados a sua organizacao — voce so consegue ver os dados da sua propria organizacao
 
 <Card title="Login" href="/v1/authentication/login">
 Passo a passo detalhado do fluxo de login.
 </Card>
 
 <Card title="Perfis de Acesso" href="/v1/authentication/roles">
-Entendendo o sistema de funções e permissões.
+Entendendo o sistema de funcoes e permissoes.
 </Card>
 
 <Card title="Convites" href="/v1/authentication/invites">
-Como funciona o sistema de onboarding de usuários por convite.
+Como funciona o sistema de onboarding de usuarios por convite.
 </Card>

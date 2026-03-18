@@ -5,7 +5,7 @@ description: "The Database Browser module — browse raw data tables for CTRCs, 
 
 # Database Browser
 
-The Database Browser provides direct access to the raw data tables that power the Laplace Platform. It is a developer and analyst-oriented tool for data validation, ad-hoc investigation, and understanding the underlying data structure.
+The Database Browser provides direct access to the data tables that power the Laplace Platform. It is useful for data validation, investigating specific shipments, and understanding the underlying information.
 
 Navigate to **Database** in the sidebar.
 
@@ -17,88 +17,87 @@ The Database Browser uses a **two-panel layout**:
 
 ### Left panel — Table list
 
-A sidebar (within the main content area) lists all available database tables. Click a table name to load its data into the main grid.
+A sidebar (within the main content area) lists all available tables. Click a table name to load its data into the main grid.
 
 Available tables:
 
-| Table | Label | Description |
-|-------|-------|-------------|
-| `ctrcs` | CTRCs (base_455) | Shipment records from the base_455 data source — the core operational data |
-| `loss_predictions` | Loss Predictions | ML model outputs including probability, risk level, confidence, and model version |
-| `units` | Units | Facility master data with codes, names, locations, and geographic coordinates |
-| `network_links` | Network Links | Route connections between facilities with vehicle type, classification, and pricing |
+| Table | Description |
+|-------|-------------|
+| **CTRCs** | Shipment records — the core operational data |
+| **Loss Predictions** | Prediction outputs including probability, risk level, and confidence |
+| **Units** | Facility data with codes, names, locations, and geographic coordinates |
+| **Network Links** | Route connections between facilities with vehicle type, classification, and pricing |
 
 ### Right panel — Data grid
 
-The main area displays a scrollable table with the selected table's data. Each table has a predefined set of columns.
+The main area displays a scrollable table with the selected table's data.
 
-## Table schemas
+## Available tables
 
-### CTRCs (base_455)
+### CTRCs
 
-The CTRCs table contains cleaned shipment data from the base_455 source. This is the primary operational dataset.
+The CTRCs table contains shipment data. This is the primary operational dataset.
 
 | Column | Description |
 |--------|-------------|
-| `ctrc` | Shipment document number (primary identifier) |
-| `day_created_at` | Date the CTRC was created |
-| `localizacao_atual` | Current location of the cargo |
-| `unidade_emissora` | Emitting unit (origin facility) |
-| `unidade_receptora` | Receiving unit (destination facility) |
-| `cliente_remetente` | Sender client name |
-| `cliente_destinatario` | Recipient client name |
-| `cidade_origem_da_prestacao` | Origin city |
-| `cidade_de_entrega` | Delivery city |
-| `uf_de_entrega` | Delivery state (e.g., SP, PR, RJ) |
-| `valor_do_frete` | Freight value in BRL |
-| `valor_da_mercadoria` | Cargo value in BRL |
-| `peso_real_em_kg` | Actual cargo weight in kilograms |
-| `quantidade_de_volumes` | Number of cargo volumes |
-| `mercadoria` | Type of merchandise |
+| **CTRC** | Shipment document number |
+| **Created** | Date the CTRC was created |
+| **Current Location** | Current location of the cargo |
+| **Origin Unit** | Emitting unit (origin facility) |
+| **Destination Unit** | Receiving unit (destination facility) |
+| **Sender** | Sender client name |
+| **Recipient** | Recipient client name |
+| **Origin City** | Origin city |
+| **Delivery City** | Delivery city |
+| **Delivery State** | Delivery state (e.g., SP, PR, RJ) |
+| **Freight Value** | Freight value in BRL |
+| **Cargo Value** | Cargo value in BRL |
+| **Weight (kg)** | Actual cargo weight in kilograms |
+| **Volumes** | Number of cargo volumes |
+| **Goods** | Type of merchandise |
 
 ### Loss Predictions
 
-The predictions table contains model outputs for scored CTRCs.
+The predictions table contains the scoring results for CTRCs.
 
 | Column | Description |
 |--------|-------------|
-| `ctrc` | The scored CTRC number (foreign key to CTRCs table) |
-| `probability` | Loss probability (0.0 to 1.0) |
-| `risk_level` | Derived risk level: ALTO, MEDIO, or BAIXO |
-| `confidence` | Model confidence score |
-| `prediction` | Binary prediction (loss / no-loss) |
-| `model_version` | Version of the model that produced this prediction |
+| **CTRC** | The scored shipment number |
+| **Probability** | Loss probability (0% to 100%) |
+| **Risk Level** | ALTO, MEDIO, or BAIXO |
+| **Confidence** | How certain the model is about the prediction |
+| **Prediction** | Whether the model predicts loss or no loss |
+| **Model Version** | Which version of the model produced this prediction |
 
 ### Units
 
-The units table contains master data for all facilities in the logistics network.
+The units table contains data for all facilities in the logistics network.
 
 | Column | Description |
 |--------|-------------|
-| `code` | Unique facility code (e.g., "ATI SPA") |
-| `type` | Facility type (hub, branch, distribution center, etc.) |
-| `name` | Human-readable facility name |
-| `city` | City location |
-| `state` | State abbreviation |
-| `active` | Whether the unit is currently active |
-| `latitude` | Geographic latitude (used for map placement) |
-| `longitude` | Geographic longitude (used for map placement) |
+| **Code** | Unique facility code (e.g., "ATI SPA") |
+| **Type** | Facility type (hub, branch, distribution center, etc.) |
+| **Name** | Facility name |
+| **City** | City location |
+| **State** | State abbreviation |
+| **Active** | Whether the unit is currently active |
+| **Coordinates** | Geographic latitude and longitude (used for map placement) |
 
 ### Network Links
 
-The network links table defines route connections between facilities.
+The network links table shows route connections between facilities.
 
 | Column | Description |
 |--------|-------------|
-| `origin_code` | Origin facility code |
-| `destination_code` | Destination facility code |
-| `vehicle_type` | Type of vehicle on this route |
-| `classification` | Route classification |
-| `price_brl` | Route pricing in BRL |
+| **Origin** | Origin facility code |
+| **Destination** | Destination facility code |
+| **Vehicle Type** | Type of vehicle on this route |
+| **Classification** | Route classification |
+| **Price (BRL)** | Route pricing in BRL |
 
 ## Searching
 
-Each table view includes a search bar. The search performs a **client-side full-text filter** across all visible columns. Type any value and the table instantly filters to rows containing that text in any column.
+Each table view includes a search bar. Type any value and the table instantly filters to rows containing that text in any column.
 
 The search is:
 
@@ -110,7 +109,7 @@ The result count updates in real time, showing the number of filtered rows vs. t
 
 ## Data loading
 
-The Database Browser fetches **up to 100 rows** per table from the API. This is designed as a quick-look tool rather than a full data export interface.
+The Database Browser shows **up to 100 rows** per table. This is designed as a quick-look tool rather than a full data export interface.
 
 When you switch between tables:
 
@@ -119,7 +118,7 @@ When you switch between tables:
 - The new table's data replaces the previous view
 
 <Callout type="info">
-The Database Browser shows a snapshot of the first 100 rows from each table. For full data access, use the CSV export feature in the Loss Prediction table or connect directly to the database.
+The Database Browser shows a snapshot of the first 100 rows from each table. For full data access, use the CSV export feature in the Loss Prediction table.
 </Callout>
 
 ## Use cases
@@ -128,20 +127,11 @@ The Database Browser is particularly useful for:
 
 | Use Case | How |
 |----------|-----|
-| **Data validation** | Verify that ETL pipelines loaded data correctly by spot-checking rows |
-| **Investigation** | Look up a specific CTRC to see its raw attributes and prediction |
-| **Unit lookup** | Find a facility's coordinates, type, or status |
+| **Data validation** | Verify that data was loaded correctly by spot-checking rows |
+| **Investigation** | Look up a specific CTRC to see its details and prediction |
+| **Unit lookup** | Find a facility's location, type, or status |
 | **Route analysis** | Browse network links to understand route connections and pricing |
-| **Debugging** | Compare raw data with platform visualizations to identify discrepancies |
-
-<Callout type="warning">
-The Database Browser displays raw data from the backend. Some values may be in their original format (e.g., unformatted numbers, raw date strings). For formatted views with currency, percentages, and localized dates, use the Loss Prediction Table or Unit Detail pages.
-</Callout>
 
 <Card title="Platform Overview" href="/v1/platform">
 Return to the platform overview to explore other modules.
-</Card>
-
-<Card title="Architecture" href="/v1/architecture">
-Learn about the technical architecture behind the data pipeline.
 </Card>

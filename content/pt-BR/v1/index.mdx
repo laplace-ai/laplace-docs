@@ -7,7 +7,7 @@ description: "Documentacao oficial da plataforma Laplace Digital Twin — um sis
 
 Laplace e uma **plataforma de digital twin para redes logisticas**. Ela oferece a operadores logisticos e transportadoras uma visao em tempo real e inteligente de toda a sua operacao — desde embarques individuais ate padroes em escala de rede.
 
-A plataforma combina ingestao de dados em tempo real, predicoes com machine learning e visualizacoes interativas para apoiar melhores decisoes em todos os niveis da operacao logistica.
+A plataforma combina dados em tempo real, predicoes e visualizacoes interativas para apoiar melhores decisoes em todos os niveis da operacao logistica.
 
 {/* TODO: Add hero screenshot of the platform map view */}
 
@@ -21,41 +21,39 @@ Em vez de reagir a problemas depois que acontecem, um digital twin permite que v
 
 <Steps>
 <Step title="Ingere seus dados logisticos">
-O Laplace se conecta as suas fontes de dados operacionais (CTRCs, registros de embarque, informacoes de instalacoes) e sincroniza continuamente em um data warehouse unificado.
+O Laplace se conecta as suas fontes de dados operacionais (CTRCs, registros de embarque, informacoes de instalacoes) e sincroniza continuamente em um sistema unificado.
 </Step>
 <Step title="Visualiza sua rede">
 Um mapa interativo exibe sua rede logistica — cada instalacao, cada rota, cada conexao — atualizado em tempo quase real. Clique em qualquer unidade para ver seus detalhes, embarques e perfil de risco.
 </Step>
 <Step title="Prediz perda de carga">
-Um modelo de machine learning pontua cada embarque (CTRC) no momento da emissao com uma probabilidade de perda. Cargas de alto risco sao sinalizadas para que sua equipe possa agir antes que as perdas ocorram.
+Um modelo de predicao pontua cada embarque (CTRC) no momento da emissao com uma probabilidade de perda. Cargas de alto risco sao sinalizadas para que sua equipe possa agir antes que as perdas ocorram.
 </Step>
 <Step title="Possibilita verificacao em campo">
-O modulo Collector fornece uma interface otimizada para dispositivos moveis para operadores de campo verificarem cargas de alto risco com evidencia fotografica, fechando o ciclo entre predicao e acao.
+O modulo Coletor fornece uma interface otimizada para dispositivos moveis para operadores de campo verificarem cargas de alto risco com evidencia fotografica, fechando o ciclo entre predicao e acao.
 </Step>
 </Steps>
 
 ## Modulos da plataforma
 
-A Plataforma Laplace e organizada em modulos. Cada tenant (organizacao cliente) tem acesso aos modulos especificos incluidos em sua assinatura.
+A Plataforma Laplace e organizada em modulos. Cada organizacao tem acesso aos modulos especificos incluidos em sua assinatura.
 
 | Modulo | Descricao | Status |
 |--------|-----------|--------|
 | **Digital Twin** | Mapa interativo da rede logistica com marcadores de unidades e visualizacao de rotas | Disponivel |
 | **Digital Model** | Gerenciamento de unidades (instalacoes) com visualizacoes detalhadas e dados operacionais | Disponivel |
-| **Loss Prediction** | Pontuacao de risco de perda de carga com ML, com visualizacao em tabela, collector e dashboard | Disponivel |
-| **Database Browser** | Acesso direto para navegar em tabelas de dados brutos (CTRCs, predicoes, unidades, links) | Disponivel |
+| **Loss Prediction** | Pontuacao de risco de perda de carga com visualizacao em tabela, coletor e dashboard | Disponivel |
+| **Database Browser** | Navegue por tabelas de dados (CTRCs, predicoes, unidades, links) | Disponivel |
 | **Control Tower** | Monitoramento centralizado de operacoes e alertas | Em breve |
 | **Load Consolidation** | Otimizacao de consolidacao de embarques na rede | Em breve |
 
 ## Para quem e esta documentacao?
 
-Esta documentacao atende a tres publicos:
+Esta documentacao atende a dois publicos:
 
 - **Operadores e gestores logisticos** que usam a plataforma diariamente para monitorar operacoes, revisar predicoes e tomar decisoes. Comece por [Primeiros Passos](/v1/getting-started/first-steps).
 
-- **Administradores de tenant** que gerenciam usuarios, papeis e acesso a modulos dentro de sua organizacao. Veja [Autenticacao](/v1/authentication) e [Configuracoes](/v1/settings).
-
-- **Desenvolvedores** que constroem ou estendem a plataforma. Confira [Arquitetura](/v1/architecture) e [Instalacao](/v1/getting-started/installation).
+- **Administradores** que gerenciam usuarios, papeis e acesso a modulos dentro de sua organizacao. Veja [Autenticacao](/v1/authentication) e [Configuracoes](/v1/settings).
 
 ## Links rapidos
 
@@ -71,10 +69,6 @@ Aprenda a usar o mapa interativo da rede logistica.
 Entenda como as predicoes de perda de carga funcionam e como agir com base nelas.
 </Card>
 
-<Card title="Arquitetura" href="/v1/architecture">
-Visao geral tecnica da stack da plataforma e do pipeline de dados.
-</Card>
-
 ## Suporte a idiomas
 
-A Plataforma Laplace e totalmente bilingue, suportando tanto **Ingles (EN-US)** quanto **Portugues (PT-BR)**. Voce pode trocar o idioma a qualquer momento na pagina de login, no cabecalho do collector ou no painel de configuracoes. Esta documentacao esta disponivel em portugues e ingles.
+A Plataforma Laplace e totalmente bilingue, suportando tanto **Ingles (EN-US)** quanto **Portugues (PT-BR)**. Voce pode trocar o idioma a qualquer momento na pagina de login, no cabecalho do coletor ou no painel de configuracoes.

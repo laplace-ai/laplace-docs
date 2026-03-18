@@ -1,25 +1,22 @@
 ---
 title: "Loss Prediction"
-description: "The Loss Prediction module — ML-powered cargo loss risk scoring for CTRCs with table view, collector, dashboard, and model management."
+description: "The Loss Prediction module — cargo loss risk scoring for every shipment, with table view, collector, and dashboard."
 ---
 
 # Loss Prediction
 
-The Loss Prediction module is the platform's first intelligent service. It uses a **LightGBM binary classifier** to predict the probability of cargo loss for every CTRC (shipment) at emission time, enabling proactive intervention before losses occur.
+The Loss Prediction module is the platform's intelligence layer. It analyzes every CTRC (shipment) at emission time and predicts the probability of cargo loss, enabling your team to take proactive action before losses occur.
 
 ## How it works
 
-The prediction pipeline follows a straightforward flow:
+The prediction process follows a straightforward flow:
 
 <Steps>
 <Step title="Data arrives">
-When new CTRC data is loaded into the data warehouse (via the `base_455` ETL pipeline), the data warehouse publishes an event to the `data-warehouse-updates` Pub/Sub topic.
+When new shipment data is loaded into the system, the prediction service is automatically triggered.
 </Step>
-<Step title="Service is triggered">
-The Loss Prediction service (running on Cloud Run) receives the event and identifies new CTRCs that have not yet been scored by the active model version.
-</Step>
-<Step title="Model scores CTRCs">
-The LightGBM model analyzes 19 features per CTRC — including route characteristics, cargo attributes, temporal patterns, and historical data — to produce a loss probability between 0 and 1.
+<Step title="Shipments are analyzed">
+The model analyzes each new CTRC using characteristics like route, cargo attributes, timing patterns, and historical data to produce a loss probability between 0 and 100%.
 </Step>
 <Step title="Risk levels are assigned">
 Based on the probability, each CTRC is assigned a risk level:
@@ -32,12 +29,12 @@ Based on the probability, each CTRC is assigned a risk level:
 
 </Step>
 <Step title="Results appear in the platform">
-Predictions are written to the `ctrc_loss_predictions` table in Cloud SQL and immediately available in the platform's table view and collector.
+Predictions are immediately available in the platform's table view and collector, ready for your team to review and act on.
 </Step>
 </Steps>
 
 <Callout type="info">
-The model uses a **LEFT JOIN exclusion strategy** — it only scores CTRCs that do not already have a prediction for the active model version. This ensures efficiency and prevents duplicate scoring.
+The model only scores shipments that have not been scored yet, ensuring efficiency and preventing duplicate predictions.
 </Callout>
 
 ## Module views
@@ -56,18 +53,18 @@ A mobile-optimized card interface for field operators. Review high-risk cargo an
 
 | View | Description |
 |------|-------------|
-| **Dashboard** | Analytics view with risk distribution charts, predictions over time, units with most risk, and model performance metrics (accuracy, precision, recall, F1, AUC-ROC) |
-| **Models** | Model management interface to view model versions, compare performance metrics, and activate different model versions |
+| **Dashboard** | Analytics view with risk distribution charts, predictions over time, and performance metrics |
+| **Models** | Model management interface to view and compare different model versions |
 
 <Callout type="warning">
-The Dashboard and Models views currently display mockup data for demonstration purposes. They do not reflect real production data. This is indicated by a banner at the top of each page.
+The Dashboard and Models views currently display sample data for demonstration purposes. They do not reflect real production data. This is indicated by a banner at the top of each page.
 </Callout>
 
 ## Understanding predictions
 
 ### Risk levels
 
-Each prediction assigns one of three risk levels based on the model's probability output:
+Each prediction assigns one of three risk levels:
 
 | Level | Badge Color | What it means |
 |-------|------------|---------------|
@@ -77,38 +74,27 @@ Each prediction assigns one of three risk levels based on the model's probabilit
 
 ### Probability
 
-The raw probability is a value between 0 and 1, displayed as a percentage (e.g., 87.3%). A visual bar accompanies the number to give a quick sense of relative risk. The bar color matches the risk level badge.
+The probability is displayed as a percentage (e.g., 87.3%). A visual bar accompanies the number to give a quick sense of relative risk. The bar color matches the risk level badge.
 
 ### Confidence
 
-The model also outputs a **confidence score** that reflects how certain the model is about its prediction. Higher confidence means the model's features align strongly with patterns it learned during training.
+The model also outputs a **confidence score** that reflects how certain the prediction is. Higher confidence means the characteristics of the shipment align strongly with known patterns.
 
-## Model features
+## What the model considers
 
-The LightGBM model uses **19 features** to make predictions. These include (but are not limited to):
+The prediction model analyzes multiple characteristics of each shipment, including:
 
 - Route characteristics (origin, destination, distance)
 - Cargo attributes (weight, value, type of goods)
-- Temporal patterns (day of week, month, time of year)
-- Unit-level statistics (historical loss rates at origin/destination facilities)
-- Shipment metadata (number of volumes, freight value)
+- Timing patterns (day of week, month, time of year)
+- Facility statistics (historical loss rates at origin and destination)
+- Shipment details (number of volumes, freight value)
 
 <Callout type="info">
-The model is trained on historical CTRC data where the outcome (loss or no loss) is known. It learns patterns that distinguish high-risk shipments from low-risk ones, then applies those patterns to score new shipments in real time.
+The model is trained on historical shipment data where the outcome (loss or no loss) is known. It learns patterns that distinguish high-risk shipments from low-risk ones, then applies those patterns to score new shipments automatically.
 </Callout>
 
-## Model versioning
-
-The Loss Prediction service supports **model versioning** without requiring a service redeployment:
-
-- Model artifacts are stored in Google Cloud Storage (GCS)
-- A `manifest.json` file in GCS defines the active model version
-- When a new model is trained and uploaded, updating the manifest switches all new predictions to the new version
-- Historical predictions retain their original `model_version` for traceability
-
-This means the data science team can iterate on models, compare performance, and roll out improvements without any infrastructure changes.
-
-## Operational workflow
+## Recommended workflow
 
 The recommended workflow for using Loss Prediction combines the Table View and Collector:
 

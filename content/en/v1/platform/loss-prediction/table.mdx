@@ -1,11 +1,11 @@
 ---
 title: "Loss Prediction Table"
-description: "The Loss Prediction Table view — a sortable, filterable data table for reviewing ML-scored CTRCs with risk badges, probability bars, and CSV export."
+description: "The Loss Prediction Table view — a sortable, filterable data table for reviewing scored CTRCs with risk badges, probability bars, and CSV export."
 ---
 
 # Loss Prediction Table
 
-The Table View is the primary analytical interface for the Loss Prediction module. It presents all ML-scored CTRCs in a rich data table with risk badges, probability visualizations, sorting, filtering, and export capabilities.
+The Table View is the primary analytical interface for the Loss Prediction module. It presents all scored CTRCs in a rich data table with risk badges, probability visualizations, sorting, filtering, and export capabilities.
 
 Navigate to **Services > Loss Prediction > Table View** in the sidebar.
 
@@ -39,18 +39,18 @@ The default filter of "Alto + Medio" is intentional — it focuses your attentio
 
 ### Table columns
 
-| Column | Key | Sortable | Description |
-|--------|-----|----------|-------------|
-| **CTRC** | `ctrc` | Yes | The shipment document number, displayed in monospace font |
-| **Location** | `localizacao_atual` | No | Current location (facility) of the cargo |
-| **Origin** | `unidade_emissora` | No | The unit that emitted the CTRC |
-| **Destination** | `unidade_receptora` | No | The receiving unit |
-| **Risk** | `risk_level` | No | Color-coded badge: ALTO (red), MEDIO (yellow), BAIXO (green) |
-| **Probability** | `probability` | Yes | Numeric probability (e.g., "87.3%") with a colored progress bar |
-| **Weight (KG)** | `peso_real_em_kg` | Yes | Cargo weight in kilograms, formatted with locale separators |
-| **Value (R$)** | `valor_da_mercadoria` | Yes | Cargo value in BRL, formatted as currency (e.g., "R$ 12.450,00") |
-| **Emission** | `day_created_at` | Yes | The date the CTRC was issued |
-| **Status** | `prediction` | No | Whether the model predicts loss or no-loss |
+| Column | Sortable | Description |
+|--------|----------|-------------|
+| **CTRC** | Yes | The shipment document number |
+| **Location** | No | Current location (facility) of the cargo |
+| **Origin** | No | The unit that emitted the CTRC |
+| **Destination** | No | The receiving unit |
+| **Risk** | No | Color-coded badge: ALTO (red), MEDIO (yellow), BAIXO (green) |
+| **Probability** | Yes | Percentage (e.g., "87.3%") with a colored progress bar |
+| **Weight (KG)** | Yes | Cargo weight in kilograms |
+| **Value (R$)** | Yes | Cargo value in BRL (e.g., "R$ 12.450,00") |
+| **Emission** | Yes | The date the CTRC was issued |
+| **Status** | No | Whether the model predicts loss or no-loss |
 
 ### Risk badges
 
@@ -62,17 +62,11 @@ Each CTRC has a color-coded risk badge:
 
 ### Probability bars
 
-The probability column shows both a numeric percentage and a small progress bar. The bar's fill color matches the risk level:
-
-- Red fill for ALTO
-- Yellow/amber fill for MEDIO
-- Green fill for BAIXO
-
-The bar width represents the probability value (0-100%), giving you a quick visual scan across rows.
+The probability column shows both a numeric percentage and a small progress bar. The bar's fill color matches the risk level. The bar width represents the probability value (0-100%), giving you a quick visual scan across rows.
 
 ## Sorting
 
-Click any sortable column header to sort the table. Click again to toggle between ascending and descending order. The active sort column and direction are reflected in the column header.
+Click any sortable column header to sort the table. Click again to toggle between ascending and descending order.
 
 | Sort Field | Default Direction | Use Case |
 |-----------|-------------------|----------|
@@ -90,7 +84,7 @@ The table sorts by probability in descending order by default. This puts the mos
 
 ### By unit
 
-The unit dropdown lists all facilities in your logistics network. Selecting a unit filters the table to show only CTRCs currently at that location. This is useful for:
+The unit dropdown lists all facilities in your logistics network. Selecting a unit filters the table to show only CTRCs at that location. This is useful for:
 
 - Reviewing risk at a specific facility
 - Preparing a verification list for field operators at a particular unit
@@ -98,7 +92,7 @@ The unit dropdown lists all facilities in your logistics network. Selecting a un
 
 ### By risk level
 
-The risk level dropdown lets you narrow down to specific risk tiers. The presets cover common operational scenarios:
+The risk level dropdown lets you narrow down to specific risk tiers:
 
 - **Alto + Medio**: Daily monitoring (default)
 - **Alto only**: Critical review
@@ -107,23 +101,19 @@ The risk level dropdown lets you narrow down to specific risk tiers. The presets
 
 ### By search query
 
-The search bar performs a client-side filter on the CTRC column. Type a full or partial CTRC number to find specific shipments. The search is case-insensitive.
+The search bar filters by CTRC number. Type a full or partial CTRC number to find specific shipments. The search is case-insensitive.
 
 ## Pagination
 
-The table displays **10 rows per page** from a batch of up to 100 records fetched from the API. Navigation controls at the bottom show:
+The table displays **10 rows per page**. Navigation controls at the bottom show:
 
 - Total row count (e.g., "23 of 150 rows")
 - Rows per page indicator
 - Page navigation (previous/next)
 
-<Callout type="info">
-The table fetches batches of 100 records at a time from the API and paginates them client-side. When you change filters or sorting, a new batch is fetched to ensure accuracy.
-</Callout>
-
 ## CSV export
 
-Click the **Export CSV** button (download icon) to export the currently visible data as a CSV file. The export includes all columns shown in the table and respects the active filters and sort order.
+Click the **Export CSV** button (download icon) to export the currently visible data as a CSV file. The export includes all columns and respects the active filters and sort order.
 
 Use CSV exports for:
 
@@ -133,12 +123,12 @@ Use CSV exports for:
 
 ## Currency and number formatting
 
-The table uses **Brazilian locale formatting** (pt-BR) for:
+The table uses **Brazilian formatting** (pt-BR) for:
 
 - **Currency values**: Displayed as `R$ 12.450,00` (BRL format with period as thousands separator and comma as decimal separator)
-- **Weight values**: Displayed with locale-appropriate number formatting (e.g., `1.250` for 1,250 kg)
+- **Weight values**: Displayed with locale-appropriate formatting (e.g., `1.250` for 1,250 kg)
 
-This ensures the data is immediately readable for Brazilian logistics operators without any mental conversion.
+This ensures the data is immediately readable for Brazilian logistics operators.
 
 <Card title="Collector" href="/v1/platform/collector">
 Learn how field operators verify high-risk cargo using the mobile Collector interface.

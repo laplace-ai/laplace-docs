@@ -1,126 +1,126 @@
 ---
 title: "Convites"
-description: "O sistema de convites da Plataforma Laplace — como administradores integram novos usuários com links de convite seguros baseados em token."
+description: "O sistema de convites da Plataforma Laplace — como administradores integram novos usuarios com links de convite seguros."
 ---
 
 # Convites
 
-A Plataforma Laplace utiliza um **sistema de registro por convite**. Não existe auto-registro — cada novo usuário precisa ser convidado por um administrador. Isso garante que apenas pessoal autorizado tenha acesso à plataforma e seus dados.
+A Plataforma Laplace utiliza um **sistema de registro por convite**. Nao existe auto-registro — cada novo usuario precisa ser convidado por um administrador. Isso garante que apenas pessoal autorizado tenha acesso a plataforma e seus dados.
 
 ## Por que somente por convite?
 
-A abordagem baseada em convite oferece diversos benefícios:
+A abordagem baseada em convite oferece diversos beneficios:
 
-- **Segurança**: Nenhum usuário não autorizado pode criar contas
-- **Controle**: Administradores decidem exatamente quem obtém acesso e o que podem ver
-- **Sem senhas compartilhadas**: Usuários definem suas próprias senhas via link seguro; credenciais nunca são compartilhadas por email ou chat
-- **Trilha de auditoria**: Cada criação de usuário é rastreável ao administrador que fez o convite
+- **Seguranca**: Nenhum usuario nao autorizado pode criar contas
+- **Controle**: Administradores decidem exatamente quem obtem acesso e o que podem ver
+- **Sem senhas compartilhadas**: Usuarios definem suas proprias senhas via link seguro; credenciais nunca sao compartilhadas por email ou chat
+- **Trilha de auditoria**: Cada criacao de usuario e rastreavel ao administrador que fez o convite
 
 ## O fluxo de convite
 
 <Steps>
-<Step title="Administrador cria o usuário">
-Na aba **Configurações > Usuários**, o administrador clica em **Convidar Usuário** e preenche:
+<Step title="Administrador cria o usuario">
+Na aba **Configuracoes > Usuarios**, o administrador clica em **Convidar Usuario** e preenche:
 
-- **Nome**: Nome completo do usuário
-- **Email**: Endereço de email do usuário (deve ser único em toda a plataforma)
-- **Função**: Administrador ou Usuário
-- **Perfil de Acesso**: Um template que define quais funcionalidades o usuário pode acessar
+- **Nome**: Nome completo do usuario
+- **Email**: Endereco de email do usuario (deve ser unico em toda a plataforma)
+- **Funcao**: Administrador ou Usuario
+- **Perfil de Acesso**: Um template que define quais funcionalidades o usuario pode acessar
 
-O administrador clica em **Enviar Convite** para criar o usuário e disparar o convite.
+O administrador clica em **Enviar Convite** para criar o usuario e disparar o convite.
 </Step>
-<Step title="Sistema gera um token de convite">
-O sistema cria um token único e criptograficamente seguro vinculado à nova conta de usuário, com um timestamp de expiração.
+<Step title="Sistema gera um link de convite">
+O sistema cria um link de ativacao unico e seguro para a nova conta de usuario, com um tempo de expiracao.
 </Step>
-<Step title="Email de convite é enviado">
-Um email é enviado ao endereço do usuário contendo um link para a página de definição de senha.
+<Step title="Email de convite e enviado">
+Um email e enviado ao endereco do usuario contendo um link para a pagina de definicao de senha.
 </Step>
-<Step title="Usuário abre o link de convite">
-O usuário clica no link do email. A plataforma valida que o token é válido e não está expirado, e então exibe o formulário de definição de senha com o nome e email do usuário.
+<Step title="Usuario abre o link de convite">
+O usuario clica no link do email. A plataforma valida que o link e valido e nao esta expirado, e entao exibe o formulario de definicao de senha com o nome e email do usuario.
 </Step>
-<Step title="Usuário define sua senha">
-O usuário insere uma senha (mínimo de 8 caracteres) e a confirma. O formulário valida:
+<Step title="Usuario define sua senha">
+O usuario insere uma senha (minimo de 8 caracteres) e a confirma. O formulario valida:
 
-- A senha atende ao requisito mínimo de comprimento
-- A senha e a confirmação são iguais
+- A senha atende ao requisito minimo de comprimento
+- A senha e a confirmacao sao iguais
 
 </Step>
-<Step title="Conta é ativada">
-Ao enviar, o sistema faz o hash da senha, ativa a conta do usuário, marca o token de convite como usado e faz login do usuário automaticamente.
+<Step title="Conta e ativada">
+Ao enviar, o sistema armazena a senha de forma segura, ativa a conta do usuario e faz login do usuario automaticamente.
 </Step>
 </Steps>
 
 {/* TODO: Add screenshot of the invite/password setup page */}
 
-## Página de convite
+## Pagina de convite
 
-A página de convite mostra:
+A pagina de convite mostra:
 
 - **Logo Laplace** centralizada no topo
-- **Título "Defina Sua Senha"**
-- **Mensagem de boas-vindas** com o nome do usuário (ex.: "Bem-vinda, Maria")
+- **Titulo "Defina Sua Senha"**
+- **Mensagem de boas-vindas** com o nome do usuario (ex.: "Bem-vinda, Maria")
 - **Campo de email** (somente leitura, preenchido pelo convite)
 - **Campo de senha** com placeholder "Pelo menos 8 caracteres"
-- **Campo de confirmação de senha**
-- **Botão Ativar Conta** com estado de carregamento
+- **Campo de confirmacao de senha**
+- **Botao Ativar Conta** com estado de carregamento
 
-Uma **alternância de idioma** também está disponível para que o usuário possa trocar para o idioma de sua preferência antes de configurar sua conta.
+Uma **alternancia de idioma** tambem esta disponivel para que o usuario possa trocar para o idioma de sua preferencia antes de configurar sua conta.
 
 ## Estados do convite
 
-Um token de convite pode estar em um dos seguintes estados:
+Um link de convite pode estar em um dos seguintes estados:
 
-| Estado | Descrição |
+| Estado | Descricao |
 |-------|-------------|
-| **Válido** | Token existe, não está expirado e não foi usado. O formulário de senha é exibido. |
-| **Expirado** | Token ultrapassou seu tempo de expiração. Uma mensagem de erro é exibida com um link para a página de login. |
-| **Usado** | Token já foi usado para definir uma senha. Aparece como inválido. |
-| **Inválido** | Token não existe. Uma mensagem de erro é exibida. |
-| **Ausente** | Nenhum token foi fornecido na URL. Uma mensagem de erro é exibida. |
+| **Valido** | Link existe, nao esta expirado e nao foi usado. O formulario de senha e exibido. |
+| **Expirado** | Link ultrapassou seu tempo de expiracao. Uma mensagem de erro e exibida com um link para a pagina de login. |
+| **Usado** | Link ja foi usado para definir uma senha. Aparece como invalido. |
+| **Invalido** | Link nao existe. Uma mensagem de erro e exibida. |
+| **Ausente** | Nenhum link foi fornecido na URL. Uma mensagem de erro e exibida. |
 
 ## Reenviando convites
 
-Se um usuário não receber o email de convite, ou se o token de convite expirar antes de ele definir sua senha, um administrador pode reenviar o convite:
+Se um usuario nao receber o email de convite, ou se o link de convite expirar antes de ele definir sua senha, um administrador pode reenviar o convite:
 
-1. Navegue até **Configurações > Usuários**
-2. Encontre o usuário na lista (ele terá um status `pendente`)
-3. Clique no **menu de três pontos** na linha do usuário
+1. Navegue ate **Configuracoes > Usuarios**
+2. Encontre o usuario na lista (ele tera um status `pendente`)
+3. Clique no **menu de tres pontos** na linha do usuario
 4. Selecione **Reenviar Convite**
 
-Isso gera um novo token de convite e envia um email novo. O token antigo é invalidado.
+Isso gera um novo link de convite e envia um email novo. O link antigo e invalidado.
 
 <Callout type="tip">
-Se um usuário já ativou sua conta mas esqueceu a senha, o administrador também pode reenviar um link de convite. Isso dá ao usuário uma nova oportunidade de definir sua senha, funcionando efetivamente como um mecanismo de redefinição de senha.
+Se um usuario ja ativou sua conta mas esqueceu a senha, o administrador tambem pode reenviar um link de convite. Isso da ao usuario uma nova oportunidade de definir sua senha, funcionando efetivamente como um mecanismo de redefinicao de senha.
 </Callout>
 
 ## Tratamento de erros
 
-A página de convite trata diversos cenários de erro de forma elegante:
+A pagina de convite trata diversos cenarios de erro de forma elegante:
 
-| Cenário | Comportamento da Interface |
+| Cenario | Comportamento da Interface |
 |----------|-------------|
-| Sem token na URL | Mostra erro "Nenhum token de convite fornecido" |
-| Token inválido/expirado | Mostra erro "Este link de convite é inválido ou expirou" com um link "Ir para Login" |
+| Sem link na URL | Mostra erro "Nenhum link de convite fornecido" |
+| Link invalido/expirado | Mostra erro "Este link de convite e invalido ou expirou" com um link "Ir para Login" |
 | Senha muito curta | Mostra erro inline "A senha deve ter pelo menos 8 caracteres" |
-| Senhas não coincidem | Mostra erro inline "As senhas não coincidem" |
-| Erro do servidor na ativação | Mostra a mensagem de erro do servidor |
+| Senhas nao coincidem | Mostra erro inline "As senhas nao coincidem" |
+| Erro do servidor na ativacao | Mostra a mensagem de erro do servidor |
 
-## Considerações de segurança
+## Consideracoes de seguranca
 
-- Tokens de convite são de **uso único** — uma vez que a senha é definida, o token não pode ser reutilizado
-- Tokens possuem um **tempo de expiração** — se não forem usados dentro da janela permitida, tornam-se inválidos
-- O email do usuário é verificado implicitamente (ele recebeu o convite naquele endereço)
-- As senhas passam por hash antes do armazenamento — a plataforma nunca armazena senhas em texto puro
-- Após a ativação, o usuário é logado imediatamente
+- Links de convite sao de **uso unico** — uma vez que a senha e definida, o link nao pode ser reutilizado
+- Links possuem um **tempo de expiracao** — se nao forem usados dentro da janela permitida, tornam-se invalidos
+- O email do usuario e verificado implicitamente (ele recebeu o convite naquele endereco)
+- As senhas sao armazenadas de forma segura — a plataforma nunca armazena senhas em formato legivel
+- Apos a ativacao, o usuario e logado imediatamente
 
 <Card title="Login" href="/v1/authentication/login">
-Saiba mais sobre o fluxo de login após a ativação da conta.
+Saiba mais sobre o fluxo de login apos a ativacao da conta.
 </Card>
 
 <Card title="Perfis de Acesso" href="/v1/authentication/roles">
-Entenda o sistema de funções que determina o que usuários convidados podem acessar.
+Entenda o sistema de funcoes que determina o que usuarios convidados podem acessar.
 </Card>
 
-<Card title="Configurações" href="/v1/settings">
-Veja como administradores gerenciam usuários e enviam convites pelo painel de Configurações.
+<Card title="Configuracoes" href="/v1/settings">
+Veja como administradores gerenciam usuarios e enviam convites pelo painel de Configuracoes.
 </Card>

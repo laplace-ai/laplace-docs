@@ -29,8 +29,8 @@ In the **Settings > Users** tab, the administrator clicks **Invite User** and fi
 
 The administrator clicks **Send Invite** to create the user and trigger the invite.
 </Step>
-<Step title="System generates an invite token">
-The system creates a unique, cryptographically secure token linked to the new user account, with an expiration timestamp.
+<Step title="System generates an invite link">
+The system creates a unique, secure activation link for the new user account, with an expiration time.
 </Step>
 <Step title="Invite email is sent">
 An email is sent to the user's address containing a link to the password setup page.
@@ -46,7 +46,7 @@ The user enters a password (minimum 8 characters) and confirms it. The form vali
 
 </Step>
 <Step title="Account is activated">
-On submission, the system hashes the password, activates the user account, marks the invite token as used, and logs the user in automatically.
+On submission, the system securely stores the password, activates the user account, and logs the user in automatically.
 </Step>
 </Steps>
 
@@ -68,7 +68,7 @@ A **language toggle** is also available so the user can switch to their preferre
 
 ## Invite states
 
-An invite token can be in one of these states:
+An invite link can be in one of these states:
 
 | State | Description |
 |-------|-------------|
@@ -80,14 +80,14 @@ An invite token can be in one of these states:
 
 ## Resending invites
 
-If a user does not receive their invite email, or if the invite token expires before they set their password, an administrator can resend the invite:
+If a user does not receive their invite email, or if the invite link expires before they set their password, an administrator can resend the invite:
 
 1. Navigate to **Settings > Users**
 2. Find the user in the list (they will have a `pending` status)
 3. Click the **three-dot menu** on the user's row
 4. Select **Resend Invite**
 
-This generates a new invite token and sends a fresh email. The old token is invalidated.
+This generates a new invite link and sends a fresh email. The old token is invalidated.
 
 <Callout type="tip">
 If a user has already activated their account but forgot their password, the administrator can also resend an invite link. This gives the user a new opportunity to set their password, effectively acting as a password reset mechanism.
@@ -99,7 +99,7 @@ The invite page handles several error scenarios gracefully:
 
 | Scenario | UI Behavior |
 |----------|-------------|
-| No token in URL | Shows "No invite token provided" error |
+| No token in URL | Shows "No invite link provided" error |
 | Invalid/expired token | Shows "This invite link is invalid or expired" error with a "Go to Login" link |
 | Password too short | Shows "Password must be at least 8 characters" inline error |
 | Passwords don't match | Shows "Passwords do not match" inline error |
@@ -107,10 +107,10 @@ The invite page handles several error scenarios gracefully:
 
 ## Security considerations
 
-- Invite tokens are **single-use** — once a password is set, the token cannot be reused
-- Tokens have an **expiration time** — if not used within the allowed window, they become invalid
+- Invite links are **single-use** — once a password is set, the link cannot be reused
+- Links have an **expiration time** — if not used within the allowed window, they become invalid
 - The user's email is verified implicitly (they received the invite at that address)
-- Passwords are hashed before storage — the platform never stores plaintext passwords
+- Passwords are stored securely — the platform never stores passwords in readable form
 - After activation, the user is logged in immediately
 
 <Card title="Login" href="/v1/authentication/login">

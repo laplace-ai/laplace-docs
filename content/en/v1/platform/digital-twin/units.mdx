@@ -16,7 +16,7 @@ Navigate to **Digital Model > Units** in the sidebar to access the units list pa
 The list page shows:
 
 - A **title** ("Units") with a count of total units in the network (e.g., "42 units in the network")
-- A **searchable, sortable table** of all units in your tenant's logistics network
+- A **searchable, sortable table** of all units in your organization's logistics network
 
 ### Table columns
 
@@ -31,11 +31,11 @@ The list page shows:
 
 ### Searching
 
-Use the search bar to filter units by any visible field. This is a client-side filter that searches across code, name, city, and state simultaneously. Useful when you know the facility code or want to find all units in a specific city.
+Use the search bar to filter units by any visible field. The search works across code, name, city, and state simultaneously. Useful when you know the facility code or want to find all units in a specific city.
 
 ## Unit detail page
 
-Click on any unit in the list (or use the "View Detailed Unit" button from the map panel) to navigate to its detail page at `/digital-model/units/{code}`.
+Click on any unit in the list (or use the "View Detailed Unit" button from the map panel) to navigate to its detail page.
 
 {/* TODO: Add screenshot of the unit detail page */}
 
@@ -43,7 +43,7 @@ The unit detail page provides a comprehensive view of a single facility, organiz
 
 ### Header
 
-Displays the unit code (in accent blue), unit name, active status, and location (city, state). This mirrors the information shown in the map's detail panel but with more space.
+Displays the unit code (in blue), unit name, active status, and location (city, state). This mirrors the information shown in the map's detail panel but with more space.
 
 ### Overview
 
@@ -55,13 +55,13 @@ Key metrics and metadata about the unit:
 
 ### CTRCs
 
-A table of CTRCs (shipments) associated with this unit. The table shows:
+A table of CTRCs (shipments) associated with this unit:
 
 | Column | Description |
 |--------|-------------|
 | **CTRC** | Shipment document number |
 | **Risk** | Risk badge (ALTO, MEDIO, BAIXO) if a loss prediction exists |
-| **Probability** | Numeric loss probability |
+| **Probability** | Loss probability |
 | **Origin** | Origin unit code |
 | **Destination** | Destination unit code |
 | **Goods** | Type of merchandise being transported |
@@ -95,14 +95,7 @@ The Digital Twin map and the Units module are tightly integrated:
 2. In the panel, click **"View Detailed Unit"** to navigate to the full detail page
 3. From the detail page, use the sidebar to return to the map or units list
 
-You can also navigate to a unit's loss predictions by clicking on a CTRC in the unit detail table, which will take you to the loss prediction table filtered by that unit.
-
-## Data sources
-
-| Data | Endpoint | Description |
-|------|----------|-------------|
-| Units list | `GET /v1/units` | All units with metadata, coordinates, and status |
-| Unit detail | `GET /v1/units/{code}` | Single unit data with associated CTRCs |
+You can also navigate to a unit's loss predictions by clicking on a CTRC in the unit detail table.
 
 <Card title="Loss Prediction" href="/v1/platform/loss-prediction">
 Learn how the loss prediction model scores shipments and how to act on high-risk cargo.

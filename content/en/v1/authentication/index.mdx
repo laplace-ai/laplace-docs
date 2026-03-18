@@ -11,10 +11,10 @@ The Laplace Platform uses a **secure authentication system** with role-based acc
 
 <Steps>
 <Step title="Administrator invites a user">
-An administrator creates a new user in the Settings panel, specifying their name, email, role, and access profile. The system generates a one-time invite token and sends an email with an activation link.
+An administrator creates a new user in the Settings panel, specifying their name, email, role, and access profile. The system sends an email with a one-time activation link.
 </Step>
 <Step title="User sets their password">
-The new user clicks the invite link, which takes them to the password setup page. After validating the token, they set their password and their account is activated.
+The new user clicks the invite link, which takes them to the password setup page. They set their password and their account is activated.
 </Step>
 <Step title="User logs in">
 The user navigates to the login page and enters their email and password. The platform verifies credentials and creates a secure session.
@@ -38,7 +38,7 @@ Every action on the platform checks your role and access profile. You only see t
 
 ## Security measures
 
-- **Secure sessions**: All sessions are cryptographically secured and verified on every request
+- **Secure sessions**: All sessions are secured and verified on every request
 - **Session expiration**: Sessions expire automatically after a period of inactivity
 - **Invite-only access**: No self-registration — only administrators can create user accounts
 - **Data isolation**: All data is scoped to your organization — you can only see your own organization's data

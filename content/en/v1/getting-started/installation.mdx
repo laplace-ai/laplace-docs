@@ -1,178 +1,62 @@
 ---
-title: "Installation"
-description: "How to set up the Laplace Platform locally for development — cloning the repo, installing dependencies, configuring environment variables, and running the dev server."
+title: "Accessing the Platform"
+description: "How to access the Laplace Platform — getting your invite, setting up your account, and system requirements."
 ---
 
-# Installation
+# Accessing the Platform
 
-This guide walks you through setting up the Laplace Platform frontend for local development. By the end, you will have the platform running on `localhost:3000`.
+The Laplace Platform runs entirely in your web browser — there is nothing to install. Your administrator will set up your account and send you an invite.
 
-<Callout type="info">
-This guide is for developers. If you are an end user, you do not need to install anything — just navigate to your organization's platform URL in your browser. See [First Steps](/v1/getting-started/first-steps) instead.
-</Callout>
+## Requirements
 
-## Prerequisites
+To use the Laplace Platform, you need:
 
-Before you begin, make sure you have the following installed:
+- A modern web browser (Google Chrome, Microsoft Edge, Firefox, or Safari)
+- An internet connection
+- An invitation email from your organization's administrator
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **Node.js** | 18.x or later | JavaScript runtime |
-| **npm** | 9.x or later (bundled with Node) | Package manager |
-| **Git** | Any recent version | Version control |
+That's it. No software installation is required.
 
-You will also need:
-
-- Access to the `laplace-platform` GitHub repository
-- A Mapbox access token (for the Digital Twin map)
-- API endpoint credentials (provided by your team lead)
-
-## Setup
+## Getting access
 
 <Steps>
-<Step title="Clone the repository">
-
-```bash
-git clone https://github.com/your-org/laplace-platform.git
-cd laplace-platform
-```
-
-The repository uses a Git Flow branching strategy. The `develop` branch is the integration branch where features land first; `master` is the production branch.
-
-```bash
-git checkout develop
-```
-
+<Step title="Receive your invitation">
+Your administrator will create your account and send an invitation to your email address. The email contains a link to set up your password.
 </Step>
-<Step title="Install dependencies">
-
-```bash
-npm install
-```
-
-This installs all dependencies defined in `package.json`, including Next.js 16, React 19, Tailwind CSS 4, Radix UI primitives, Mapbox GL, and the i18n library.
-
-</Step>
-<Step title="Configure environment variables">
-
-Create a `.env.local` file in the project root. This file is gitignored and contains secrets that should never be committed.
-
-```bash
-# .env.local
-
-# Mapbox — required for the Digital Twin map
-NEXT_PUBLIC_MAPBOX_TOKEN=pk.your_mapbox_token_here
-
-# API — the backend endpoint
-NEXT_PUBLIC_API_URL=https://your-api-endpoint.run.app
-
-# Optional: enable debug logging
-# NEXT_PUBLIC_DEBUG=true
-```
-
-<Callout type="warning">
-The `NEXT_PUBLIC_MAPBOX_TOKEN` is required for the map to render. Without it, the Digital Twin page will show a fallback message asking you to configure the token.
-</Callout>
-
-Ask your team lead for the correct values of `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_MAPBOX_TOKEN`. If you are connecting to Cloud SQL locally, you may also need to run the Cloud SQL Proxy.
-
-</Step>
-<Step title="Start the development server">
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser. You should see the login page.
-
+<Step title="Set your password">
+Click the link in the invitation email. You will be taken to a page where you can set your password (minimum 8 characters). After setting it, your account is activated.
 </Step>
 <Step title="Log in">
-
-Use your credentials to log in. If you are a super admin, you will be redirected to the tenant selection page first. Regular users and admins are taken directly to the Digital Twin map.
-
+Navigate to your organization's Laplace Platform URL in your browser and sign in with your email and password.
 </Step>
 </Steps>
 
-## Project structure
+<Callout type="info">
+If you did not receive your invitation email, check your spam folder. If it is still not there, ask your administrator to resend the invite from the Settings page.
+</Callout>
 
-Understanding the directory layout helps you navigate the codebase efficiently:
+## Supported browsers
 
-```
-laplace-platform/
-├── app/
-│   ├── (auth)/              # Public routes: login, invite, tenant selection
-│   ├── (platform)/          # Authenticated routes: map, loss prediction, settings
-│   │   ├── page.tsx         # Digital Twin (root page — the map)
-│   │   ├── database/        # Database browser
-│   │   ├── digital-model/   # Units list and unit detail views
-│   │   ├── services/        # Loss prediction table, dashboard, models
-│   │   └── settings/        # Settings page (users, user types, tenants, account)
-│   ├── collector/           # Collector page (mobile-first cargo verification)
-│   └── api/                 # API proxy routes
-├── components/              # Shared React components
-│   ├── ui/                  # Base UI primitives (shadcn/ui + Radix)
-│   ├── settings/            # Settings panel components
-│   ├── network-map.tsx      # Mapbox GL map component
-│   ├── loss-prediction-table.tsx
-│   ├── database-browser.tsx
-│   └── ...
-├── lib/                     # Utilities, API client, auth helpers
-│   ├── api.ts               # API client functions
-│   ├── auth-api.ts          # Auth-specific API calls
-│   ├── auth-context.tsx     # React context for auth state
-│   └── utils.ts             # General utilities
-├── messages/                # i18n translation files
-│   ├── pt-BR.json           # Portuguese (Brazil)
-│   └── en-US.json           # English (US)
-├── docs/                    # Internal architecture docs
-├── public/                  # Static assets (logos, images)
-└── package.json
-```
+The platform works best on the latest versions of:
 
-## Key scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start the development server with hot reload |
-| `npm run build` | Create an optimized production build |
-| `npm run start` | Start the production server (after build) |
-| `npm run lint` | Run ESLint to check for code quality issues |
-
-## Branching strategy
-
-The project uses a simplified Git Flow:
-
-```
-feat/my-feature  -->  develop  -->  master
-                      (staging)     (production)
-```
-
-- **`develop`** is the integration branch. All feature branches merge here first.
-- **`master`** is the production branch. Only tested, stable code goes here.
-- **Feature branches** use the `feat/` prefix and are created from `develop`.
-- **Bug fixes** use the `fix/` prefix.
-- **Vercel auto-deploys** from both branches: `develop` gets a preview URL, `master` deploys to the production domain.
+| Browser | Supported |
+|---------|-----------|
+| Google Chrome | Yes (recommended) |
+| Microsoft Edge | Yes |
+| Mozilla Firefox | Yes |
+| Safari | Yes |
 
 <Callout type="tip">
-Always pull the latest `develop` before creating a new feature branch. Keep branches short-lived and merge frequently to avoid conflicts.
+For the best experience, we recommend using Google Chrome on a desktop or laptop computer. The Collector module is also optimized for mobile browsers (Chrome on Android, Safari on iPhone).
 </Callout>
 
-## Connecting to the backend
+## Need help?
 
-The platform frontend communicates with a Flask API running on Google Cloud Run. For local development, you can either:
+If you have trouble accessing the platform:
 
-1. **Point to the deployed API** by setting `NEXT_PUBLIC_API_URL` to the Cloud Run service URL (recommended for most development).
-2. **Run the API locally** by cloning the `laplace-platform-api` repository and running it with a Cloud SQL Proxy connection.
-
-If you need direct database access for debugging, connect via the Cloud SQL Proxy:
-
-```bash
-cloud-sql-proxy laplace-data-lake:southamerica-east1:dw-instance --port=5433
-```
-
-<Callout type="warning">
-Never commit `.env.local` or any file containing API keys, database passwords, or tokens. These files are gitignored by default.
-</Callout>
+- **Forgot your password?** Contact your administrator — they can resend your invitation link, which lets you set a new password.
+- **Account deactivated?** Contact your administrator to reactivate your account.
+- **Cannot reach the platform?** Check your internet connection and try again. If the issue persists, contact your administrator.
 
 <Card title="Next: First Steps" href="/v1/getting-started/first-steps">
 Learn how to navigate the platform as an end user.

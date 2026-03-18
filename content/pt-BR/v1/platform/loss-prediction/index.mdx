@@ -1,136 +1,122 @@
 ---
-title: "Predição de Perda"
-description: "O módulo de Predição de Perda — pontuação de risco de perda de carga por ML para CTRCs, com tabela, coletor, dashboard e gerenciamento de modelos."
+title: "Predicao de Perda"
+description: "O modulo de Predicao de Perda — pontuacao de risco de perda de carga para cada embarque, com tabela, coletor e dashboard."
 ---
 
-# Predição de Perda
+# Predicao de Perda
 
-O módulo de Predição de Perda é o primeiro serviço inteligente da plataforma. Ele utiliza um **classificador binário LightGBM** para prever a probabilidade de perda de carga para cada CTRC (embarque) no momento da emissão, permitindo intervenção proativa antes que as perdas ocorram.
+O modulo de Predicao de Perda e a camada de inteligencia da plataforma. Ele analisa cada CTRC (embarque) no momento da emissao e preve a probabilidade de perda de carga, permitindo que sua equipe tome acoes proativas antes que as perdas ocorram.
 
 ## Como funciona
 
-O pipeline de predição segue um fluxo direto:
+O processo de predicao segue um fluxo direto:
 
 <Steps>
 <Step title="Dados chegam">
-Quando novos dados de CTRC são carregados no data warehouse (via pipeline ETL da `base_455`), o data warehouse publica um evento no tópico Pub/Sub `data-warehouse-updates`.
+Quando novos dados de embarque sao carregados no sistema, o servico de predicao e acionado automaticamente.
 </Step>
-<Step title="Serviço é acionado">
-O serviço de Predição de Perda (executando no Cloud Run) recebe o evento e identifica novos CTRCs que ainda não foram pontuados pela versão ativa do modelo.
+<Step title="Embarques sao analisados">
+O modelo analisa cada novo CTRC usando caracteristicas como rota, atributos da carga, padroes temporais e dados historicos para produzir uma probabilidade de perda entre 0 e 100%.
 </Step>
-<Step title="Modelo pontua CTRCs">
-O modelo LightGBM analisa 19 features por CTRC — incluindo características da rota, atributos da carga, padrões temporais e dados históricos — para produzir uma probabilidade de perda entre 0 e 1.
-</Step>
-<Step title="Níveis de risco são atribuídos">
-Com base na probabilidade, cada CTRC recebe um nível de risco:
+<Step title="Niveis de risco sao atribuidos">
+Com base na probabilidade, cada CTRC recebe um nivel de risco:
 
-| Nível de Risco | Descrição |
+| Nivel de Risco | Descricao |
 |-----------|-------------|
-| **ALTO** | Maior probabilidade prevista de perda |
-| **MEDIO** | Risco moderado que requer atenção |
-| **BAIXO** | Baixa probabilidade de perda |
+| **ALTO** (Alto) | Maior probabilidade prevista de perda |
+| **MEDIO** (Medio) | Risco moderado que requer atencao |
+| **BAIXO** (Baixo) | Baixa probabilidade de perda |
 
 </Step>
 <Step title="Resultados aparecem na plataforma">
-As predições são escritas na tabela `ctrc_loss_predictions` no Cloud SQL e ficam imediatamente disponíveis na visualização em tabela e no coletor da plataforma.
+As predicoes ficam imediatamente disponiveis na visualizacao em tabela e no coletor da plataforma, prontas para sua equipe revisar e agir.
 </Step>
 </Steps>
 
 <Callout type="info">
-O modelo usa uma **estratégia de exclusão por LEFT JOIN** — ele pontua apenas CTRCs que ainda não possuem uma predição para a versão ativa do modelo. Isso garante eficiência e evita pontuações duplicadas.
+O modelo pontua apenas embarques que ainda nao foram pontuados, garantindo eficiencia e evitando predicoes duplicadas.
 </Callout>
 
-## Visualizações do módulo
+## Visualizacoes do modulo
 
-O módulo de Predição de Perda oferece múltiplas visualizações, cada uma projetada para um fluxo de trabalho diferente:
+O modulo de Predicao de Perda oferece multiplas visualizacoes, cada uma projetada para um fluxo de trabalho diferente:
 
-<Card title="Visualização em Tabela" href="/v1/platform/loss-prediction/table">
-A interface analítica principal. Uma tabela de dados ordenável e filtrável mostrando todos os CTRCs pontuados com badges de risco, barras de probabilidade e funcionalidades de exportação.
+<Card title="Visualizacao em Tabela" href="/v1/platform/loss-prediction/table">
+A interface analitica principal. Uma tabela de dados ordenavel e filtravel mostrando todos os CTRCs pontuados com badges de risco, barras de probabilidade e funcionalidades de exportacao.
 </Card>
 
-<Card title="Coletor (Visão de Dispositivo)" href="/v1/platform/collector">
-Uma interface de cards otimizada para dispositivos móveis, voltada para operadores de campo. Revise cargas de alto risco e verifique embarques com fotos da câmera.
+<Card title="Coletor (Visao de Dispositivo)" href="/v1/platform/collector">
+Uma interface de cards otimizada para dispositivos moveis, voltada para operadores de campo. Revise cargas de alto risco e verifique embarques com fotos da camera.
 </Card>
 
 ### Em breve
 
-| Visualização | Descrição |
+| Visualizacao | Descricao |
 |------|-------------|
-| **Dashboard** | Visualização analítica com gráficos de distribuição de risco, predições ao longo do tempo, unidades com maior risco e métricas de desempenho do modelo (acurácia, precisão, recall, F1, AUC-ROC) |
-| **Modelos** | Interface de gerenciamento de modelos para visualizar versões de modelos, comparar métricas de desempenho e ativar diferentes versões de modelos |
+| **Dashboard** | Visualizacao analitica com graficos de distribuicao de risco, predicoes ao longo do tempo e metricas de desempenho |
+| **Modelos** | Interface de gerenciamento de modelos para visualizar e comparar diferentes versoes de modelos |
 
 <Callout type="warning">
-As visualizações de Dashboard e Modelos atualmente exibem dados de demonstração (mockup). Elas não refletem dados reais de produção. Isso é indicado por um banner no topo de cada página.
+As visualizacoes de Dashboard e Modelos atualmente exibem dados de demonstracao. Elas nao refletem dados reais de producao. Isso e indicado por um banner no topo de cada pagina.
 </Callout>
 
-## Entendendo as predições
+## Entendendo as predicoes
 
-### Níveis de risco
+### Niveis de risco
 
-Cada predição atribui um dos três níveis de risco com base na probabilidade de saída do modelo:
+Cada predicao atribui um dos tres niveis de risco:
 
-| Nível | Cor do Badge | O que significa |
+| Nivel | Cor do Badge | O que significa |
 |-------|------------|---------------|
-| **ALTO** | Vermelho | Este CTRC tem o maior risco previsto de perda de carga. Requer atenção imediata e verificação. |
-| **MEDIO** | Amarelo/Âmbar | Risco moderado. Deve ser monitorado e verificado quando possível. |
-| **BAIXO** | Verde | Baixo risco. O manuseio de rotina é suficiente. |
+| **ALTO** | Vermelho | Este CTRC tem o maior risco previsto de perda de carga. Requer atencao imediata e verificacao. |
+| **MEDIO** | Amarelo/Ambar | Risco moderado. Deve ser monitorado e verificado quando possivel. |
+| **BAIXO** | Verde | Baixo risco. O manuseio de rotina e suficiente. |
 
 ### Probabilidade
 
-A probabilidade bruta é um valor entre 0 e 1, exibido como percentual (ex.: 87,3%). Uma barra visual acompanha o número para dar uma noção rápida do risco relativo. A cor da barra corresponde ao badge do nível de risco.
+A probabilidade e exibida como percentual (ex.: 87,3%). Uma barra visual acompanha o numero para dar uma nocao rapida do risco relativo. A cor da barra corresponde ao badge do nivel de risco.
 
-### Confiança
+### Confianca
 
-O modelo também gera uma **pontuação de confiança** que reflete o quão certo o modelo está sobre sua predição. Maior confiança significa que as features do modelo se alinham fortemente com os padrões aprendidos durante o treinamento.
+O modelo tambem gera uma **pontuacao de confianca** que reflete o quao certo esta sobre sua predicao. Maior confianca significa que as caracteristicas do embarque se alinham fortemente com padroes conhecidos.
 
-## Features do modelo
+## O que o modelo considera
 
-O modelo LightGBM utiliza **19 features** para fazer predições. Essas incluem (mas não se limitam a):
+O modelo de predicao analisa multiplas caracteristicas de cada embarque, incluindo:
 
-- Características da rota (origem, destino, distância)
+- Caracteristicas da rota (origem, destino, distancia)
 - Atributos da carga (peso, valor, tipo de mercadoria)
-- Padrões temporais (dia da semana, mês, época do ano)
-- Estatísticas por unidade (taxas históricas de perda nas unidades de origem/destino)
-- Metadados do embarque (número de volumes, valor do frete)
+- Padroes temporais (dia da semana, mes, epoca do ano)
+- Estatisticas por unidade (taxas historicas de perda nas unidades de origem/destino)
+- Detalhes do embarque (numero de volumes, valor do frete)
 
 <Callout type="info">
-O modelo é treinado com dados históricos de CTRCs onde o resultado (perda ou não perda) é conhecido. Ele aprende padrões que distinguem embarques de alto risco dos de baixo risco e então aplica esses padrões para pontuar novos embarques em tempo real.
+O modelo e treinado com dados historicos de embarques onde o resultado (perda ou nao perda) e conhecido. Ele aprende padroes que distinguem embarques de alto risco dos de baixo risco e entao aplica esses padroes para pontuar novos embarques automaticamente.
 </Callout>
 
-## Versionamento do modelo
+## Fluxo operacional recomendado
 
-O serviço de Predição de Perda suporta **versionamento de modelos** sem necessidade de reimplantação do serviço:
-
-- Os artefatos do modelo são armazenados no Google Cloud Storage (GCS)
-- Um arquivo `manifest.json` no GCS define a versão ativa do modelo
-- Quando um novo modelo é treinado e enviado, atualizar o manifest direciona todas as novas predições para a nova versão
-- Predições históricas mantêm seu `model_version` original para rastreabilidade
-
-Isso significa que a equipe de ciência de dados pode iterar nos modelos, comparar desempenho e implementar melhorias sem nenhuma mudança de infraestrutura.
-
-## Fluxo operacional
-
-O fluxo de trabalho recomendado para usar a Predição de Perda combina a Visualização em Tabela e o Coletor:
+O fluxo de trabalho recomendado para usar a Predicao de Perda combina a Visualizacao em Tabela e o Coletor:
 
 <Steps>
 <Step title="Monitore a tabela">
-Gestores de operações revisam a tabela de Predição de Perda diariamente, ordenada por probabilidade (maior primeiro), filtrada por níveis de risco ALTO + MEDIO.
+Gestores de operacoes revisam a tabela de Predicao de Perda diariamente, ordenada por probabilidade (maior primeiro), filtrada por niveis de risco ALTO + MEDIO.
 </Step>
 <Step title="Identifique embarques de alto risco">
-Procure por concentrações de CTRCs de alto risco em unidades específicas. Isso pode indicar problemas sistemáticos nessas unidades.
+Procure por concentracoes de CTRCs de alto risco em unidades especificas. Isso pode indicar problemas sistematicos nessas unidades.
 </Step>
-<Step title="Despache verificação em campo">
-Compartilhe o código da unidade com operadores de campo, que abrem o Coletor em seus dispositivos móveis para verificar cargas de alto risco com evidência fotográfica.
+<Step title="Despache verificacao em campo">
+Compartilhe o codigo da unidade com operadores de campo, que abrem o Coletor em seus dispositivos moveis para verificar cargas de alto risco com evidencia fotografica.
 </Step>
-<Step title="Exporte para relatórios">
-Use a funcionalidade de exportação CSV para baixar os dados de predição para análise offline, relatórios gerenciais ou integração com outros sistemas.
+<Step title="Exporte para relatorios">
+Use a funcionalidade de exportacao CSV para baixar os dados de predicao para analise offline, relatorios gerenciais ou integracao com outros sistemas.
 </Step>
 </Steps>
 
-<Card title="Visualização em Tabela" href="/v1/platform/loss-prediction/table">
-Saiba como usar a tabela de dados de predição de perda com filtragem, ordenação e exportação.
+<Card title="Visualizacao em Tabela" href="/v1/platform/loss-prediction/table">
+Saiba como usar a tabela de dados de predicao de perda com filtragem, ordenacao e exportacao.
 </Card>
 
 <Card title="Coletor" href="/v1/platform/collector">
-Saiba como operadores de campo verificam cargas de alto risco usando a interface móvel do coletor.
+Saiba como operadores de campo verificam cargas de alto risco usando a interface movel do coletor.
 </Card>

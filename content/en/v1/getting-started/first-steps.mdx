@@ -78,7 +78,7 @@ Navigate to **Services > Loss Prediction > Table View** in the sidebar. This is 
 
 {/* TODO: Add screenshot of loss prediction table */}
 
-The table displays CTRCs scored by the machine learning model, showing:
+The table displays CTRCs scored by the prediction model, showing:
 
 | Column | Description |
 |--------|-------------|
@@ -108,7 +108,7 @@ By default, the table shows high and medium risk CTRCs sorted by probability (hi
 
 The **Collector** is a mobile-optimized interface designed for field operators who physically verify high-risk cargo.
 
-To access it, navigate to **Services > Loss Prediction > Device View** in the sidebar, or open `/collector` directly on a mobile device.
+To access it, navigate to **Services > Loss Prediction > Device View** in the sidebar, or open the Collector URL directly on a mobile device.
 
 {/* TODO: Add screenshot of collector on mobile */}
 
@@ -137,9 +137,9 @@ The **Database** module lets you browse the raw data tables that power the platf
 
 You can switch between four tables:
 
-- **CTRCs (base_455)** — all shipment records with origin, destination, value, weight, and more
-- **Loss Predictions** — model outputs including probability, risk level, confidence, and model version
-- **Units** — facility master data with codes, names, locations, and coordinates
+- **CTRCs** — all shipment records with origin, destination, value, weight, and more
+- **Loss Predictions** — prediction results including probability, risk level, and confidence
+- **Units** — facility data with codes, names, locations, and coordinates
 - **Network Links** — route connections between facilities with vehicle type and pricing
 
 Use the search bar to filter rows by any column value. The table shows up to 100 rows at a time with a count of filtered vs. total rows.

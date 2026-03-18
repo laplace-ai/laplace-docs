@@ -1,6 +1,6 @@
 ---
 title: "Primeiros Passos"
-description: "Um passo a passo guiado para novos usuarios — fazendo login, navegando pela plataforma e usando funcionalidades-chave como o mapa, tabela de loss prediction e collector."
+description: "Um passo a passo guiado para novos usuarios — fazendo login, navegando pela plataforma e usando funcionalidades-chave como o mapa, tabela de predicao de perda e coletor."
 ---
 
 # Primeiros Passos
@@ -40,8 +40,8 @@ A barra lateral a esquerda e sua navegacao principal. Ela organiza a plataforma 
 |-------|-------------|
 | **Digital Twin** | O mapa interativo da rede logistica |
 | **Digital Model** | Gerenciamento de unidades (instalacoes) — navegar e inspecionar unidades individuais |
-| **Services** | Servicos orientados a dados como Loss Prediction (visualizacao em tabela, collector, dashboard, modelos) |
-| **Database** | Navegador de dados brutos para CTRCs, predicoes, unidades e links da rede |
+| **Services** | Servicos orientados a dados como Predicao de Perda (visualizacao em tabela, coletor, dashboard, modelos) |
+| **Database** | Navegador de dados para CTRCs, predicoes, unidades e links da rede |
 
 Na parte inferior da barra lateral voce encontrara:
 
@@ -78,7 +78,7 @@ Navegue ate **Services > Loss Prediction > Table View** na barra lateral. Esta e
 
 {/* TODO: Add screenshot of loss prediction table */}
 
-A tabela exibe CTRCs pontuados pelo modelo de machine learning, mostrando:
+A tabela exibe CTRCs pontuados pelo modelo de predicao, mostrando:
 
 | Coluna | Descricao |
 |--------|-----------|
@@ -104,11 +104,11 @@ A tabela exibe CTRCs pontuados pelo modelo de machine learning, mostrando:
 Por padrao, a tabela mostra CTRCs de risco alto e medio ordenados por probabilidade (maior primeiro). Isso ajuda voce a focar nos embarques que precisam de mais atencao.
 </Callout>
 
-## Usando o Collector
+## Usando o Coletor
 
-O **Collector** e uma interface otimizada para dispositivos moveis projetada para operadores de campo que verificam fisicamente cargas de alto risco.
+O **Coletor** e uma interface otimizada para dispositivos moveis projetada para operadores de campo que verificam fisicamente cargas de alto risco.
 
-Para acessa-lo, navegue ate **Services > Loss Prediction > Device View** na barra lateral, ou abra `/collector` diretamente em um dispositivo movel.
+Para acessa-lo, navegue ate **Services > Loss Prediction > Device View** na barra lateral, ou abra a URL do Coletor diretamente em um dispositivo movel.
 
 {/* TODO: Add screenshot of collector on mobile */}
 
@@ -128,19 +128,19 @@ Apos capturar a foto, toque em **Usar Foto** para enviar a verificacao. O CTRC e
 </Steps>
 
 <Callout type="tip">
-O Collector filtra automaticamente CTRCs de risco ALTO e MEDIO que ainda nao foram verificados. Uma vez que voce verifica um embarque, ele desaparece da lista imediatamente.
+O Coletor filtra automaticamente CTRCs de risco ALTO e MEDIO que ainda nao foram verificados. Uma vez que voce verifica um embarque, ele desaparece da lista imediatamente.
 </Callout>
 
-## Navegando dados brutos
+## Navegando dados
 
-O modulo **Database** permite que voce navegue pelas tabelas de dados brutos que alimentam a plataforma. Navegue ate **Database** na barra lateral.
+O modulo **Database** permite que voce navegue pelas tabelas de dados que alimentam a plataforma. Navegue ate **Database** na barra lateral.
 
 Voce pode alternar entre quatro tabelas:
 
-- **CTRCs (base_455)** — todos os registros de embarque com origem, destino, valor, peso e mais
-- **Loss Predictions** — saidas do modelo incluindo probabilidade, nivel de risco, confianca e versao do modelo
-- **Units** — dados mestres de instalacoes com codigos, nomes, localizacoes e coordenadas
-- **Network Links** — conexoes de rotas entre instalacoes com tipo de veiculo e precificacao
+- **CTRCs** — todos os registros de embarque com origem, destino, valor, peso e mais
+- **Predicoes de Perda** — resultados de predicao incluindo probabilidade, nivel de risco e confianca
+- **Unidades** — dados de instalacoes com codigos, nomes, localizacoes e coordenadas
+- **Links de Rede** — conexoes de rotas entre instalacoes com tipo de veiculo e precificacao
 
 Use a barra de busca para filtrar linhas por qualquer valor de coluna. A tabela mostra ate 100 linhas por vez com uma contagem de linhas filtradas vs. total.
 

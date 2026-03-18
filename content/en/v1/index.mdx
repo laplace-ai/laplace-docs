@@ -7,7 +7,7 @@ description: "Official documentation for the Laplace Digital Twin platform — a
 
 Laplace is a **digital twin platform for logistics networks**. It gives logistics operators and carriers a real-time, intelligent view of their entire operation — from individual shipments to network-wide patterns.
 
-The platform combines live data ingestion, machine learning predictions, and interactive visualizations to support better decisions at every level of logistics operations.
+The platform combines live data, predictions, and interactive visualizations to support better decisions at every level of logistics operations.
 
 {/* TODO: Add hero screenshot of the platform map view */}
 
@@ -21,13 +21,13 @@ Instead of reacting to problems after they happen, a digital twin lets you **ant
 
 <Steps>
 <Step title="Ingests your logistics data">
-Laplace connects to your operational data sources (CTRCs, shipment records, facility information) and continuously syncs them into a unified data warehouse.
+Laplace connects to your operational data sources (CTRCs, shipment records, facility information) and continuously syncs them into a unified system.
 </Step>
 <Step title="Visualizes your network">
 An interactive map displays your logistics network — every facility, every route, every connection — updated in near-real-time. Click any unit to see its details, shipments, and risk profile.
 </Step>
 <Step title="Predicts cargo loss">
-A machine learning model scores every shipment (CTRC) at emission time with a loss probability. High-risk cargo is flagged so your team can act before losses occur.
+A prediction model scores every shipment (CTRC) at emission time with a loss probability. High-risk cargo is flagged so your team can act before losses occur.
 </Step>
 <Step title="Enables field verification">
 The Collector module provides a mobile-optimized interface for field operators to verify high-risk cargo with photo evidence, closing the loop between prediction and action.
@@ -36,26 +36,24 @@ The Collector module provides a mobile-optimized interface for field operators t
 
 ## Platform modules
 
-The Laplace Platform is organized into modules. Each tenant (customer organization) has access to the specific modules included in their subscription.
+The Laplace Platform is organized into modules. Each organization has access to the specific modules included in their subscription.
 
 | Module | Description | Status |
 |--------|-------------|--------|
 | **Digital Twin** | Interactive logistics network map with unit markers and route visualization | Available |
 | **Digital Model** | Unit (facility) management with detailed views and operational data | Available |
-| **Loss Prediction** | ML-powered cargo loss risk scoring with table view, collector, and dashboard | Available |
-| **Database Browser** | Direct access to browse raw data tables (CTRCs, predictions, units, links) | Available |
+| **Loss Prediction** | Cargo loss risk scoring with table view, collector, and dashboard | Available |
+| **Database Browser** | Browse raw data tables (CTRCs, predictions, units, links) | Available |
 | **Control Tower** | Centralized operations monitoring and alerting | Coming soon |
 | **Load Consolidation** | Shipment consolidation optimization across the network | Coming soon |
 
 ## Who is this documentation for?
 
-This documentation serves three audiences:
+This documentation serves two audiences:
 
 - **Logistics operators and managers** who use the platform daily to monitor operations, review predictions, and make decisions. Start with [First Steps](/v1/getting-started/first-steps).
 
-- **Tenant administrators** who manage users, roles, and module access within their organization. See [Authentication](/v1/authentication) and [Settings](/v1/settings).
-
-- **Developers** who build on or extend the platform. Check out [Architecture](/v1/architecture) and [Installation](/v1/getting-started/installation).
+- **Administrators** who manage users, roles, and module access within their organization. See [Authentication](/v1/authentication) and [Settings](/v1/settings).
 
 ## Quick links
 
@@ -71,10 +69,6 @@ Learn how to use the interactive logistics network map.
 Understand how cargo loss predictions work and how to act on them.
 </Card>
 
-<Card title="Architecture" href="/v1/architecture">
-Technical overview of the platform stack and data pipeline.
-</Card>
-
 ## Language support
 
-The Laplace Platform is fully bilingual, supporting both **English (EN-US)** and **Portuguese (PT-BR)**. You can switch languages at any time from the login page, the collector header, or the settings panel. This documentation is written in English, with a Portuguese version planned for a future release.
+The Laplace Platform is fully bilingual, supporting both **English (EN-US)** and **Portuguese (PT-BR)**. You can switch languages at any time from the login page, the collector header, or the settings panel.

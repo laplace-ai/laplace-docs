@@ -5,7 +5,7 @@ description: "The cargo verification workflow — how field operators use the Co
 
 # Cargo Verification
 
-Cargo verification is the process of physically confirming the presence and condition of high-risk shipments. The Collector module provides a structured workflow that connects machine learning predictions with on-the-ground action.
+Cargo verification is the process of physically confirming the presence and condition of high-risk shipments. The Collector module provides a structured workflow that connects predictions with on-the-ground action.
 
 ## Why verification matters
 
@@ -32,22 +32,16 @@ Using the information on the card — CTRC number, sender name, invoice number, 
 The operator taps the camera button on the card, takes a photo of the cargo, reviews it, and confirms with "Use Photo".
 </Step>
 <Step title="Verification is recorded">
-The system records the verification with:
-
-- The CTRC number
-- The base64-encoded photo
-- The operator's identity (from the auth context)
-- A timestamp
-
+The system records the verification with the CTRC number, the photo, the operator's identity, and a timestamp.
 </Step>
 <Step title="Card is removed">
-The verified CTRC is immediately removed from the Collector's card list (optimistic update). It also becomes excluded from future Collector queries (via the `exclude_verified` filter).
+The verified CTRC is immediately removed from the Collector's card list and will not appear in future sessions.
 </Step>
 </Steps>
 
 ## Camera capture
 
-The camera capture component provides a full-screen interface for taking photos:
+The camera interface provides a full-screen view for taking photos:
 
 {/* TODO: Add screenshot of the camera capture interface */}
 
@@ -63,25 +57,13 @@ The camera capture component provides a full-screen interface for taking photos:
 
 ### Camera behavior
 
-- The component requests access to the device's **rear (environment-facing) camera** by default, which is ideal for photographing cargo
+- The camera defaults to the **rear (back-facing) camera**, which is ideal for photographing cargo
 - If the rear camera is not available, it falls back to any available camera
 - The camera preview fills the screen to maximize visibility
-- Photos are captured as base64-encoded images and included in the API request
 
 <Callout type="info">
 Your browser will ask for camera permission the first time you use the Collector. Grant the permission to enable photo verification. If you deny it, you will not be able to take verification photos.
 </Callout>
-
-## Verification data
-
-Each verification submission sends the following data to the API:
-
-| Field | Description |
-|-------|-------------|
-| `ctrc` | The CTRC number being verified |
-| `photo` | Base64-encoded photo of the cargo |
-
-The API records the verification, associates it with the authenticated user, and marks the CTRC as verified in the database.
 
 ## After verification
 
@@ -90,7 +72,7 @@ Once a CTRC is verified:
 - It is removed from the Collector's card list
 - It remains visible in the Loss Prediction Table View (the table does not filter by verification status by default)
 - The verification record is stored for audit and analysis purposes
-- Future loads of the Collector will exclude already-verified CTRCs
+- Future loads of the Collector will not show already-verified CTRCs
 
 ## Best practices for field operators
 
@@ -102,11 +84,11 @@ Follow these guidelines for effective cargo verification:
 - **Take clear photos**: Ensure the cargo is clearly visible, well-lit, and identifiable in the photo
 - **Include identifying marks**: Capture labels, barcodes, or markings that link the physical cargo to the CTRC
 - **Work by unit**: Filter to your specific facility to avoid seeing cargo from other locations
-- **Check back periodically**: New predictions may arrive as the data warehouse processes fresh CTRC data throughout the day
+- **Check back periodically**: New predictions may arrive as fresh shipment data is processed throughout the day
 
 ## Handling errors
 
-If a verification submission fails (network issue, server error), a toast notification will indicate the error. In this case:
+If a verification submission fails (network issue or server error), a notification will indicate the error. In this case:
 
 1. The card remains in the list (it is not removed on failure)
 2. Check your internet connection

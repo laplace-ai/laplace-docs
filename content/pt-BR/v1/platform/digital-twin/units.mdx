@@ -16,7 +16,7 @@ Navegue ate **Digital Model > Units** na barra lateral para acessar a pagina de 
 A pagina de lista mostra:
 
 - Um **titulo** ("Unidades") com uma contagem do total de unidades na rede (ex.: "42 unidades na rede")
-- Uma **tabela pesquisavel e ordenavel** de todas as unidades na rede logistica do seu tenant
+- Uma **tabela pesquisavel e ordenavel** de todas as unidades na rede logistica da sua organizacao
 
 ### Colunas da tabela
 
@@ -31,11 +31,11 @@ A pagina de lista mostra:
 
 ### Busca
 
-Use a barra de busca para filtrar unidades por qualquer campo visivel. Este e um filtro do lado do cliente que busca simultaneamente por codigo, nome, cidade e estado. Util quando voce sabe o codigo da instalacao ou quer encontrar todas as unidades em uma cidade especifica.
+Use a barra de busca para filtrar unidades por qualquer campo visivel. A busca funciona simultaneamente por codigo, nome, cidade e estado. Util quando voce sabe o codigo da instalacao ou quer encontrar todas as unidades em uma cidade especifica.
 
 ## Pagina de detalhes da unidade
 
-Clique em qualquer unidade na lista (ou use o botao "Ver Unidade Detalhada" no painel do mapa) para navegar ate sua pagina de detalhes em `/digital-model/units/{code}`.
+Clique em qualquer unidade na lista (ou use o botao "Ver Unidade Detalhada" no painel do mapa) para navegar ate sua pagina de detalhes.
 
 {/* TODO: Add screenshot of the unit detail page */}
 
@@ -43,7 +43,7 @@ A pagina de detalhes da unidade fornece uma visao abrangente de uma instalacao i
 
 ### Cabecalho
 
-Exibe o codigo da unidade (em azul destaque), nome da unidade, status ativo e localizacao (cidade, estado). Isso espelha as informacoes mostradas no painel de detalhes do mapa, mas com mais espaco.
+Exibe o codigo da unidade (em azul), nome da unidade, status ativo e localizacao (cidade, estado). Isso espelha as informacoes mostradas no painel de detalhes do mapa, mas com mais espaco.
 
 ### Visao geral
 
@@ -55,13 +55,13 @@ Metricas-chave e metadados sobre a unidade:
 
 ### CTRCs
 
-Uma tabela de CTRCs (embarques) associados a esta unidade. A tabela mostra:
+Uma tabela de CTRCs (embarques) associados a esta unidade:
 
 | Coluna | Descricao |
 |--------|-----------|
 | **CTRC** | Numero do documento de embarque |
 | **Risco** | Badge de risco (ALTO, MEDIO, BAIXO) se uma predicao de perda existe |
-| **Probabilidade** | Probabilidade numerica de perda |
+| **Probabilidade** | Probabilidade de perda |
 | **Origem** | Codigo da unidade de origem |
 | **Destino** | Codigo da unidade de destino |
 | **Mercadoria** | Tipo de mercadoria sendo transportada |
@@ -95,15 +95,8 @@ O mapa do Digital Twin e o modulo de Unidades sao integrados de forma estreita:
 2. No painel, clique em **"Ver Unidade Detalhada"** para navegar ate a pagina completa de detalhes
 3. Da pagina de detalhes, use a barra lateral para retornar ao mapa ou a lista de unidades
 
-Voce tambem pode navegar ate as predicoes de perda de uma unidade clicando em um CTRC na tabela de detalhes da unidade, que levara voce a tabela de loss prediction filtrada por aquela unidade.
+Voce tambem pode navegar ate as predicoes de perda de uma unidade clicando em um CTRC na tabela de detalhes da unidade.
 
-## Fontes de dados
-
-| Dados | Endpoint | Descricao |
-|-------|----------|-----------|
-| Lista de unidades | `GET /v1/units` | Todas as unidades com metadados, coordenadas e status |
-| Detalhes da unidade | `GET /v1/units/{code}` | Dados de uma unica unidade com CTRCs associados |
-
-<Card title="Loss Prediction" href="/v1/platform/loss-prediction">
-Saiba como o modelo de loss prediction pontua embarques e como agir em cargas de alto risco.
+<Card title="Predicao de Perda" href="/v1/platform/loss-prediction">
+Saiba como o modelo de predicao de perda pontua embarques e como agir em cargas de alto risco.
 </Card>

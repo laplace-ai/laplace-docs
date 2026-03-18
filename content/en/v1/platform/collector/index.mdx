@@ -19,7 +19,7 @@ There are two ways to open the Collector:
 The Collector is listed as "Device View" in the sidebar because it is optimized for mobile devices and tablets. While it works on desktop, the card-based layout and camera integration are designed for handheld use.
 
 <Callout type="tip">
-Bookmark the `/collector` URL on your mobile device's home screen for quick access. The Collector has its own self-contained header with navigation, theme toggle, and language switcher — it does not require the platform sidebar.
+Bookmark the Collector URL on your mobile device's home screen for quick access. The Collector has its own self-contained header with navigation, theme toggle, and language switcher — it does not require the platform sidebar.
 </Callout>
 
 ## Interface layout
@@ -57,9 +57,9 @@ Each card contains:
 | Element | Description |
 |---------|-------------|
 | **Risk badge** | Color-coded label (ALTO or MEDIO) |
-| **CTRC number** | The shipment document number in monospace font |
+| **CTRC number** | The shipment document number |
 | **Invoice number** | NF (Nota Fiscal) number when available |
-| **Sender** | Client name of the cargo sender, shown in a subtle background tag |
+| **Sender** | Client name of the cargo sender |
 | **Route** | Origin city to destination city and state (e.g., "Sao Paulo -> Curitiba, PR") |
 | **Volume count** | Number of cargo volumes (e.g., "3 vol") |
 | **Camera button** | Blue button with camera icon to start verification |
@@ -71,7 +71,7 @@ At the bottom of the screen, navigation controls let you page through results:
 - **Previous / Next buttons** with chevron icons
 - **Page indicator** showing current page and total (e.g., "1 / 5")
 
-The Collector displays **10 cards per page** and fetches batches of 100 predictions from the API, sorted by probability (highest first).
+The Collector displays **10 cards per page**, sorted by probability (highest first).
 
 ## Verification workflow
 
@@ -101,13 +101,13 @@ After taking the photo, you see a preview with two options:
 
 </Step>
 <Step title="Verification completes">
-Once you confirm, the verification is submitted to the API. The CTRC is **immediately removed** from your card list (optimistic update), and a toast notification confirms the verification.
+Once you confirm, the verification is submitted. The CTRC is **immediately removed** from your card list, and a notification confirms the verification.
 </Step>
 </Steps>
 
 ## Automatic filtering
 
-The Collector applies several automatic filters to show only actionable predictions:
+The Collector automatically filters to show only actionable predictions:
 
 | Filter | Value | Purpose |
 |--------|-------|---------|
@@ -121,39 +121,23 @@ This means the Collector always shows the most urgent, unverified predictions. A
 If the card list is empty, it means all high and medium-risk CTRCs at the selected unit have been verified (or there are no predictions for that unit). Switch to "All Units" to check if there are unverified predictions at other facilities.
 </Callout>
 
-## Toast notifications
+## Notifications
 
-After a verification action, a brief toast notification appears at the bottom of the screen:
+After a verification action, a brief notification appears at the bottom of the screen:
 
 - **Success**: "CTRC-12345 verified" — the verification was submitted and recorded
-- **Error**: "Error verifying CTRC-12345" — the submission failed (network issue, server error)
+- **Error**: "Error verifying CTRC-12345" — the submission failed (check your internet connection)
 
-Toast notifications auto-dismiss after 3-4 seconds.
+Notifications auto-dismiss after a few seconds.
 
 ## Offline considerations
 
 The Collector requires an active internet connection to:
 
-- Load predictions from the API
-- Submit verification photos to the server
+- Load predictions
+- Submit verification photos
 
-If you lose connectivity, the card list will remain visible (cached in component state), but you will not be able to submit new verifications until the connection is restored. There is currently no offline queue — if a submission fails, you will need to retake and resubmit the photo.
-
-## Technical notes
-
-The Collector page lives outside the main platform layout at `/collector`. It has its own:
-
-- Self-contained header (no sidebar dependency)
-- Camera capture component using the device's `getUserMedia` API
-- Dedicated loading states and error handling
-- Authentication integration (reads the JWT from the auth context)
-
-The camera capture component (`CameraCapture`) handles:
-
-- Requesting camera permissions from the browser
-- Displaying a live camera preview
-- Capturing a frame as a base64-encoded image
-- Providing retake/confirm controls
+If you lose connectivity, the card list will remain visible, but you will not be able to submit new verifications until the connection is restored.
 
 <Card title="Loss Prediction Table" href="/v1/platform/loss-prediction/table">
 Review predictions in a full data table with advanced filtering and sorting.
