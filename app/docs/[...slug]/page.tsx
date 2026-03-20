@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { getDocBySlug, getAllSlugs, extractHeadings } from "@/lib/content";
 import { getBreadcrumbs, getPrevNextPages } from "@/lib/navigation";
@@ -8,18 +9,25 @@ import { CollapsibleSections } from "@/components/content/collapsible-sections";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { RightSidebar } from "@/components/layout/right-sidebar";
 import { AuthGate } from "@/components/auth/auth-gate";
-import { defaultLocale } from "@/lib/i18n";
+import { defaultLocale, type Locale } from "@/lib/i18n";
 import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ slug: string[] }>;
 }
 
+async function getLocale(): Promise<Locale> {
+  const cookieStore = await cookies();
+  const value = cookieStore.get("laplace-docs-locale")?.value;
+  return value === "pt-BR" ? "pt-BR" : defaultLocale;
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const doc = getDocBySlug(slug, defaultLocale);
+  const locale = await getLocale();
+  const doc = getDocBySlug(slug, locale);
   if (!doc) return {};
 
   return {
@@ -35,7 +43,8 @@ export async function generateStaticParams() {
 
 export default async function DocPage({ params }: PageProps) {
   const { slug } = await params;
-  const doc = getDocBySlug(slug, defaultLocale);
+  const locale = await getLocale();
+  const doc = getDocBySlug(slug, locale);
 
   if (!doc) {
     notFound();

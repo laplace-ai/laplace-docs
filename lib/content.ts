@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { defaultLocale, type Locale } from "./i18n";
+import { defaultLocale, locales, type Locale } from "./i18n";
 
 function getContentDir(locale: Locale = defaultLocale): string {
   return path.join(process.cwd(), "content", locale, "v1");
@@ -43,9 +43,14 @@ function resolveFilePath(slug: string[], locale: Locale = defaultLocale): string
     return indexPath;
   }
 
-  // Fallback to default locale if requested locale doesn't have this page
-  if (locale !== defaultLocale) {
-    return resolveFilePath(slug, defaultLocale);
+  // Fallback: try other locales
+  for (const fallback of locales) {
+    if (fallback === locale) continue;
+    const fallbackDir = getContentDir(fallback);
+    const fbDirect = path.join(fallbackDir, `${slugPath}.mdx`);
+    if (fs.existsSync(fbDirect)) return fbDirect;
+    const fbIndex = path.join(fallbackDir, slugPath, "index.mdx");
+    if (fs.existsSync(fbIndex)) return fbIndex;
   }
 
   return null;
@@ -73,8 +78,8 @@ export function getDocBySlug(slug: string[], locale: Locale = defaultLocale): Do
  * Scans the default locale directory since all pages should exist there.
  */
 export function getAllSlugs(): string[][] {
+  const seen = new Set<string>();
   const slugs: string[][] = [];
-  const contentDir = getContentDir(defaultLocale);
 
   function walk(dir: string, prefix: string[] = []) {
     if (!fs.existsSync(dir)) return;
@@ -85,18 +90,22 @@ export function getAllSlugs(): string[][] {
         walk(path.join(dir, entry.name), [...prefix, entry.name]);
       } else if (entry.name.endsWith(".mdx")) {
         const name = entry.name.replace(".mdx", "");
-        if (name === "index") {
-          if (prefix.length > 0) {
-            slugs.push(prefix);
+        const slug = name === "index" ? prefix : [...prefix, name];
+        if (slug.length > 0) {
+          const key = slug.join("/");
+          if (!seen.has(key)) {
+            seen.add(key);
+            slugs.push(slug);
           }
-        } else {
-          slugs.push([...prefix, name]);
         }
       }
     }
   }
 
-  walk(contentDir);
+  for (const locale of locales) {
+    walk(getContentDir(locale));
+  }
+
   return slugs;
 }
 
