@@ -305,6 +305,128 @@ body {
   background-color: var(--content-text-secondary);
 }
 
+/* ─── Mermaid diagrams ─── */
+.mermaid-diagram {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background-color: var(--content-bg-card);
+  border: 1px solid var(--content-border);
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.mermaid-expand-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 0.375rem;
+  border: 1px solid var(--content-border);
+  background-color: var(--bg-surface);
+  color: var(--content-text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+
+.mermaid-diagram:hover .mermaid-expand-btn { opacity: 1; }
+.mermaid-expand-btn:hover {
+  background-color: var(--bg-surface-hover);
+  color: var(--content-text-primary);
+}
+
+.mermaid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  animation: mermaid-fade-in 150ms ease;
+}
+
+@keyframes mermaid-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.mermaid-overlay-content {
+  position: relative;
+  width: 92vw;
+  max-height: 90vh;
+  background-color: var(--content-bg-card);
+  border: 1px solid var(--content-border);
+  border-radius: 0.75rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2rem;
+}
+
+.mermaid-overlay-diagram {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.mermaid-overlay-diagram svg {
+  max-width: 100%;
+}
+
+.mermaid-collapse-btn {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 0.375rem;
+  border: 1px solid var(--content-border);
+  background-color: var(--bg-surface);
+  color: var(--content-text-secondary);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.mermaid-collapse-btn:hover {
+  background-color: var(--bg-surface-hover);
+  color: var(--content-text-primary);
+}
+
+.mermaid-error {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: var(--callout-danger-bg);
+  border: 1px solid var(--callout-danger-border);
+  border-radius: 0.5rem;
+}
+
+.mermaid-loading {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: var(--content-bg-card);
+  border: 1px solid var(--content-border);
+  border-radius: 0.5rem;
+}
+
 /* ─── Theme transition ─── */
 *,
 *::before,
