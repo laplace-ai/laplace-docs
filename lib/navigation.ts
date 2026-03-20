@@ -55,6 +55,10 @@ export const navigation: NavSection[] = [
         items: [
           { title: "Overview", href: "/docs/platform/loss-prediction" },
           { title: "Table", href: "/docs/platform/loss-prediction/table" },
+          {
+            title: "Verification Process",
+            href: "/docs/platform/loss-prediction/verification-process",
+          },
         ],
       },
       {
