@@ -29,11 +29,14 @@ flowchart TD
     D --> E{"Ação do operador"}
     E -->|"✅ Verificado\n2 fotos capturadas"| F["⏱️ Cooldown de 2 horas"]
     E -->|"❌ Não encontrado"| G["⚠️ Escalação imediata"]
+    E -->|"⏱️ Sem ação\n4 horas"| F2["Avanço automático"]
     F --> H["📋 Etapa 2\nTransferência ou Distribuição"]
     G --> H
+    F2 --> H
     H --> I{"Ação do operador"}
     I -->|"✅ Verificado"| J["✅ Carga confirmada"]
     I -->|"❌ Não encontrado"| K["🚨 Potencial extravio\nInvestigação necessária"]
+    I -->|"⏱️ Sem ação\n5 horas"| K
 ```
 
 <Callout type="tip">
@@ -81,6 +84,14 @@ Se o operador não conseguir localizar a carga na unidade, ele toca em **"Não E
 2. Cria **imediatamente** uma tarefa de verificação da Etapa 2 (sem esperar 2 horas)
 3. Sinaliza que a carga era esperada mas não está presente — requer acompanhamento
 
+### Se o operador não fizer nada
+
+Se o operador não agir sobre uma tarefa da Etapa 1 dentro de **4 horas**, o sistema avança automaticamente o CTRC para a Etapa 2. Isso garante que nenhuma carga fique presa em estado pendente indefinidamente — o processo de verificação continua mesmo que o operador esteja indisponível ou não veja a tarefa.
+
+<Callout type="warning">
+Um CTRC avançado automaticamente é tratado como **não verificado** — não recebeu confirmação nem negação explícita. Isso é registrado para análise e pode indicar gaps operacionais na unidade.
+</Callout>
+
 ---
 
 ## O Cooldown de 2 Horas
@@ -96,10 +107,13 @@ flowchart TD
     C --> D["📋 Etapa 2 criada\nVerificação pendente"]
 
     E["❌ Etapa 1 não encontrada\nàs 10:00"] --> F["📋 Etapa 2 criada\nImediatamente"]
+
+    G["⏱️ Etapa 1 sem ação\ndesde 10:00"] --> H{"14:00 — 4 horas\ndecorridas"}
+    H --> I["📋 Etapa 2 criada\nAvanço automático"]
 ```
 
 <Callout type="warning">
-Se a carga for marcada como **não encontrada**, o cooldown é ignorado completamente. A Etapa 2 é criada imediatamente porque a situação requer acompanhamento urgente.
+Se a carga for marcada como **não encontrada**, o cooldown é ignorado completamente. A Etapa 2 é criada imediatamente. Se o operador **não fizer nada**, o sistema avança automaticamente após 4 horas.
 </Callout>
 
 ---
@@ -133,12 +147,21 @@ O operador segue o **mesmo processo** da Etapa 1:
 3. Fotografar a localização
 4. Enviar — ou marcar como "Não Encontrado"
 
+### Se o operador não fizer nada na Etapa 2
+
+Se o operador não agir sobre uma tarefa da Etapa 2 dentro de **5 horas**, o sistema automaticamente sinaliza o CTRC como **potencial extravio**. Nesse ponto, a carga passou por toda a janela de verificação sem nenhuma confirmação — uma investigação deve ser iniciada.
+
+<Callout type="danger">
+Um timeout na Etapa 2 é um sinal forte de potencial extravio. A carga passou por duas janelas de verificação (Etapa 1 + Etapa 2) sem ser localizada por nenhum operador.
+</Callout>
+
 ### Resultados
 
 - **Verificado na Distribuição** → Carga confirmada no destino final. A entrega pode prosseguir.
 - **Não Encontrado na Distribuição** → **Potencial extravio de carga**. O item chegou à unidade de destino mas não pode ser localizado. Uma investigação deve ser iniciada.
 - **Verificado na Transferência** → Carga confirmada no hub intermediário. Continuará pela malha.
 - **Não Encontrado na Transferência** → Carga ausente no ponto intermediário. Acompanhamento necessário.
+- **Sem ação (timeout)** → Sistema sinaliza como potencial extravio após 5 horas. Investigação necessária.
 
 ---
 
@@ -165,11 +188,13 @@ flowchart TD
         H --> I{"Ação do\noperador"}
         I -->|"Verificado\n📸 2 fotos"| J["✅ Verificado"]
         I -->|Não encontrado| K["❌ Não encontrado"]
+        I -->|"Sem ação\n⏱️ 4 horas"| K2["⏱️ Avanço automático"]
     end
 
     subgraph cooldown["⏱️ Transição"]
         J --> L["Cooldown\nde 2 horas"]
         K --> M["Escalação\nimediata"]
+        K2 --> L
     end
 
     subgraph s2["📋 Etapa 2 · Transferência / Distribuição"]
@@ -178,6 +203,7 @@ flowchart TD
         N --> O{"Ação do\noperador"}
         O -->|"Verificado\n📸 2 fotos"| P["✅ Carga segura"]
         O -->|Não encontrado| Q["🚨 Potencial extravio"]
+        O -->|"Sem ação\n⏱️ 5 horas"| Q
     end
 
     subgraph result["📊 Resultados"]
@@ -244,6 +270,7 @@ O teste A/B roda continuamente. Os resultados são analisados periodicamente par
 | **Etapa 2** | Transferência (em trânsito) ou Distribuição (destino final) |
 | **Fotos obrigatórias** | 2 por verificação: etiqueta + localização |
 | **Cooldown** | 2 horas após Etapa 1 verificada; imediato se não encontrada |
+| **Timeout por inação** | Etapa 1: 4 horas → avanço automático para Etapa 2. Etapa 2: 5 horas → sinalizado como potencial extravio |
 | **Teste A/B** | Divisão aleatória 50/50; Grupo A = controle, Grupo B = tratamento |
 
 <Card title="Coletor" href="/v1/platform/collector">

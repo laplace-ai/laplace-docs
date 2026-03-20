@@ -29,11 +29,14 @@ flowchart TD
     D --> E{"Operator action"}
     E -->|"✅ Verified\n2 photos captured"| F["⏱️ 2-hour cooldown"]
     E -->|"❌ Not found"| G["⚠️ Immediate escalation"]
+    E -->|"⏱️ No action\n4 hours"| F2["Auto-advance"]
     F --> H["📋 Stage 2\nTransferência or Distribuição"]
     G --> H
+    F2 --> H
     H --> I{"Operator action"}
     I -->|"✅ Verified"| J["✅ Cargo confirmed safe"]
     I -->|"❌ Not found"| K["🚨 Potential loss\nInvestigation required"]
+    I -->|"⏱️ No action\n5 hours"| K
 ```
 
 <Callout type="tip">
@@ -81,6 +84,14 @@ If the operator cannot locate the cargo at the unit, they tap **"Not Found"**. T
 2. **Immediately** creates a Stage 2 verification task (no 2-hour wait)
 3. Signals that the cargo was expected but is missing — requiring follow-up
 
+### If the operator takes no action
+
+If the operator does not act on a Stage 1 task within **4 hours**, the system automatically advances the CTRC to Stage 2. This ensures that cargo is never stuck in a pending state indefinitely — the verification process continues even if the operator is unavailable or misses the task.
+
+<Callout type="warning">
+An auto-advanced CTRC is treated as **unverified** — it did not receive explicit confirmation or denial. This is logged for analysis and may indicate operational gaps at the unit.
+</Callout>
+
 ---
 
 ## The 2-Hour Cooldown
@@ -96,10 +107,13 @@ flowchart TD
     C --> D["📋 Stage 2 created\nPending verification"]
 
     E["❌ Stage 1 not found\nat 10:00"] --> F["📋 Stage 2 created\nImmediately"]
+
+    G["⏱️ Stage 1 no action\nsince 10:00"] --> H{"14:00 — 4 hours\nelapsed"}
+    H --> I["📋 Stage 2 created\nAuto-advanced"]
 ```
 
 <Callout type="warning">
-If cargo is marked as **not found**, the cooldown is bypassed entirely. Stage 2 is created immediately because the situation requires urgent follow-up.
+If cargo is marked as **not found**, the cooldown is bypassed entirely. Stage 2 is created immediately because the situation requires urgent follow-up. If the operator takes **no action at all**, the system auto-advances after 4 hours.
 </Callout>
 
 ---
@@ -133,12 +147,21 @@ The operator follows the **same process** as Stage 1:
 3. Photograph the location
 4. Submit — or mark as "Not Found"
 
+### If the operator takes no action at Stage 2
+
+If the operator does not act on a Stage 2 task within **5 hours**, the system automatically flags the CTRC as a **potential loss**. At this point, the cargo has gone through the entire verification window without any confirmation — an investigation should be initiated.
+
+<Callout type="danger">
+A Stage 2 timeout is a strong signal of a potential loss. The cargo passed through two verification windows (Stage 1 + Stage 2) without being located by any operator.
+</Callout>
+
 ### Outcomes
 
 - **Verified at Distribuição** → Cargo confirmed safe at final destination. Delivery can proceed.
 - **Not Found at Distribuição** → **Potential cargo loss**. The item reached its destination unit but cannot be located. An investigation should be initiated.
 - **Verified at Transferência** → Cargo confirmed at intermediate hub. It will continue through the network.
 - **Not Found at Transferência** → Cargo missing at intermediate point. Follow-up required.
+- **No action (timeout)** → System flags as potential loss after 5 hours. Investigation required.
 
 ---
 
@@ -165,11 +188,13 @@ flowchart TD
         H --> I{"Operator\naction"}
         I -->|"Verified\n📸 2 photos"| J["✅ Verified"]
         I -->|Not found| K["❌ Not found"]
+        I -->|"No action\n⏱️ 4 hours"| K2["⏱️ Auto-advanced"]
     end
 
     subgraph cooldown["⏱️ Transition"]
         J --> L["2-hour\ncooldown"]
         K --> M["Immediate\nescalation"]
+        K2 --> L
     end
 
     subgraph s2["📋 Stage 2 · Transfer / Delivery"]
@@ -178,6 +203,7 @@ flowchart TD
         N --> O{"Operator\naction"}
         O -->|"Verified\n📸 2 photos"| P["✅ Cargo safe"]
         O -->|Not found| Q["🚨 Potential loss"]
+        O -->|"No action\n⏱️ 5 hours"| Q
     end
 
     subgraph result["📊 Results"]
@@ -244,6 +270,7 @@ The A/B test runs continuously. Results are analyzed periodically to determine i
 | **Stage 2** | Transferência (in transit) or Distribuição (final destination) |
 | **Photos required** | 2 per verification: label (etiqueta) + location |
 | **Cooldown** | 2 hours after Stage 1 verified; immediate if not found |
+| **Inaction timeout** | Stage 1: 4 hours → auto-advance to Stage 2. Stage 2: 5 hours → flagged as potential loss |
 | **A/B testing** | 50/50 random split; Group A = control, Group B = treatment |
 
 <Card title="Collector" href="/v1/platform/collector">
