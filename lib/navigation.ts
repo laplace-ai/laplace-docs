@@ -45,6 +45,7 @@ export const navigation: NavSection[] = [
           { title: "Overview", href: "/docs/platform/digital-twin" },
           { title: "Map", href: "/docs/platform/digital-twin/map" },
           { title: "Units", href: "/docs/platform/digital-twin/units" },
+          { title: "Roadmap", href: "/docs/platform/digital-twin/roadmap" },
         ],
       },
       {
