@@ -19,6 +19,11 @@ export interface NavSection {
  */
 export const navigation: NavSection[] = [
   {
+    title: "Onboarding",
+    icon: "Rocket",
+    items: [{ title: "Onboarding", href: "/docs/onboarding" }],
+  },
+  {
     title: "Changelog",
     icon: "FileText",
     items: [{ title: "Changelog", href: "/docs/changelog" }],
