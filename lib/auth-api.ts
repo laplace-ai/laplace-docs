@@ -2,15 +2,6 @@
  * Auth API client — calls backend auth endpoints through the Next.js proxy.
  */
 
-export class AuthError extends Error {
-  status: number
-  constructor(message: string, status: number) {
-    super(message)
-    this.name = "AuthError"
-    this.status = status
-  }
-}
-
 export interface AuthUser {
   id: number
   email: string
@@ -70,7 +61,7 @@ async function authFetch<T>(
   const data = await res.json()
 
   if (!res.ok) {
-    throw new AuthError(data.error || data.message || `Auth error ${res.status}`, res.status)
+    throw new Error(data.error || data.message || `Auth error ${res.status}`)
   }
 
   return data as T

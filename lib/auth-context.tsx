@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react"
 import { decodeJwt } from "jose"
 import * as authApi from "@/lib/auth-api"
-import { AuthError } from "@/lib/auth-api"
 import type { AuthUser } from "@/lib/auth-api"
 
 export type { AuthUser }
@@ -34,24 +33,6 @@ const AuthContext = createContext<AuthContextValue>({
 
 const REFRESH_TOKEN_KEY = "laplace_docs_refresh_token"
 const ACCESS_TOKEN_COOKIE = "laplace_docs_access_token"
-const REFRESH_MAX_RETRIES = 2
-const REFRESH_RETRY_DELAY_MS = 1500
-
-function isUnauthorized(err: unknown): boolean {
-  return err instanceof AuthError && err.status === 401
-}
-
-async function refreshWithRetry(refreshToken: string): Promise<{ access_token: string; refresh_token: string }> {
-  for (let attempt = 0; attempt <= REFRESH_MAX_RETRIES; attempt++) {
-    try {
-      return await authApi.refresh(refreshToken)
-    } catch (err) {
-      if (isUnauthorized(err) || attempt === REFRESH_MAX_RETRIES) throw err
-      await new Promise(r => setTimeout(r, REFRESH_RETRY_DELAY_MS * (attempt + 1)))
-    }
-  }
-  throw new Error("Unreachable")
-}
 
 function setAccessTokenCookie(token: string) {
   try {
@@ -101,21 +82,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       refreshTimerRef.current = setTimeout(async () => {
         const storedRefreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
-        if (!storedRefreshToken || isRefreshingRef.current) return
+        if (!storedRefreshToken) return
 
-        isRefreshingRef.current = true
         try {
-          const result = await refreshWithRetry(storedRefreshToken)
+          const result = await authApi.refresh(storedRefreshToken)
           setAccessToken(result.access_token)
           setAccessTokenCookie(result.access_token)
           localStorage.setItem(REFRESH_TOKEN_KEY, result.refresh_token)
           scheduleRefresh(result.access_token)
-        } catch (err) {
-          if (isUnauthorized(err)) {
-            clearAuth()
-          }
-        } finally {
-          isRefreshingRef.current = false
+        } catch {
+          clearAuth()
         }
       }, refreshIn)
     } catch {
@@ -151,7 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       try {
         isRefreshingRef.current = true
-        const result = await refreshWithRetry(storedRefreshToken)
+        const result = await authApi.refresh(storedRefreshToken)
         const meResult = await authApi.getMe(result.access_token)
         setAuthState({
           access_token: result.access_token,
@@ -159,10 +135,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           user: meResult.user,
           modules: meResult.modules,
         })
-      } catch (err) {
-        if (isUnauthorized(err)) {
-          clearAuth()
-        }
+      } catch {
+        clearAuth()
       } finally {
         isRefreshingRef.current = false
         setIsLoading(false)
